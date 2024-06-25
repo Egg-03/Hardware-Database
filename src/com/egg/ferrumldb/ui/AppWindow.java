@@ -178,14 +178,14 @@ public class AppWindow {
 		
 		JLabel cpuName = new JLabel("Name");
 		cpuName.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		cpuName.setBounds(111, 20, 30, 20);
+		cpuName.setBounds(111, 20, 30, 23);
 		cpuPanel.add(cpuName);
 		
 		cpuNameTextField = new JTextField();
 		cpuNameTextField.setHorizontalAlignment(SwingConstants.CENTER);
 		cpuNameTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		cpuNameTextField.setEditable(false);
-		cpuNameTextField.setBounds(148, 20, 243, 22);
+		cpuNameTextField.setBounds(148, 20, 243, 24);
 		cpuPanel.add(cpuNameTextField);
 		
 		JLabel cpuSocket = new JLabel("Socket");
@@ -194,6 +194,7 @@ public class AppWindow {
 		cpuPanel.add(cpuSocket);
 		
 		cpuSocketTextField = new JTextField();
+		cpuSocketTextField.setHorizontalAlignment(SwingConstants.CENTER);
 		cpuSocketTextField.setText((String) null);
 		cpuSocketTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		cpuSocketTextField.setEditable(false);
