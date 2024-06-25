@@ -1,6 +1,8 @@
 package com.egg.ferrumldb.ui;
 
 import java.awt.EventQueue;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.JFrame;
@@ -8,21 +10,28 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import com.ferruml.system.currentuser.User;
 import com.ferruml.system.hardware.HWID;
+import com.ferruml.system.operatingsystem.Win32_OperatingSystem;
 
 import javax.swing.border.EtchedBorder;
 import java.awt.Color;
 import javax.swing.WindowConstants;
 import java.awt.Font;
+import java.io.IOException;
+
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class AppWindow {
 
 	private JFrame frame;
 	private JTextArea hardwareIdTextField;
-	private JTextField osNameTextField;
-	private JTextField textField;
+	private JComboBox<String> osNameChoice;
+	private JTextField osArchTextField;
 	private JTextField deviceNameTextField;
 	private JTextField currentUserTextField;
 
@@ -46,10 +55,13 @@ public class AppWindow {
 	 * Create the application.
 	 * @throws InterruptedException 
 	 * @throws ExecutionException 
+	 * @throws IOException 
+	 * @throws IndexOutOfBoundsException 
 	 */
-	public AppWindow() throws ExecutionException, InterruptedException {
+	public AppWindow() throws ExecutionException, InterruptedException, IndexOutOfBoundsException, IOException {
 		initialize();
 		initializeHardwareId();
+		initializeOs();
 	}
 
 	/**
@@ -84,56 +96,85 @@ public class AppWindow {
 		
 		JPanel osPanel = new JPanel();
 		osPanel.setBorder(new TitledBorder(null, "Operating System", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
-		osPanel.setBounds(12, 93, 410, 72);
+		osPanel.setBounds(12, 93, 410, 80);
 		frame.getContentPane().add(osPanel);
 		osPanel.setLayout(null);
 		
 		JLabel osName = new JLabel("Name");
 		osName.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		osName.setBounds(12, 22, 30, 15);
+		osName.setBounds(12, 22, 30, 20);
 		osPanel.add(osName);
 		
-		osNameTextField = new JTextField();
-		osNameTextField.setEditable(false);
-		osNameTextField.setBounds(48, 22, 204, 15);
-		osPanel.add(osNameTextField);
-		osNameTextField.setColumns(10);
+		osNameChoice = new JComboBox<>();
+		osNameChoice.setFont(new Font("Segoe UI", Font.ITALIC, 11));
+		osNameChoice.setEditable(false);
+		osNameChoice.setBounds(48, 22, 204, 20);
+		osPanel.add(osNameChoice);
 		
 		JLabel osArch = new JLabel("Architecture");
 		osArch.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		osArch.setBounds(270, 21, 64, 15);
+		osArch.setBounds(270, 21, 64, 20);
 		osPanel.add(osArch);
 		
-		textField = new JTextField();
-		textField.setEditable(false);
-		textField.setColumns(10);
-		textField.setBounds(344, 21, 54, 15);
-		osPanel.add(textField);
+		osArchTextField = new JTextField();
+		osArchTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		osArchTextField.setEditable(false);
+		osArchTextField.setColumns(10);
+		osArchTextField.setBounds(344, 21, 54, 20);
+		osPanel.add(osArchTextField);
 		
 		JLabel deviceName = new JLabel("Device Name");
 		deviceName.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		deviceName.setBounds(12, 49, 70, 15);
+		deviceName.setBounds(12, 49, 70, 20);
 		osPanel.add(deviceName);
 		
 		deviceNameTextField = new JTextField();
+		deviceNameTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		deviceNameTextField.setEditable(false);
 		deviceNameTextField.setColumns(10);
-		deviceNameTextField.setBounds(85, 49, 167, 15);
+		deviceNameTextField.setBounds(85, 49, 167, 20);
 		osPanel.add(deviceNameTextField);
 		
 		JLabel currentUser = new JLabel("Current User");
 		currentUser.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		currentUser.setBounds(270, 48, 67, 15);
+		currentUser.setBounds(270, 48, 67, 20);
 		osPanel.add(currentUser);
 		
 		currentUserTextField = new JTextField();
+		currentUserTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		currentUserTextField.setEditable(false);
 		currentUserTextField.setColumns(10);
-		currentUserTextField.setBounds(344, 48, 54, 15);
+		currentUserTextField.setBounds(344, 48, 54, 20);
 		osPanel.add(currentUserTextField);
 	}
 	
 	private void initializeHardwareId() throws ExecutionException, InterruptedException {
 		hardwareIdTextField.setText(HWID.getHardwareID());
+	}
+	
+	private void initializeOs() throws IndexOutOfBoundsException, IOException {
+		List<String> osNames = Win32_OperatingSystem.getOSList();
+		for(String osName: osNames) {
+			osNameChoice.addItem(osName);
+		}
+		Map<String, String> osProperties = Win32_OperatingSystem.getOSInfo(osNameChoice.getItemAt(osNameChoice.getSelectedIndex()));
+		deviceNameTextField.setText(osProperties.get("CSName"));
+		osArchTextField.setText(osProperties.get("OSArchitecture"));
+		currentUserTextField.setText(User.getUsername());
+		
+		//add an action listener for when the user selects a different OS for multi-boot Systems
+		osNameChoice.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Map<String, String> osProperties = Win32_OperatingSystem.getOSInfo(osNameChoice.getItemAt(osNameChoice.getSelectedIndex()));
+					deviceNameTextField.setText(osProperties.get("CSName"));
+					osArchTextField.setText(osProperties.get("OSArchitecture"));
+					currentUserTextField.setText(User.getUsername());
+				} catch (IndexOutOfBoundsException | IOException e1) {
+					// TODO I WILL DO NOTHING NOOO NOTHING NEVER EVER I WILL BECOME A FARMER
+					e1.printStackTrace();
+				}
+			}
+		});
 	}
 }
