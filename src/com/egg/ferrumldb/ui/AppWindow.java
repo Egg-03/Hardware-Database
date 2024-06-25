@@ -12,6 +12,7 @@ import javax.swing.border.TitledBorder;
 
 import com.ferruml.system.currentuser.User;
 import com.ferruml.system.hardware.HWID;
+import com.ferruml.system.hardware.Win32_PhysicalMemory;
 import com.ferruml.system.hardware.Win32_Processor;
 import com.ferruml.system.operatingsystem.Win32_OperatingSystem;
 
@@ -43,6 +44,8 @@ public class AppWindow {
 	private JTextField cpuSocketTextField;
 	private JTextField cpuCoreTextField;
 	private JTextField cpuThreadTextField;
+	private JTextField memorySlotTextField;
+	private JTextField totalMemoryTextField;
 
 	/**
 	 * Launch the application.
@@ -77,6 +80,7 @@ public class AppWindow {
 		initializeHardwareId();
 		initializeOs();
 		initializeCpu();
+		initializeMemory();
 	}
 
 	/**
@@ -130,19 +134,19 @@ public class AppWindow {
 		
 		JLabel osArch = new JLabel("Architecture");
 		osArch.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		osArch.setBounds(270, 21, 64, 24);
+		osArch.setBounds(270, 22, 64, 24);
 		osPanel.add(osArch);
 		
 		osArchTextField = new JTextField();
 		osArchTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		osArchTextField.setEditable(false);
 		osArchTextField.setColumns(10);
-		osArchTextField.setBounds(344, 21, 54, 24);
+		osArchTextField.setBounds(344, 22, 54, 24);
 		osPanel.add(osArchTextField);
 		
 		JLabel deviceName = new JLabel("Device Name");
 		deviceName.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		deviceName.setBounds(12, 53, 70, 24);
+		deviceName.setBounds(12, 54, 70, 24);
 		osPanel.add(deviceName);
 		
 		deviceNameTextField = new JTextField();
@@ -154,7 +158,7 @@ public class AppWindow {
 		
 		JLabel currentUser = new JLabel("Current User");
 		currentUser.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		currentUser.setBounds(222, 55, 70, 24);
+		currentUser.setBounds(222, 54, 70, 24);
 		osPanel.add(currentUser);
 		
 		currentUserTextField = new JTextField();
@@ -231,6 +235,38 @@ public class AppWindow {
 		cpuNumberChoice.setEditable(false);
 		cpuNumberChoice.setBounds(48, 20, 57, 22);
 		cpuPanel.add(cpuNumberChoice);
+		
+		JPanel memoryPanel = new JPanel();
+		memoryPanel.setLayout(null);
+		memoryPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Memory", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
+		memoryPanel.setBounds(10, 265, 414, 59);
+		feldbdmp.getContentPane().add(memoryPanel);
+		
+		JLabel memorySlots = new JLabel("Slots Used");
+		memorySlots.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		memorySlots.setBounds(17, 23, 66, 22);
+		memoryPanel.add(memorySlots);
+		
+		memorySlotTextField = new JTextField();
+		memorySlotTextField.setText((String) null);
+		memorySlotTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		memorySlotTextField.setEditable(false);
+		memorySlotTextField.setColumns(10);
+		memorySlotTextField.setBounds(82, 24, 46, 22);
+		memoryPanel.add(memorySlotTextField);
+		
+		JLabel totalMemory = new JLabel("Total Memory");
+		totalMemory.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		totalMemory.setBounds(207, 23, 81, 22);
+		memoryPanel.add(totalMemory);
+		
+		totalMemoryTextField = new JTextField();
+		totalMemoryTextField.setText((String) null);
+		totalMemoryTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		totalMemoryTextField.setEditable(false);
+		totalMemoryTextField.setColumns(10);
+		totalMemoryTextField.setBounds(290, 24, 100, 22);
+		memoryPanel.add(totalMemoryTextField);
 	}
 	
 	private void initializeHardwareId() throws ExecutionException, InterruptedException {
@@ -293,6 +329,13 @@ public class AppWindow {
 			}
 			
 		});
+		
+	}
+	
+	private void initializeMemory() throws IndexOutOfBoundsException, IOException {
+		List<String> memoryList = Win32_PhysicalMemory.getTag();
+		Integer slotCount = memoryList.size();
+		memorySlotTextField.setText(Integer.toString(slotCount));
 		
 	}
 }
