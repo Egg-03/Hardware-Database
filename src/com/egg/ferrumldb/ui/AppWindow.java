@@ -239,12 +239,12 @@ public class AppWindow {
 		JPanel memoryPanel = new JPanel();
 		memoryPanel.setLayout(null);
 		memoryPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Memory", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
-		memoryPanel.setBounds(10, 265, 414, 59);
+		memoryPanel.setBounds(10, 265, 414, 44);
 		feldbdmp.getContentPane().add(memoryPanel);
 		
 		JLabel memorySlots = new JLabel("Slots Used");
 		memorySlots.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		memorySlots.setBounds(17, 23, 66, 22);
+		memorySlots.setBounds(12, 14, 66, 22);
 		memoryPanel.add(memorySlots);
 		
 		memorySlotTextField = new JTextField();
@@ -252,12 +252,12 @@ public class AppWindow {
 		memorySlotTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		memorySlotTextField.setEditable(false);
 		memorySlotTextField.setColumns(10);
-		memorySlotTextField.setBounds(82, 24, 46, 22);
+		memorySlotTextField.setBounds(80, 14, 46, 22);
 		memoryPanel.add(memorySlotTextField);
 		
 		JLabel totalMemory = new JLabel("Total Memory");
 		totalMemory.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		totalMemory.setBounds(207, 23, 81, 22);
+		totalMemory.setBounds(207, 14, 81, 22);
 		memoryPanel.add(totalMemory);
 		
 		totalMemoryTextField = new JTextField();
@@ -265,7 +265,7 @@ public class AppWindow {
 		totalMemoryTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		totalMemoryTextField.setEditable(false);
 		totalMemoryTextField.setColumns(10);
-		totalMemoryTextField.setBounds(290, 24, 100, 22);
+		totalMemoryTextField.setBounds(288, 14, 100, 22);
 		memoryPanel.add(totalMemoryTextField);
 	}
 	
