@@ -1,6 +1,7 @@
 package com.egg.ferrumldb.ui;
 
 import java.awt.EventQueue;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -10,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import com.ferruml.formatter.wmic.WMIC;
 import com.ferruml.system.currentuser.User;
 import com.ferruml.system.hardware.HWID;
 import com.ferruml.system.hardware.Win32_PhysicalMemory;
@@ -138,6 +140,7 @@ public class AppWindow {
 		osPanel.add(osArch);
 		
 		osArchTextField = new JTextField();
+		osArchTextField.setHorizontalAlignment(SwingConstants.CENTER);
 		osArchTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		osArchTextField.setEditable(false);
 		osArchTextField.setColumns(10);
@@ -150,6 +153,7 @@ public class AppWindow {
 		osPanel.add(deviceName);
 		
 		deviceNameTextField = new JTextField();
+		deviceNameTextField.setHorizontalAlignment(SwingConstants.CENTER);
 		deviceNameTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		deviceNameTextField.setEditable(false);
 		deviceNameTextField.setColumns(10);
@@ -181,6 +185,7 @@ public class AppWindow {
 		cpuPanel.add(cpuName);
 		
 		cpuNameTextField = new JTextField();
+		cpuNameTextField.setHorizontalAlignment(SwingConstants.CENTER);
 		cpuNameTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		cpuNameTextField.setEditable(false);
 		cpuNameTextField.setBounds(148, 20, 243, 22);
@@ -218,6 +223,7 @@ public class AppWindow {
 		cpuPanel.add(cpuThreadCount);
 		
 		cpuThreadTextField = new JTextField();
+		cpuThreadTextField.setHorizontalAlignment(SwingConstants.CENTER);
 		cpuThreadTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		cpuThreadTextField.setEditable(false);
 		cpuThreadTextField.setColumns(10);
@@ -248,6 +254,7 @@ public class AppWindow {
 		memoryPanel.add(memorySlots);
 		
 		memorySlotTextField = new JTextField();
+		memorySlotTextField.setHorizontalAlignment(SwingConstants.CENTER);
 		memorySlotTextField.setText((String) null);
 		memorySlotTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		memorySlotTextField.setEditable(false);
@@ -261,6 +268,7 @@ public class AppWindow {
 		memoryPanel.add(totalMemory);
 		
 		totalMemoryTextField = new JTextField();
+		totalMemoryTextField.setHorizontalAlignment(SwingConstants.CENTER);
 		totalMemoryTextField.setText((String) null);
 		totalMemoryTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		totalMemoryTextField.setEditable(false);
@@ -335,7 +343,15 @@ public class AppWindow {
 	private void initializeMemory() throws IndexOutOfBoundsException, IOException {
 		List<String> memoryList = Win32_PhysicalMemory.getTag();
 		Integer slotCount = memoryList.size();
+		Long totalSize = 0L;
 		memorySlotTextField.setText(Integer.toString(slotCount));
 		
+		Map<String, String> memoryProperties = Collections.emptyMap();
+		for(String memory: memoryList) {
+			memoryProperties = Win32_PhysicalMemory.getMemory(memory);
+			totalSize+= Long.parseLong(memoryProperties.get("Capacity"));
+		}
+		
+		totalMemoryTextField.setText(String.valueOf(totalSize/(1024*1024))+" MB");
 	}
 }
