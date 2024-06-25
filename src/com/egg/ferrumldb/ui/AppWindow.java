@@ -28,6 +28,7 @@ import com.ferruml.system.currentuser.User;
 import com.ferruml.system.hardware.HWID;
 import com.ferruml.system.hardware.Win32_PhysicalMemory;
 import com.ferruml.system.hardware.Win32_Processor;
+import com.ferruml.system.hardware.Win32_VideoController;
 import com.ferruml.system.operatingsystem.Win32_OperatingSystem;
 
 public class AppWindow {
@@ -36,6 +37,7 @@ public class AppWindow {
 	private JTextArea hardwareIdTextField;
 	private JComboBox<String> osNameChoice;
 	private JComboBox<String> cpuNumberChoice;
+	private JComboBox<String> gpuNumberChoice;
 	private JTextField cpuNameTextField;
 	private JTextField osArchTextField;
 	private JTextField deviceNameTextField;
@@ -45,6 +47,9 @@ public class AppWindow {
 	private JTextField cpuThreadTextField;
 	private JTextField memorySlotTextField;
 	private JTextField totalMemoryTextField;
+	private JTextField gpuNameTextField;
+	private JTextField gpuVramTextField;
+	private JTextField gpuDriverVersionTextField;
 
 	/**
 	 * Launch the application.
@@ -80,6 +85,7 @@ public class AppWindow {
 		initializeOs();
 		initializeCpu();
 		initializeMemory();
+		initializeVideoController();
 	}
 
 	/**
@@ -87,6 +93,7 @@ public class AppWindow {
 	 */
 	private void initialize() {
 		feldbdmp = new JFrame();
+		feldbdmp.setResizable(false);
 		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/ferrum_legacy-8.png")));
 		feldbdmp.setTitle("FerrumL DBDump Tool Snapshot v0.0.1");
 		feldbdmp.setBounds(100, 100, 450, 490);
@@ -208,6 +215,7 @@ public class AppWindow {
 		cpuPanel.add(cpuCoreCount);
 		
 		cpuCoreTextField = new JTextField();
+		cpuCoreTextField.setHorizontalAlignment(SwingConstants.CENTER);
 		cpuCoreTextField.setText((String) null);
 		cpuCoreTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		cpuCoreTextField.setEditable(false);
@@ -273,6 +281,64 @@ public class AppWindow {
 		totalMemoryTextField.setColumns(10);
 		totalMemoryTextField.setBounds(288, 14, 100, 22);
 		memoryPanel.add(totalMemoryTextField);
+		
+		JPanel gpuPanel = new JPanel();
+		gpuPanel.setLayout(null);
+		gpuPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Video Controller", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
+		gpuPanel.setBounds(10, 310, 412, 90);
+		feldbdmp.getContentPane().add(gpuPanel);
+		
+		JLabel gpuNumber = new JLabel("GPU#");
+		gpuNumber.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		gpuNumber.setBounds(12, 22, 30, 24);
+		gpuPanel.add(gpuNumber);
+		
+		gpuNumberChoice = new JComboBox<>();
+		gpuNumberChoice.setFont(new Font("Segoe UI", Font.ITALIC, 11));
+		gpuNumberChoice.setEditable(false);
+		gpuNumberChoice.setBounds(48, 22, 70, 24);
+		gpuPanel.add(gpuNumberChoice);
+		
+		JLabel gpuName = new JLabel("Name");
+		gpuName.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		gpuName.setBounds(125, 22, 35, 24);
+		gpuPanel.add(gpuName);
+		
+		gpuNameTextField = new JTextField();
+		gpuNameTextField.setText((String) null);
+		gpuNameTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		gpuNameTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		gpuNameTextField.setEditable(false);
+		gpuNameTextField.setColumns(10);
+		gpuNameTextField.setBounds(166, 22, 232, 24);
+		gpuPanel.add(gpuNameTextField);
+		
+		JLabel gpuVram = new JLabel("VRAM");
+		gpuVram.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		gpuVram.setBounds(12, 54, 35, 24);
+		gpuPanel.add(gpuVram);
+		
+		gpuVramTextField = new JTextField();
+		gpuVramTextField.setText((String) null);
+		gpuVramTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		gpuVramTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		gpuVramTextField.setEditable(false);
+		gpuVramTextField.setColumns(10);
+		gpuVramTextField.setBounds(48, 55, 135, 24);
+		gpuPanel.add(gpuVramTextField);
+		
+		JLabel gpuDriverVersion = new JLabel("Driver Version");
+		gpuDriverVersion.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		gpuDriverVersion.setBounds(188, 54, 90, 24);
+		gpuPanel.add(gpuDriverVersion);
+		
+		gpuDriverVersionTextField = new JTextField();
+		gpuDriverVersionTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		gpuDriverVersionTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		gpuDriverVersionTextField.setEditable(false);
+		gpuDriverVersionTextField.setColumns(10);
+		gpuDriverVersionTextField.setBounds(283, 54, 115, 24);
+		gpuPanel.add(gpuDriverVersionTextField);
 	}
 	
 	private void initializeHardwareId() throws ExecutionException, InterruptedException {
@@ -351,5 +417,34 @@ public class AppWindow {
 		}
 		
 		totalMemoryTextField.setText(String.valueOf(totalSize/(1024*1024))+" MB");
+	}
+	
+	private void initializeVideoController() throws IndexOutOfBoundsException, IOException {
+		List<String> gpus = Win32_VideoController.getGPUID();
+		for(String gpu:gpus) {
+			gpuNumberChoice.addItem(gpu);
+		}
+		Map<String, String> gpuProperties = Win32_VideoController.getGPU(gpuNumberChoice.getItemAt(gpuNumberChoice.getSelectedIndex()));
+		gpuNameTextField.setText(gpuProperties.get("Name"));
+		Long adapterRam = Long.parseLong(gpuProperties.get("AdapterRAM"))/(1024*1024);
+		gpuVramTextField.setText(String.valueOf(adapterRam)+" MB");
+		gpuDriverVersionTextField.setText(gpuProperties.get("DriverVersion"));
+		
+		gpuNumberChoice.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Map<String, String> gpuProperties;
+				try {
+					gpuProperties = Win32_VideoController.getGPU(gpuNumberChoice.getItemAt(gpuNumberChoice.getSelectedIndex()));
+					gpuNameTextField.setText(gpuProperties.get("Name"));
+					Long adapterRam = Long.parseLong(gpuProperties.get("AdapterRAM"))/(1024*1024);
+					gpuVramTextField.setText(String.valueOf(adapterRam)+" MB");
+					gpuDriverVersionTextField.setText(gpuProperties.get("DriverVersion"));
+				} catch (IndexOutOfBoundsException | IOException e1) {
+					// TODO How long before I end up doing something stupid ?
+					e1.printStackTrace();
+				}
+			}
+		});
 	}
 }
