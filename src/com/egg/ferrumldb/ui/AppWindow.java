@@ -241,7 +241,7 @@ public class AppWindow {
 		cpuNumber.setBounds(12, 20, 30, 20);
 		cpuPanel.add(cpuNumber);
 		
-		cpuNumberChoice = new JComboBox<String>();
+		cpuNumberChoice = new JComboBox<>();
 		cpuNumberChoice.setMaximumRowCount(4);
 		cpuNumberChoice.setFont(new Font("Segoe UI", Font.ITALIC, 9));
 		cpuNumberChoice.setEditable(false);
