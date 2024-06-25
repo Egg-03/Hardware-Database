@@ -1,37 +1,34 @@
 package com.egg.ferrumldb.ui;
 
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
-import com.ferruml.formatter.wmic.WMIC;
 import com.ferruml.system.currentuser.User;
 import com.ferruml.system.hardware.HWID;
 import com.ferruml.system.hardware.Win32_PhysicalMemory;
 import com.ferruml.system.hardware.Win32_Processor;
 import com.ferruml.system.operatingsystem.Win32_OperatingSystem;
-
-import java.awt.Color;
-import javax.swing.WindowConstants;
-import java.awt.Font;
-import java.io.IOException;
-
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.border.BevelBorder;
-import java.awt.Toolkit;
-import javax.swing.UIManager;
-import javax.swing.SwingConstants;
 
 public class AppWindow {
 
