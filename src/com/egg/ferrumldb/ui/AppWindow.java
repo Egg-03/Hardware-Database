@@ -32,7 +32,7 @@ import javax.swing.SwingConstants;
 
 public class AppWindow {
 
-	private JFrame frmFerrumlDbdumpToll;
+	private JFrame feldbdmp;
 	private JTextArea hardwareIdTextField;
 	private JComboBox<String> osNameChoice;
 	private JComboBox<String> cpuNumberChoice;
@@ -57,7 +57,7 @@ public class AppWindow {
 			public void run() {
 				try {
 					AppWindow window = new AppWindow();
-					window.frmFerrumlDbdumpToll.setVisible(true);
+					window.feldbdmp.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -83,17 +83,17 @@ public class AppWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frmFerrumlDbdumpToll = new JFrame();
-		frmFerrumlDbdumpToll.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/ferrum_legacy-8.png")));
-		frmFerrumlDbdumpToll.setTitle("FerrumL DBDump Tool Snapshot v0.0.1");
-		frmFerrumlDbdumpToll.setBounds(100, 100, 450, 490);
-		frmFerrumlDbdumpToll.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frmFerrumlDbdumpToll.getContentPane().setLayout(null);
+		feldbdmp = new JFrame();
+		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/ferrum_legacy-8.png")));
+		feldbdmp.setTitle("FerrumL DBDump Tool Snapshot v0.0.1");
+		feldbdmp.setBounds(100, 100, 450, 490);
+		feldbdmp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		feldbdmp.getContentPane().setLayout(null);
 		
 		JPanel hardwareIdPanel = new JPanel();
 		hardwareIdPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Unique ID", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		hardwareIdPanel.setBounds(10, 11, 414, 80);
-		frmFerrumlDbdumpToll.getContentPane().add(hardwareIdPanel);
+		feldbdmp.getContentPane().add(hardwareIdPanel);
 		hardwareIdPanel.setLayout(null);
 		
 		JLabel hardwareLabel = new JLabel("Hardware ID");
@@ -114,7 +114,7 @@ public class AppWindow {
 		JPanel osPanel = new JPanel();
 		osPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Operating System", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		osPanel.setBounds(10, 93, 412, 90);
-		frmFerrumlDbdumpToll.getContentPane().add(osPanel);
+		feldbdmp.getContentPane().add(osPanel);
 		osPanel.setLayout(null);
 		
 		JLabel osName = new JLabel("Name");
@@ -169,7 +169,7 @@ public class AppWindow {
 		cpuPanel.setLayout(null);
 		cpuPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "CPU", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		cpuPanel.setBounds(10, 185, 414, 80);
-		frmFerrumlDbdumpToll.getContentPane().add(cpuPanel);
+		feldbdmp.getContentPane().add(cpuPanel);
 		
 		JLabel cpuName = new JLabel("Name");
 		cpuName.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
