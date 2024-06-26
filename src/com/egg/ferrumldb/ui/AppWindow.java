@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -33,7 +34,6 @@ import com.ferruml.system.hardware.Win32_Processor;
 import com.ferruml.system.hardware.Win32_VideoController;
 import com.ferruml.system.network.Win32_NetworkAdapter;
 import com.ferruml.system.operatingsystem.Win32_OperatingSystem;
-import javax.swing.JButton;
 
 public class AppWindow {
 
@@ -138,17 +138,9 @@ public class AppWindow {
 		hardwareIdPanel.add(hardwareIdTextField);
 		hardwareIdTextField.setColumns(10);
 		
-		JButton felReportToolButton = new JButton("Launch FeL");
-		felReportToolButton.setBounds(17, 48, 96, 20);
-		felReportToolButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				
-			}
-			
-		});
-		hardwareIdPanel.add(felReportToolButton);
+		JButton placeholder = new JButton("Placeholder");
+		placeholder.setBounds(17, 48, 96, 20);
+		hardwareIdPanel.add(placeholder);
 		
 		JPanel osPanel = new JPanel();
 		osPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Operating System", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
@@ -509,7 +501,7 @@ public class AppWindow {
 		
 		JLabel storageSmartStatus = new JLabel("S.M.A.R.T");
 		storageSmartStatus.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		storageSmartStatus.setBounds(293, 54, 48, 24);
+		storageSmartStatus.setBounds(289, 54, 48, 24);
 		storage.add(storageSmartStatus);
 		
 		storageSmartTextField = new JTextField();
@@ -518,7 +510,7 @@ public class AppWindow {
 		storageSmartTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		storageSmartTextField.setEditable(false);
 		storageSmartTextField.setColumns(10);
-		storageSmartTextField.setBounds(353, 54, 47, 24);
+		storageSmartTextField.setBounds(342, 54, 58, 24);
 		storage.add(storageSmartTextField);
 	}
 	
