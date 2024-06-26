@@ -78,6 +78,7 @@ public class AppWindow {
 			public void run() {
 				try {
 					AppWindow window = new AppWindow();
+					window.feldbdmp.setLocationRelativeTo(null);
 					window.feldbdmp.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -112,7 +113,7 @@ public class AppWindow {
 		feldbdmp = new JFrame();
 		feldbdmp.setResizable(false);
 		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/ferrum_legacy-8.png")));
-		feldbdmp.setTitle("FerrumL DBDump Tool Snapshot v0.0.1");
+		feldbdmp.setTitle("FerrumL DBDump Tool Snapshot v26062024");
 		feldbdmp.setBounds(100, 100, 450, 721);
 		feldbdmp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		feldbdmp.getContentPane().setLayout(null);
