@@ -28,6 +28,7 @@ import com.ferruml.system.currentuser.User;
 import com.ferruml.system.hardware.HWID;
 import com.ferruml.system.hardware.Win32_BIOS;
 import com.ferruml.system.hardware.Win32_Baseboard;
+import com.ferruml.system.hardware.Win32_DiskDrive;
 import com.ferruml.system.hardware.Win32_PhysicalMemory;
 import com.ferruml.system.hardware.Win32_Processor;
 import com.ferruml.system.hardware.Win32_VideoController;
@@ -42,6 +43,7 @@ public class AppWindow {
 	private JComboBox<String> cpuNumberChoice;
 	private JComboBox<String> gpuNumberChoice;
 	private JComboBox<String> connectionIdChoice;
+	private JComboBox<String> storageNameChoice;
 	private JTextField cpuNameTextField;
 	private JTextField osArchTextField;
 	private JTextField deviceNameTextField;
@@ -59,6 +61,9 @@ public class AppWindow {
 	private JTextField biosVersionTextField;
 	private JTextField networkDescriptionTextField;
 	private JTextField networkMacTextField;
+	private JTextField storageSerialTextField;
+	private JTextField storageSizeTextField;
+	private JTextField storageSmartTextField;
 
 	/**
 	 * Launch the application.
@@ -97,6 +102,7 @@ public class AppWindow {
 		initializeVideoController();
 		initializeMainboard();
 		initializeNetwork();
+		initializeStorage();
 	}
 
 	/**
@@ -107,7 +113,7 @@ public class AppWindow {
 		feldbdmp.setResizable(false);
 		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/ferrum_legacy-8.png")));
 		feldbdmp.setTitle("FerrumL DBDump Tool Snapshot v0.0.1");
-		feldbdmp.setBounds(100, 100, 450, 670);
+		feldbdmp.setBounds(100, 100, 450, 721);
 		feldbdmp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		feldbdmp.getContentPane().setLayout(null);
 		
@@ -443,6 +449,65 @@ public class AppWindow {
 		networkMacTextField.setColumns(10);
 		networkMacTextField.setBounds(247, 22, 153, 24);
 		network.add(networkMacTextField);
+		
+		JPanel storage = new JPanel();
+		storage.setLayout(null);
+		storage.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Storage", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
+		storage.setBounds(10, 583, 412, 90);
+		feldbdmp.getContentPane().add(storage);
+		
+		JLabel storageName = new JLabel("Caption");
+		storageName.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		storageName.setBounds(12, 21, 47, 24);
+		storage.add(storageName);
+		
+		storageNameChoice = new JComboBox<>();
+		storageNameChoice.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		storageNameChoice.setEditable(false);
+		storageNameChoice.setBounds(62, 21, 186, 24);
+		storage.add(storageNameChoice);
+		
+		JLabel storageSerial = new JLabel("Serial");
+		storageSerial.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		storageSerial.setBounds(12, 54, 37, 24);
+		storage.add(storageSerial);
+		
+		storageSerialTextField = new JTextField();
+		storageSerialTextField.setText((String) null);
+		storageSerialTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		storageSerialTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		storageSerialTextField.setEditable(false);
+		storageSerialTextField.setColumns(10);
+		storageSerialTextField.setBounds(52, 54, 165, 24);
+		storage.add(storageSerialTextField);
+		
+		JLabel storageSize = new JLabel("Size");
+		storageSize.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		storageSize.setBounds(256, 21, 26, 24);
+		storage.add(storageSize);
+		
+		storageSizeTextField = new JTextField();
+		storageSizeTextField.setText((String) null);
+		storageSizeTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		storageSizeTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		storageSizeTextField.setEditable(false);
+		storageSizeTextField.setColumns(10);
+		storageSizeTextField.setBounds(289, 22, 111, 24);
+		storage.add(storageSizeTextField);
+		
+		JLabel storageSmartStatus = new JLabel("S.M.A.R.T");
+		storageSmartStatus.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		storageSmartStatus.setBounds(235, 54, 47, 24);
+		storage.add(storageSmartStatus);
+		
+		storageSmartTextField = new JTextField();
+		storageSmartTextField.setText((String) null);
+		storageSmartTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		storageSmartTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		storageSmartTextField.setEditable(false);
+		storageSmartTextField.setColumns(10);
+		storageSmartTextField.setBounds(289, 54, 47, 24);
+		storage.add(storageSmartTextField);
 	}
 	
 	private void initializeHardwareId() throws ExecutionException, InterruptedException {
@@ -584,5 +649,37 @@ public class AppWindow {
 				}
 			}
 		});
+	}
+	
+	private void initializeStorage() throws IndexOutOfBoundsException, IOException {
+		List<String> disks = Win32_DiskDrive.getDriveID();
+		for(String disk: disks) {
+			storageNameChoice.addItem(disk);
+		}
+		Map<String, String> diskProperties = Win32_DiskDrive.getDrive(storageNameChoice.getItemAt(storageNameChoice.getSelectedIndex()));
+		Long diskSize = Long.parseLong(diskProperties.get("Size"))/(1024*1024*1024);
+		
+		storageSerialTextField.setText(diskProperties.get("SerialNumber"));
+		storageSmartTextField.setText(diskProperties.get("Status"));
+		storageSizeTextField.setText(String.valueOf(diskSize)+" GB");
+		
+		storageNameChoice.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Map<String, String> diskProperties;
+				try {
+					diskProperties = Win32_DiskDrive.getDrive(storageNameChoice.getItemAt(storageNameChoice.getSelectedIndex()));
+					Long diskSize = Long.parseLong(diskProperties.get("Size"))/(1024*1024*1024);
+					
+					storageSerialTextField.setText(diskProperties.get("SerialNumber"));
+					storageSmartTextField.setText(diskProperties.get("Status"));
+					storageSizeTextField.setText(String.valueOf(diskSize)+" GB");
+				} catch (IndexOutOfBoundsException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		
 	}
 }
