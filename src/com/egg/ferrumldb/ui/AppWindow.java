@@ -26,9 +26,12 @@ import javax.swing.border.TitledBorder;
 
 import com.ferruml.system.currentuser.User;
 import com.ferruml.system.hardware.HWID;
+import com.ferruml.system.hardware.Win32_BIOS;
+import com.ferruml.system.hardware.Win32_Baseboard;
 import com.ferruml.system.hardware.Win32_PhysicalMemory;
 import com.ferruml.system.hardware.Win32_Processor;
 import com.ferruml.system.hardware.Win32_VideoController;
+import com.ferruml.system.network.Win32_NetworkAdapter;
 import com.ferruml.system.operatingsystem.Win32_OperatingSystem;
 
 public class AppWindow {
@@ -38,6 +41,7 @@ public class AppWindow {
 	private JComboBox<String> osNameChoice;
 	private JComboBox<String> cpuNumberChoice;
 	private JComboBox<String> gpuNumberChoice;
+	private JComboBox<String> connectionIdChoice;
 	private JTextField cpuNameTextField;
 	private JTextField osArchTextField;
 	private JTextField deviceNameTextField;
@@ -50,6 +54,11 @@ public class AppWindow {
 	private JTextField gpuNameTextField;
 	private JTextField gpuVramTextField;
 	private JTextField gpuDriverVersionTextField;
+	private JTextField mainboardNameTextField;
+	private JTextField mainboardManufacturerTextField;
+	private JTextField biosVersionTextField;
+	private JTextField networkDescriptionTextField;
+	private JTextField networkMacTextField;
 
 	/**
 	 * Launch the application.
@@ -86,6 +95,8 @@ public class AppWindow {
 		initializeCpu();
 		initializeMemory();
 		initializeVideoController();
+		initializeMainboard();
+		initializeNetwork();
 	}
 
 	/**
@@ -96,7 +107,7 @@ public class AppWindow {
 		feldbdmp.setResizable(false);
 		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/ferrum_legacy-8.png")));
 		feldbdmp.setTitle("FerrumL DBDump Tool Snapshot v0.0.1");
-		feldbdmp.setBounds(100, 100, 450, 490);
+		feldbdmp.setBounds(100, 100, 450, 670);
 		feldbdmp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		feldbdmp.getContentPane().setLayout(null);
 		
@@ -197,7 +208,7 @@ public class AppWindow {
 		
 		JLabel cpuSocket = new JLabel("Socket");
 		cpuSocket.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		cpuSocket.setBounds(288, 49, 46, 20);
+		cpuSocket.setBounds(288, 49, 46, 22);
 		cpuPanel.add(cpuSocket);
 		
 		cpuSocketTextField = new JTextField();
@@ -211,7 +222,7 @@ public class AppWindow {
 		
 		JLabel cpuCoreCount = new JLabel("Cores");
 		cpuCoreCount.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		cpuCoreCount.setBounds(12, 49, 30, 20);
+		cpuCoreCount.setBounds(12, 49, 30, 22);
 		cpuPanel.add(cpuCoreCount);
 		
 		cpuCoreTextField = new JTextField();
@@ -225,7 +236,7 @@ public class AppWindow {
 		
 		JLabel cpuThreadCount = new JLabel("Threads");
 		cpuThreadCount.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		cpuThreadCount.setBounds(85, 49, 46, 20);
+		cpuThreadCount.setBounds(85, 49, 46, 22);
 		cpuPanel.add(cpuThreadCount);
 		
 		cpuThreadTextField = new JTextField();
@@ -238,7 +249,7 @@ public class AppWindow {
 		
 		JLabel cpuNumber = new JLabel("CPU#");
 		cpuNumber.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		cpuNumber.setBounds(12, 20, 30, 20);
+		cpuNumber.setBounds(12, 20, 30, 22);
 		cpuPanel.add(cpuNumber);
 		
 		cpuNumberChoice = new JComboBox<>();
@@ -339,6 +350,99 @@ public class AppWindow {
 		gpuDriverVersionTextField.setColumns(10);
 		gpuDriverVersionTextField.setBounds(283, 54, 115, 24);
 		gpuPanel.add(gpuDriverVersionTextField);
+		
+		JPanel mainboardPanel = new JPanel();
+		mainboardPanel.setLayout(null);
+		mainboardPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Mainboard", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
+		mainboardPanel.setBounds(10, 402, 412, 90);
+		feldbdmp.getContentPane().add(mainboardPanel);
+		
+		JLabel mainboardName = new JLabel("Mainboard Name");
+		mainboardName.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		mainboardName.setBounds(12, 21, 89, 24);
+		mainboardPanel.add(mainboardName);
+		
+		mainboardNameTextField = new JTextField();
+		mainboardNameTextField.setText((String) null);
+		mainboardNameTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		mainboardNameTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		mainboardNameTextField.setEditable(false);
+		mainboardNameTextField.setColumns(10);
+		mainboardNameTextField.setBounds(105, 22, 293, 24);
+		mainboardPanel.add(mainboardNameTextField);
+		
+		JLabel mainboardManufacturer = new JLabel("Manufacturer");
+		mainboardManufacturer.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		mainboardManufacturer.setBounds(12, 54, 75, 24);
+		mainboardPanel.add(mainboardManufacturer);
+		
+		mainboardManufacturerTextField = new JTextField();
+		mainboardManufacturerTextField.setText((String) null);
+		mainboardManufacturerTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		mainboardManufacturerTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		mainboardManufacturerTextField.setEditable(false);
+		mainboardManufacturerTextField.setColumns(10);
+		mainboardManufacturerTextField.setBounds(90, 55, 173, 24);
+		mainboardPanel.add(mainboardManufacturerTextField);
+		
+		JLabel biosVersion = new JLabel("BIOS Version");
+		biosVersion.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		biosVersion.setBounds(268, 54, 67, 24);
+		mainboardPanel.add(biosVersion);
+		
+		biosVersionTextField = new JTextField();
+		biosVersionTextField.setText((String) null);
+		biosVersionTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		biosVersionTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		biosVersionTextField.setEditable(false);
+		biosVersionTextField.setColumns(10);
+		biosVersionTextField.setBounds(338, 54, 60, 24);
+		mainboardPanel.add(biosVersionTextField);
+		
+		JPanel network = new JPanel();
+		network.setLayout(null);
+		network.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Network", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
+		network.setBounds(10, 492, 412, 90);
+		feldbdmp.getContentPane().add(network);
+		
+		JLabel netConnectionId = new JLabel("Connection ID");
+		netConnectionId.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		netConnectionId.setBounds(12, 21, 75, 24);
+		network.add(netConnectionId);
+		
+		connectionIdChoice = new JComboBox<>();
+		connectionIdChoice.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		connectionIdChoice.setEditable(false);
+		connectionIdChoice.setBounds(90, 22, 60, 24);
+		network.add(connectionIdChoice);
+		
+		JLabel networkDescription = new JLabel("Description");
+		networkDescription.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		networkDescription.setBounds(12, 54, 60, 24);
+		network.add(networkDescription);
+		
+		networkDescriptionTextField = new JTextField();
+		networkDescriptionTextField.setText((String) null);
+		networkDescriptionTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		networkDescriptionTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		networkDescriptionTextField.setEditable(false);
+		networkDescriptionTextField.setColumns(10);
+		networkDescriptionTextField.setBounds(78, 55, 322, 24);
+		network.add(networkDescriptionTextField);
+		
+		JLabel networkMac = new JLabel("MAC Address");
+		networkMac.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		networkMac.setBounds(168, 21, 75, 24);
+		network.add(networkMac);
+		
+		networkMacTextField = new JTextField();
+		networkMacTextField.setText((String) null);
+		networkMacTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		networkMacTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		networkMacTextField.setEditable(false);
+		networkMacTextField.setColumns(10);
+		networkMacTextField.setBounds(247, 22, 153, 24);
+		network.add(networkMacTextField);
 	}
 	
 	private void initializeHardwareId() throws ExecutionException, InterruptedException {
@@ -442,6 +546,40 @@ public class AppWindow {
 					gpuDriverVersionTextField.setText(gpuProperties.get("DriverVersion"));
 				} catch (IndexOutOfBoundsException | IOException e1) {
 					// TODO How long before I end up doing something stupid ?
+					e1.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	private void initializeMainboard() throws IndexOutOfBoundsException, IOException {
+		Map<String, String> mainboard = Win32_Baseboard.getMotherboard();
+		Map<String, String> bios = Win32_BIOS.getPrimaryBIOS();
+		
+		mainboardNameTextField.setText(mainboard.get("Product"));
+		mainboardManufacturerTextField.setText(mainboard.get("Manufacturer"));
+		biosVersionTextField.setText(bios.get("Caption"));
+	}
+	
+	private void initializeNetwork() throws IndexOutOfBoundsException, IOException {
+		List<String> networkAdapters = Win32_NetworkAdapter.getAdapterID();
+		for(String networkAdapter: networkAdapters) {
+			connectionIdChoice.addItem(networkAdapter);
+		}
+		Map<String, String> networkProperties = Win32_NetworkAdapter.getNetworkAdapters(connectionIdChoice.getItemAt(connectionIdChoice.getSelectedIndex()));
+		networkMacTextField.setText(networkProperties.get("MACAddress"));
+		networkDescriptionTextField.setText(networkProperties.get("Description"));
+		
+		connectionIdChoice.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Map<String, String> networkProperties;
+				try {
+					networkProperties = Win32_NetworkAdapter.getNetworkAdapters(connectionIdChoice.getItemAt(connectionIdChoice.getSelectedIndex()));
+					networkMacTextField.setText(networkProperties.get("MACAddress"));
+					networkDescriptionTextField.setText(networkProperties.get("Description"));
+				} catch (IndexOutOfBoundsException | IOException e1) {
+					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
