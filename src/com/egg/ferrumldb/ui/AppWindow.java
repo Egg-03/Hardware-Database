@@ -482,7 +482,7 @@ public class AppWindow {
 		storageSerialTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		storageSerialTextField.setEditable(false);
 		storageSerialTextField.setColumns(10);
-		storageSerialTextField.setBounds(52, 54, 230, 24);
+		storageSerialTextField.setBounds(52, 54, 196, 24);
 		storage.add(storageSerialTextField);
 		
 		JLabel storageSize = new JLabel("Size");
@@ -501,7 +501,7 @@ public class AppWindow {
 		
 		JLabel storageSmartStatus = new JLabel("S.M.A.R.T");
 		storageSmartStatus.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		storageSmartStatus.setBounds(289, 54, 48, 24);
+		storageSmartStatus.setBounds(256, 54, 48, 24);
 		storage.add(storageSmartStatus);
 		
 		storageSmartTextField = new JTextField();
@@ -510,7 +510,7 @@ public class AppWindow {
 		storageSmartTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		storageSmartTextField.setEditable(false);
 		storageSmartTextField.setColumns(10);
-		storageSmartTextField.setBounds(342, 54, 58, 24);
+		storageSmartTextField.setBounds(311, 54, 89, 24);
 		storage.add(storageSmartTextField);
 	}
 	
@@ -678,6 +678,7 @@ public class AppWindow {
 					Long diskSize = Long.parseLong(diskProperties.get("Size"))/(1024*1024*1024);
 					
 					storageSerialTextField.setText(diskProperties.get("SerialNumber"));
+					storageSerialTextField.setCaretPosition(0);
 					storageSmartTextField.setText(diskProperties.get("Status"));
 					storageSizeTextField.setText(String.valueOf(diskSize)+" GB");
 				} catch (IndexOutOfBoundsException | IOException e1) {
