@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
@@ -38,7 +38,7 @@ import com.ferruml.system.operatingsystem.Win32_OperatingSystem;
 public class AppWindow {
 
 	private JFrame feldbdmp;
-	private JTextArea hardwareIdTextField;
+	private JTextField hardwareIdTextField;
 	private JComboBox<String> osNameChoice;
 	private JComboBox<String> cpuNumberChoice;
 	private JComboBox<String> gpuNumberChoice;
@@ -78,6 +78,7 @@ public class AppWindow {
 			public void run() {
 				try {
 					AppWindow window = new AppWindow();
+					window.feldbdmp.setLocationRelativeTo(null);
 					window.feldbdmp.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -112,7 +113,7 @@ public class AppWindow {
 		feldbdmp = new JFrame();
 		feldbdmp.setResizable(false);
 		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/ferrum_legacy-8.png")));
-		feldbdmp.setTitle("FerrumL DBDump Tool Snapshot v0.0.1");
+		feldbdmp.setTitle("FerrumL DBDump Tool Snapshot v26062024");
 		feldbdmp.setBounds(100, 100, 450, 721);
 		feldbdmp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		feldbdmp.getContentPane().setLayout(null);
@@ -125,18 +126,21 @@ public class AppWindow {
 		
 		JLabel hardwareLabel = new JLabel("Hardware ID");
 		hardwareLabel.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		hardwareLabel.setBounds(21, 29, 73, 27);
+		hardwareLabel.setBounds(17, 18, 73, 27);
 		hardwareIdPanel.add(hardwareLabel);
 		
-		hardwareIdTextField = new JTextArea();
+		hardwareIdTextField = new JTextField();
 		hardwareIdTextField.setBackground(Color.DARK_GRAY);
-		hardwareIdTextField.setLineWrap(true);
 		hardwareIdTextField.setForeground(Color.MAGENTA);
 		hardwareIdTextField.setFont(new Font("Segoe UI Variable", Font.BOLD | Font.ITALIC, 10));
 		hardwareIdTextField.setEditable(false);
-		hardwareIdTextField.setBounds(104, 19, 300, 50);
+		hardwareIdTextField.setBounds(102, 18, 300, 27);
 		hardwareIdPanel.add(hardwareIdTextField);
 		hardwareIdTextField.setColumns(10);
+		
+		JButton placeholder = new JButton("Placeholder");
+		placeholder.setBounds(17, 48, 96, 20);
+		hardwareIdPanel.add(placeholder);
 		
 		JPanel osPanel = new JPanel();
 		osPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Operating System", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
@@ -365,7 +369,7 @@ public class AppWindow {
 		
 		JLabel mainboardName = new JLabel("Mainboard Name");
 		mainboardName.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		mainboardName.setBounds(12, 21, 89, 24);
+		mainboardName.setBounds(12, 21, 101, 24);
 		mainboardPanel.add(mainboardName);
 		
 		mainboardNameTextField = new JTextField();
@@ -374,7 +378,7 @@ public class AppWindow {
 		mainboardNameTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		mainboardNameTextField.setEditable(false);
 		mainboardNameTextField.setColumns(10);
-		mainboardNameTextField.setBounds(105, 22, 293, 24);
+		mainboardNameTextField.setBounds(123, 22, 275, 24);
 		mainboardPanel.add(mainboardNameTextField);
 		
 		JLabel mainboardManufacturer = new JLabel("Manufacturer");
@@ -391,7 +395,7 @@ public class AppWindow {
 		mainboardManufacturerTextField.setBounds(90, 55, 173, 24);
 		mainboardPanel.add(mainboardManufacturerTextField);
 		
-		JLabel biosVersion = new JLabel("BIOS Version");
+		JLabel biosVersion = new JLabel("BIOS Ver.");
 		biosVersion.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		biosVersion.setBounds(268, 54, 67, 24);
 		mainboardPanel.add(biosVersion);
@@ -478,7 +482,7 @@ public class AppWindow {
 		storageSerialTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		storageSerialTextField.setEditable(false);
 		storageSerialTextField.setColumns(10);
-		storageSerialTextField.setBounds(52, 54, 165, 24);
+		storageSerialTextField.setBounds(52, 54, 196, 24);
 		storage.add(storageSerialTextField);
 		
 		JLabel storageSize = new JLabel("Size");
@@ -497,7 +501,7 @@ public class AppWindow {
 		
 		JLabel storageSmartStatus = new JLabel("S.M.A.R.T");
 		storageSmartStatus.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		storageSmartStatus.setBounds(235, 54, 47, 24);
+		storageSmartStatus.setBounds(256, 54, 48, 24);
 		storage.add(storageSmartStatus);
 		
 		storageSmartTextField = new JTextField();
@@ -506,12 +510,13 @@ public class AppWindow {
 		storageSmartTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		storageSmartTextField.setEditable(false);
 		storageSmartTextField.setColumns(10);
-		storageSmartTextField.setBounds(289, 54, 47, 24);
+		storageSmartTextField.setBounds(311, 54, 89, 24);
 		storage.add(storageSmartTextField);
 	}
 	
 	private void initializeHardwareId() throws ExecutionException, InterruptedException {
 		hardwareIdTextField.setText(HWID.getHardwareID());
+		hardwareIdTextField.setCaretPosition(0);
 	}
 	
 	private void initializeOs() throws IndexOutOfBoundsException, IOException {
@@ -660,6 +665,7 @@ public class AppWindow {
 		Long diskSize = Long.parseLong(diskProperties.get("Size"))/(1024*1024*1024);
 		
 		storageSerialTextField.setText(diskProperties.get("SerialNumber"));
+		storageSerialTextField.setCaretPosition(0);
 		storageSmartTextField.setText(diskProperties.get("Status"));
 		storageSizeTextField.setText(String.valueOf(diskSize)+" GB");
 		
@@ -672,6 +678,7 @@ public class AppWindow {
 					Long diskSize = Long.parseLong(diskProperties.get("Size"))/(1024*1024*1024);
 					
 					storageSerialTextField.setText(diskProperties.get("SerialNumber"));
+					storageSerialTextField.setCaretPosition(0);
 					storageSmartTextField.setText(diskProperties.get("Status"));
 					storageSizeTextField.setText(String.valueOf(diskSize)+" GB");
 				} catch (IndexOutOfBoundsException | IOException e1) {
