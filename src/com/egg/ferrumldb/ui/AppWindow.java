@@ -33,6 +33,7 @@ import com.ferruml.system.hardware.Win32_Processor;
 import com.ferruml.system.hardware.Win32_VideoController;
 import com.ferruml.system.network.Win32_NetworkAdapter;
 import com.ferruml.system.operatingsystem.Win32_OperatingSystem;
+import javax.swing.JButton;
 
 public class AppWindow {
 
@@ -135,6 +136,18 @@ public class AppWindow {
 		hardwareIdTextField.setBounds(102, 18, 300, 27);
 		hardwareIdPanel.add(hardwareIdTextField);
 		hardwareIdTextField.setColumns(10);
+		
+		JButton felReportToolButton = new JButton("Launch FeL");
+		felReportToolButton.setBounds(17, 48, 96, 20);
+		felReportToolButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				
+			}
+			
+		});
+		hardwareIdPanel.add(felReportToolButton);
 		
 		JPanel osPanel = new JPanel();
 		osPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Operating System", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
