@@ -4,12 +4,7 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.JButton;
@@ -24,43 +19,40 @@ import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
-import com.ferruml.system.currentuser.User;
-import com.ferruml.system.hardware.HWID;
-import com.ferruml.system.hardware.Win32_BIOS;
-import com.ferruml.system.hardware.Win32_Baseboard;
-import com.ferruml.system.hardware.Win32_DiskDrive;
-import com.ferruml.system.hardware.Win32_PhysicalMemory;
-import com.ferruml.system.hardware.Win32_Processor;
-import com.ferruml.system.hardware.Win32_VideoController;
-import com.ferruml.system.network.Win32_NetworkAdapter;
-import com.ferruml.system.operatingsystem.Win32_OperatingSystem;
-
 public class AppWindow {
 
 	private JFrame feldbdmp;
 	private JTextField hardwareIdTextField;
+	
 	private JComboBox<String> osNameChoice;
 	private JComboBox<String> cpuNumberChoice;
 	private JComboBox<String> gpuNumberChoice;
 	private JComboBox<String> connectionIdChoice;
 	private JComboBox<String> storageNameChoice;
+	
 	private JTextField cpuNameTextField;
 	private JTextField osArchTextField;
 	private JTextField deviceNameTextField;
 	private JTextField currentUserTextField;
+	
 	private JTextField cpuSocketTextField;
 	private JTextField cpuCoreTextField;
 	private JTextField cpuThreadTextField;
+	
 	private JTextField memorySlotTextField;
 	private JTextField totalMemoryTextField;
+	
 	private JTextField gpuNameTextField;
 	private JTextField gpuVramTextField;
 	private JTextField gpuDriverVersionTextField;
+	
 	private JTextField mainboardNameTextField;
 	private JTextField mainboardManufacturerTextField;
 	private JTextField biosVersionTextField;
+	
 	private JTextField networkDescriptionTextField;
 	private JTextField networkMacTextField;
+	
 	private JTextField storageSerialTextField;
 	private JTextField storageSizeTextField;
 	private JTextField storageSmartTextField;
@@ -96,14 +88,14 @@ public class AppWindow {
 	 */
 	public AppWindow() throws ExecutionException, InterruptedException, IndexOutOfBoundsException, IOException {
 		initialize();
-		initializeHardwareId();
-		initializeOs();
-		initializeCpu();
-		initializeMemory();
-		initializeVideoController();
-		initializeMainboard();
-		initializeNetwork();
-		initializeStorage();
+		HardwareId.initializeHardwareId(hardwareIdTextField);
+		OperatingSystem.initializeOs(osNameChoice, deviceNameTextField, osArchTextField, currentUserTextField);
+		Cpu.initializeCpu(cpuNumberChoice, cpuNameTextField, cpuCoreTextField, cpuThreadTextField, cpuSocketTextField);
+		Memory.initializeMemory(memorySlotTextField, totalMemoryTextField);
+		VideoController.initializeVideoController(gpuNumberChoice, gpuNameTextField, gpuVramTextField, gpuDriverVersionTextField);
+		Mainboard.initializeMainboard(mainboardNameTextField, mainboardManufacturerTextField, biosVersionTextField);
+		Network.initializeNetwork(connectionIdChoice, networkDescriptionTextField, networkMacTextField);
+		Storage.initializeStorage(storageNameChoice, storageSerialTextField, storageSmartTextField, storageSizeTextField);
 	}
 
 	/**
@@ -113,7 +105,7 @@ public class AppWindow {
 		feldbdmp = new JFrame();
 		feldbdmp.setResizable(false);
 		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/ferrum_legacy-8.png")));
-		feldbdmp.setTitle("FerrumL DBDump Tool Snapshot v26062024");
+		feldbdmp.setTitle("FerrumL DBDump Tool v1.00-Beta");
 		feldbdmp.setBounds(100, 100, 450, 721);
 		feldbdmp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		feldbdmp.getContentPane().setLayout(null);
@@ -512,181 +504,5 @@ public class AppWindow {
 		storageSmartTextField.setColumns(10);
 		storageSmartTextField.setBounds(311, 54, 89, 24);
 		storage.add(storageSmartTextField);
-	}
-	
-	private void initializeHardwareId() throws ExecutionException, InterruptedException {
-		hardwareIdTextField.setText(HWID.getHardwareID());
-		hardwareIdTextField.setCaretPosition(0);
-	}
-	
-	private void initializeOs() throws IndexOutOfBoundsException, IOException {
-		List<String> osNames = Win32_OperatingSystem.getOSList();
-		for(String osName: osNames) {
-			osNameChoice.addItem(osName);
-		}
-		Map<String, String> osProperties = Win32_OperatingSystem.getOSInfo(osNameChoice.getItemAt(osNameChoice.getSelectedIndex()));
-		deviceNameTextField.setText(osProperties.get("CSName"));
-		osArchTextField.setText(osProperties.get("OSArchitecture"));
-		currentUserTextField.setText(User.getUsername());
-		
-		//add an action listener for when the user selects a different OS for multi-boot Systems
-		osNameChoice.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					Map<String, String> osProperties = Win32_OperatingSystem.getOSInfo(osNameChoice.getItemAt(osNameChoice.getSelectedIndex()));
-					deviceNameTextField.setText(osProperties.get("CSName"));
-					osArchTextField.setText(osProperties.get("OSArchitecture"));
-					currentUserTextField.setText(User.getUsername());
-				} catch (IndexOutOfBoundsException | IOException e1) {
-					// TODO I WILL DO NOTHING NOOO NOTHING NEVER EVER I WILL BECOME A FARMER
-					e1.printStackTrace();
-				}
-			}
-		});
-	}
-	
-	private void initializeCpu() throws IndexOutOfBoundsException, IOException {
-		List<String> cpuNames = Win32_Processor.getProcessorList();
-		for(String cpuName: cpuNames) {
-			cpuNumberChoice.addItem(cpuName);
-		}
-		Map<String, String> cpuProperties = Win32_Processor.getCurrentProcessor(cpuNumberChoice.getItemAt(cpuNumberChoice.getSelectedIndex()));
-		cpuNameTextField.setText(cpuProperties.get("Name"));
-		cpuCoreTextField.setText(cpuProperties.get("NumberOfCores"));
-		cpuThreadTextField.setText(cpuProperties.get("ThreadCount"));
-		cpuSocketTextField.setText(cpuProperties.get("SocketDesignation"));
-		
-		//add an action listener for CPU# for when the user selects a different CPU in multi-CPU systems
-		cpuNumberChoice.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Map<String, String> cpuProperties;
-				try {
-					cpuProperties = Win32_Processor.getCurrentProcessor(cpuNumberChoice.getItemAt(cpuNumberChoice.getSelectedIndex()));
-					cpuNameTextField.setText(cpuProperties.get("Name"));
-					cpuCoreTextField.setText(cpuProperties.get("NumberOfCores"));
-					cpuThreadTextField.setText(cpuProperties.get("ThreadCount"));
-					cpuSocketTextField.setText(cpuProperties.get("SocketDesignation"));
-				} catch (IndexOutOfBoundsException | IOException e1) {
-					// TODO KILL ME PLS (I'M LYING I DONT WANT TO DIE YET)
-					e1.printStackTrace();
-				}
-			}
-			
-		});
-		
-	}
-	
-	private void initializeMemory() throws IndexOutOfBoundsException, IOException {
-		List<String> memoryList = Win32_PhysicalMemory.getTag();
-		Integer slotCount = memoryList.size();
-		Long totalSize = 0L;
-		memorySlotTextField.setText(Integer.toString(slotCount));
-		
-		Map<String, String> memoryProperties = Collections.emptyMap();
-		for(String memory: memoryList) {
-			memoryProperties = Win32_PhysicalMemory.getMemory(memory);
-			totalSize+= Long.parseLong(memoryProperties.get("Capacity"));
-		}
-		
-		totalMemoryTextField.setText(String.valueOf(totalSize/(1024*1024))+" MB");
-	}
-	
-	private void initializeVideoController() throws IndexOutOfBoundsException, IOException {
-		List<String> gpus = Win32_VideoController.getGPUID();
-		for(String gpu:gpus) {
-			gpuNumberChoice.addItem(gpu);
-		}
-		Map<String, String> gpuProperties = Win32_VideoController.getGPU(gpuNumberChoice.getItemAt(gpuNumberChoice.getSelectedIndex()));
-		gpuNameTextField.setText(gpuProperties.get("Name"));
-		Long adapterRam = Long.parseLong(gpuProperties.get("AdapterRAM"))/(1024*1024);
-		gpuVramTextField.setText(String.valueOf(adapterRam)+" MB");
-		gpuDriverVersionTextField.setText(gpuProperties.get("DriverVersion"));
-		
-		gpuNumberChoice.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Map<String, String> gpuProperties;
-				try {
-					gpuProperties = Win32_VideoController.getGPU(gpuNumberChoice.getItemAt(gpuNumberChoice.getSelectedIndex()));
-					gpuNameTextField.setText(gpuProperties.get("Name"));
-					Long adapterRam = Long.parseLong(gpuProperties.get("AdapterRAM"))/(1024*1024);
-					gpuVramTextField.setText(String.valueOf(adapterRam)+" MB");
-					gpuDriverVersionTextField.setText(gpuProperties.get("DriverVersion"));
-				} catch (IndexOutOfBoundsException | IOException e1) {
-					// TODO How long before I end up doing something stupid ?
-					e1.printStackTrace();
-				}
-			}
-		});
-	}
-	
-	private void initializeMainboard() throws IndexOutOfBoundsException, IOException {
-		Map<String, String> mainboard = Win32_Baseboard.getMotherboard();
-		Map<String, String> bios = Win32_BIOS.getPrimaryBIOS();
-		
-		mainboardNameTextField.setText(mainboard.get("Product"));
-		mainboardManufacturerTextField.setText(mainboard.get("Manufacturer"));
-		biosVersionTextField.setText(bios.get("Caption"));
-	}
-	
-	private void initializeNetwork() throws IndexOutOfBoundsException, IOException {
-		List<String> networkAdapters = Win32_NetworkAdapter.getAdapterID();
-		for(String networkAdapter: networkAdapters) {
-			connectionIdChoice.addItem(networkAdapter);
-		}
-		Map<String, String> networkProperties = Win32_NetworkAdapter.getNetworkAdapters(connectionIdChoice.getItemAt(connectionIdChoice.getSelectedIndex()));
-		networkMacTextField.setText(networkProperties.get("MACAddress"));
-		networkDescriptionTextField.setText(networkProperties.get("Description"));
-		
-		connectionIdChoice.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Map<String, String> networkProperties;
-				try {
-					networkProperties = Win32_NetworkAdapter.getNetworkAdapters(connectionIdChoice.getItemAt(connectionIdChoice.getSelectedIndex()));
-					networkMacTextField.setText(networkProperties.get("MACAddress"));
-					networkDescriptionTextField.setText(networkProperties.get("Description"));
-				} catch (IndexOutOfBoundsException | IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-	}
-	
-	private void initializeStorage() throws IndexOutOfBoundsException, IOException {
-		List<String> disks = Win32_DiskDrive.getDriveID();
-		for(String disk: disks) {
-			storageNameChoice.addItem(disk);
-		}
-		Map<String, String> diskProperties = Win32_DiskDrive.getDrive(storageNameChoice.getItemAt(storageNameChoice.getSelectedIndex()));
-		Long diskSize = Long.parseLong(diskProperties.get("Size"))/(1024*1024*1024);
-		
-		storageSerialTextField.setText(diskProperties.get("SerialNumber"));
-		storageSerialTextField.setCaretPosition(0);
-		storageSmartTextField.setText(diskProperties.get("Status"));
-		storageSizeTextField.setText(String.valueOf(diskSize)+" GB");
-		
-		storageNameChoice.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Map<String, String> diskProperties;
-				try {
-					diskProperties = Win32_DiskDrive.getDrive(storageNameChoice.getItemAt(storageNameChoice.getSelectedIndex()));
-					Long diskSize = Long.parseLong(diskProperties.get("Size"))/(1024*1024*1024);
-					
-					storageSerialTextField.setText(diskProperties.get("SerialNumber"));
-					storageSerialTextField.setCaretPosition(0);
-					storageSmartTextField.setText(diskProperties.get("Status"));
-					storageSizeTextField.setText(String.valueOf(diskSize)+" GB");
-				} catch (IndexOutOfBoundsException | IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-		
 	}
 }
