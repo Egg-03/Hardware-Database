@@ -18,15 +18,22 @@ final class OperatingSystem {
 		throw new IllegalStateException("Class method to be used only in the main frame class");
 	}
 	
-	protected static void initializeOs(JComboBox<String> osNameChoice, JTextField deviceNameTextField, JTextField osArchTextField, JTextField currentUserTextField ) throws IndexOutOfBoundsException, IOException {
-		List<String> osNames = Win32_OperatingSystem.getOSList();
-		for(String osName: osNames) {
-			osNameChoice.addItem(osName);
+	protected static void initializeOs(JComboBox<String> osNameChoice, JTextField deviceNameTextField, JTextField osArchTextField, JTextField currentUserTextField ) {
+		List<String> osNames;
+		try {
+			osNames = Win32_OperatingSystem.getOSList();
+			for(String osName: osNames) {
+				osNameChoice.addItem(osName);
+			}
+			Map<String, String> osProperties = Win32_OperatingSystem.getOSInfo(osNameChoice.getItemAt(osNameChoice.getSelectedIndex()));
+			deviceNameTextField.setText(osProperties.get("CSName"));
+			osArchTextField.setText(osProperties.get("OSArchitecture"));
+			currentUserTextField.setText(User.getUsername());
+		} catch (IndexOutOfBoundsException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		Map<String, String> osProperties = Win32_OperatingSystem.getOSInfo(osNameChoice.getItemAt(osNameChoice.getSelectedIndex()));
-		deviceNameTextField.setText(osProperties.get("CSName"));
-		osArchTextField.setText(osProperties.get("OSArchitecture"));
-		currentUserTextField.setText(User.getUsername());
+		
 		
 		//add an action listener for when the user selects a different OS for multi-boot Systems
 		osNameChoice.addActionListener(new ActionListener() {
@@ -43,5 +50,4 @@ final class OperatingSystem {
 			}
 		});
 	}
-
 }

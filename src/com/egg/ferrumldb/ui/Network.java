@@ -17,15 +17,22 @@ final class Network {
 		throw new IllegalStateException("Class method to be used only in the main frame class");
 	}
 	
-	protected static void initializeNetwork(JComboBox<String> connectionIdChoice, JTextField...networkFields) throws IndexOutOfBoundsException, IOException {
-		List<String> networkAdapters = Win32_NetworkAdapter.getAdapterID();
-		for(String networkAdapter: networkAdapters) {
-			connectionIdChoice.addItem(networkAdapter);
+	protected static void initializeNetwork(JComboBox<String> connectionIdChoice, JTextField...networkFields) {
+		List<String> networkAdapters;
+		try {
+			networkAdapters = Win32_NetworkAdapter.getAdapterID();
+			for(String networkAdapter: networkAdapters) {
+				connectionIdChoice.addItem(networkAdapter);
+			}
+			Map<String, String> networkProperties = Win32_NetworkAdapter.getNetworkAdapters(connectionIdChoice.getItemAt(connectionIdChoice.getSelectedIndex()));
+			networkFields[0].setText(networkProperties.get("MACAddress"));
+			networkFields[1].setText(networkProperties.get("Description"));
+		} catch (IndexOutOfBoundsException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		Map<String, String> networkProperties = Win32_NetworkAdapter.getNetworkAdapters(connectionIdChoice.getItemAt(connectionIdChoice.getSelectedIndex()));
-		networkFields[0].setText(networkProperties.get("MACAddress"));
-		networkFields[1].setText(networkProperties.get("Description"));
 		
+		//action listener for multiple network adapter choices
 		connectionIdChoice.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -41,6 +48,4 @@ final class Network {
 			}
 		});
 	}
-	
-
 }

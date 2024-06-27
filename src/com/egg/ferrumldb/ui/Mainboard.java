@@ -14,13 +14,18 @@ final class Mainboard {
 		throw new IllegalStateException("Class method to be used only in the main frame class");
 	}
 	
-	protected static void initializeMainboard(JTextField...mainboardFields) throws IndexOutOfBoundsException, IOException {
-		Map<String, String> mainboard = Win32_Baseboard.getMotherboard();
-		Map<String, String> bios = Win32_BIOS.getPrimaryBIOS();
-		
-		mainboardFields[0].setText(mainboard.get("Product"));
-		mainboardFields[1].setText(mainboard.get("Manufacturer"));
-		mainboardFields[2].setText(bios.get("Caption"));
+	protected static void initializeMainboard(JTextField...mainboardFields) {
+		Map<String, String> mainboard;
+		try {
+			mainboard = Win32_Baseboard.getMotherboard();
+			Map<String, String> bios = Win32_BIOS.getPrimaryBIOS();
+			
+			mainboardFields[0].setText(mainboard.get("Product"));
+			mainboardFields[1].setText(mainboard.get("Manufacturer"));
+			mainboardFields[2].setText(bios.get("Caption"));
+		} catch (IndexOutOfBoundsException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-
 }

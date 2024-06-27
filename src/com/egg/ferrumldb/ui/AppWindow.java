@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -86,16 +88,9 @@ public class AppWindow {
 	 * @throws IOException 
 	 * @throws IndexOutOfBoundsException 
 	 */
-	public AppWindow() throws ExecutionException, InterruptedException, IndexOutOfBoundsException, IOException {
+	public AppWindow() {
 		initialize();
-		HardwareId.initializeHardwareId(hardwareIdTextField);
-		OperatingSystem.initializeOs(osNameChoice, deviceNameTextField, osArchTextField, currentUserTextField);
-		Cpu.initializeCpu(cpuNumberChoice, cpuNameTextField, cpuCoreTextField, cpuThreadTextField, cpuSocketTextField);
-		Memory.initializeMemory(memorySlotTextField, totalMemoryTextField);
-		VideoController.initializeVideoController(gpuNumberChoice, gpuNameTextField, gpuVramTextField, gpuDriverVersionTextField);
-		Mainboard.initializeMainboard(mainboardNameTextField, mainboardManufacturerTextField, biosVersionTextField);
-		Network.initializeNetwork(connectionIdChoice, networkDescriptionTextField, networkMacTextField);
-		Storage.initializeStorage(storageNameChoice, storageSerialTextField, storageSmartTextField, storageSizeTextField);
+		initializeSystemInfo();
 	}
 
 	/**
@@ -504,5 +499,29 @@ public class AppWindow {
 		storageSmartTextField.setColumns(10);
 		storageSmartTextField.setBounds(311, 54, 89, 24);
 		storage.add(storageSmartTextField);
+	}
+	
+	private void initializeSystemInfo() {
+		try(ExecutorService infoFetch = Executors.newFixedThreadPool(8)){
+			// Define tasks for each function call
+	        Runnable initializeHardwareId = () -> HardwareId.initializeHardwareId(hardwareIdTextField);
+	        Runnable initializeOs = () -> OperatingSystem.initializeOs(osNameChoice, deviceNameTextField, osArchTextField, currentUserTextField);
+	        Runnable initializeCpu = () -> Cpu.initializeCpu(cpuNumberChoice, cpuNameTextField, cpuCoreTextField, cpuThreadTextField, cpuSocketTextField);
+	        Runnable initializeMemory = () -> Memory.initializeMemory(memorySlotTextField, totalMemoryTextField);
+	        Runnable initializeVideoController = () -> VideoController.initializeVideoController(gpuNumberChoice, gpuNameTextField, gpuVramTextField, gpuDriverVersionTextField);
+	        Runnable initializeMainboard = () -> Mainboard.initializeMainboard(mainboardNameTextField, mainboardManufacturerTextField, biosVersionTextField);
+	        Runnable initializeNetwork = () -> Network.initializeNetwork(connectionIdChoice, networkMacTextField, networkDescriptionTextField);
+	        Runnable initializeStorage = () -> Storage.initializeStorage(storageNameChoice, storageSerialTextField, storageSmartTextField, storageSizeTextField);
+
+	        // Submit all tasks to the executor service
+	        infoFetch.submit(initializeHardwareId);
+	        infoFetch.submit(initializeOs);
+	        infoFetch.submit(initializeCpu);
+	        infoFetch.submit(initializeMemory);
+	        infoFetch.submit(initializeVideoController);
+	        infoFetch.submit(initializeMainboard);
+	        infoFetch.submit(initializeNetwork);
+	        infoFetch.submit(initializeStorage);
+		}
 	}
 }

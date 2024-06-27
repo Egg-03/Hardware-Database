@@ -17,19 +17,26 @@ final class Storage {
 		throw new IllegalStateException("Class method to be used only in the main frame class");
 	}
 	
-	protected static void initializeStorage(JComboBox<String> storageNameChoice, JTextField...storageFields) throws IndexOutOfBoundsException, IOException {
-		List<String> disks = Win32_DiskDrive.getDriveID();
-		for(String disk: disks) {
-			storageNameChoice.addItem(disk);
+	protected static void initializeStorage(JComboBox<String> storageNameChoice, JTextField...storageFields) {
+		List<String> disks;
+		try {
+			disks = Win32_DiskDrive.getDriveID();
+			for(String disk: disks) {
+				storageNameChoice.addItem(disk);
+			}
+			Map<String, String> diskProperties = Win32_DiskDrive.getDrive(storageNameChoice.getItemAt(storageNameChoice.getSelectedIndex()));
+			Long diskSize = Long.parseLong(diskProperties.get("Size"))/(1024*1024*1024);
+			
+			storageFields[0].setText(diskProperties.get("SerialNumber"));
+			storageFields[0].setCaretPosition(0);
+			
+			storageFields[1].setText(diskProperties.get("Status"));
+			storageFields[2].setText(String.valueOf(diskSize)+" GB");
+		} catch (IndexOutOfBoundsException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		Map<String, String> diskProperties = Win32_DiskDrive.getDrive(storageNameChoice.getItemAt(storageNameChoice.getSelectedIndex()));
-		Long diskSize = Long.parseLong(diskProperties.get("Size"))/(1024*1024*1024);
 		
-		storageFields[0].setText(diskProperties.get("SerialNumber"));
-		storageFields[0].setCaretPosition(0);
-		
-		storageFields[1].setText(diskProperties.get("Status"));
-		storageFields[2].setText(String.valueOf(diskSize)+" GB");
 		
 		storageNameChoice.addActionListener(new ActionListener() {
 			@Override

@@ -17,16 +17,23 @@ final class VideoController {
 		throw new IllegalStateException("Class method to be used only in the main frame class");
 	}
 	
-	protected static void initializeVideoController(JComboBox<String> gpuNumberChoice, JTextField...gpuFields) throws IndexOutOfBoundsException, IOException {
-		List<String> gpus = Win32_VideoController.getGPUID();
-		for(String gpu:gpus) {
-			gpuNumberChoice.addItem(gpu);
+	protected static void initializeVideoController(JComboBox<String> gpuNumberChoice, JTextField...gpuFields) {
+		List<String> gpus;
+		try {
+			gpus = Win32_VideoController.getGPUID();
+			for(String gpu:gpus) {
+				gpuNumberChoice.addItem(gpu);
+			}
+			Map<String, String> gpuProperties = Win32_VideoController.getGPU(gpuNumberChoice.getItemAt(gpuNumberChoice.getSelectedIndex()));
+			gpuFields[0].setText(gpuProperties.get("Name"));
+			Long adapterRam = Long.parseLong(gpuProperties.get("AdapterRAM"))/(1024*1024);
+			gpuFields[1].setText(String.valueOf(adapterRam)+" MB");
+			gpuFields[2].setText(gpuProperties.get("DriverVersion"));
+		} catch (IndexOutOfBoundsException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		Map<String, String> gpuProperties = Win32_VideoController.getGPU(gpuNumberChoice.getItemAt(gpuNumberChoice.getSelectedIndex()));
-		gpuFields[0].setText(gpuProperties.get("Name"));
-		Long adapterRam = Long.parseLong(gpuProperties.get("AdapterRAM"))/(1024*1024);
-		gpuFields[1].setText(String.valueOf(adapterRam)+" MB");
-		gpuFields[2].setText(gpuProperties.get("DriverVersion"));
+		
 		
 		gpuNumberChoice.addActionListener(new ActionListener() {
 			@Override
