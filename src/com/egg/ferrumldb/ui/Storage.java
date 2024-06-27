@@ -37,7 +37,6 @@ final class Storage {
 			e.printStackTrace();
 		}
 		
-		
 		storageNameChoice.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -56,9 +55,9 @@ final class Storage {
 					e1.printStackTrace();
 				} catch (NumberFormatException e2) {
 					/*This is a unique case where removing all items from the storageNameChoice box triggers this action listener
-					 * and since the combo box returns null string, the Long.parseLong cannot parse a null string for disk size, thereby throwing this exception
-					 * This is a temporary fix until I come up with a better one*/
-					//TODO Needs a more specific ActionListener
+					 * and since the combo box returns null string, the Long.parseLong cannot parse a null string for disk size
+					 * causing this exception to be thrown
+					 * This should handle the exception gracefully*/
 					storageFields[2].setText("0 GB");
 				}
 			}

@@ -54,8 +54,7 @@ final class VideoController {
 				} catch (NumberFormatException e2) {
 					/*This is a unique case where removing all items from the gpuNumberChoice box triggers this action listener
 					 * and since the combo box returns null string, the Long.parseLong cannot parse a null string for GPU RAM, thereby throwing this exception
-					 * This is a temporary fix until I come up with a better one*/
-					//TODO Needs a more specific ActionListener
+					 * This is a fix since there are no specific action listeners for JComboBox*/
 					gpuFields[1].setText("0 MB");
 				}
 			}

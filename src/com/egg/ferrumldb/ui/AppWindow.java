@@ -4,10 +4,13 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -21,8 +24,6 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class AppWindow {
 
@@ -61,13 +62,17 @@ public class AppWindow {
 	private JTextField storageSerialTextField;
 	private JTextField storageSizeTextField;
 	private JTextField storageSmartTextField;
+	
+	
+	private JButton refreshDataButton;
+	private JButton dataDumpButton;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
-			UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarculaLaf");
+			UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
@@ -102,7 +107,7 @@ public class AppWindow {
 	private void initialize() {
 		feldbdmp = new JFrame();
 		feldbdmp.setResizable(false);
-		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/ferrum_legacy-8.png")));
+		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/ferrum_legacy.png")));
 		feldbdmp.setTitle("FerrumL DBDump Tool v1.00-Beta");
 		feldbdmp.setBounds(100, 100, 450, 721);
 		feldbdmp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -128,23 +133,44 @@ public class AppWindow {
 		hardwareIdPanel.add(hardwareIdTextField);
 		hardwareIdTextField.setColumns(10);
 		
-		JButton refreshData = new JButton("Refresh");
-		refreshData.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//remove all the combo box choices before refreshing or else there will be duplicates
-				osNameChoice.removeAllItems();
-				cpuNumberChoice.removeAllItems();
-				gpuNumberChoice.removeAllItems(); //read the TODO in VideoController class
-				connectionIdChoice.removeAllItems();
-				storageNameChoice.removeAllItems(); //read the TODO in Storage class
-				
-				SwingUtilities.invokeLater(()-> refreshData.setEnabled(false));
-				initializeSystemInfo();
-				SwingUtilities.invokeLater(()-> refreshData.setEnabled(true));
+		refreshDataButton = new JButton("Refresh");
+		refreshDataButton.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			//Disable the refresh button and the choice boxes once pressed
+			refreshDataButton.setEnabled(false);
+			osNameChoice.setEnabled(false);
+			cpuNumberChoice.setEnabled(false);
+			gpuNumberChoice.setEnabled(false);
+			connectionIdChoice.setEnabled(false);
+			storageNameChoice.setEnabled(false);
+			
+			//remove all the combo box choices before refreshing or else there will be duplicates
+			//invoke them in a separate thread to not freeze the UI
+			SwingUtilities.invokeLater(()->osNameChoice.removeAllItems());
+			SwingUtilities.invokeLater(()->cpuNumberChoice.removeAllItems());
+			SwingUtilities.invokeLater(()->gpuNumberChoice.removeAllItems());
+			SwingUtilities.invokeLater(()->connectionIdChoice.removeAllItems());
+			SwingUtilities.invokeLater(()->storageNameChoice.removeAllItems());
+			
+			SwingUtilities.invokeLater(()->initializeSystemInfo());
 			}
 		});
-		refreshData.setBounds(17, 48, 88, 20);
-		hardwareIdPanel.add(refreshData);
+		refreshDataButton.setBounds(17, 48, 83, 24);
+		hardwareIdPanel.add(refreshDataButton);
+		
+		JTextField ferrumEngineVersion = new JTextField();
+		ferrumEngineVersion.setFont(new Font("Segoe UI", Font.ITALIC, 11));
+		ferrumEngineVersion.setHorizontalAlignment(SwingConstants.CENTER);
+		ferrumEngineVersion.setEditable(false);
+		ferrumEngineVersion.setText("Running on FerrumL Core v1.2.4");
+		ferrumEngineVersion.setBounds(207, 48, 195, 24);
+		hardwareIdPanel.add(ferrumEngineVersion);
+		ferrumEngineVersion.setColumns(10);
+		
+		dataDumpButton = new JButton("Dump");
+		dataDumpButton.setEnabled(false);
+		dataDumpButton.setBounds(112, 48, 83, 24);
+		hardwareIdPanel.add(dataDumpButton);
 		
 		JPanel osPanel = new JPanel();
 		osPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Operating System", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
@@ -539,6 +565,17 @@ public class AppWindow {
 	        infoFetch.submit(initializeMainboard);
 	        infoFetch.submit(initializeNetwork);
 	        infoFetch.submit(initializeStorage);
+		} catch (RejectedExecutionException | NullPointerException e) {
+			//TODO Handle
+			e.printStackTrace();
+		} finally {
+			//re-enable the buttons and choice boxes after the refresh is complete
+			refreshDataButton.setEnabled(true);
+			osNameChoice.setEnabled(true);
+			cpuNumberChoice.setEnabled(true);
+			gpuNumberChoice.setEnabled(true);
+			connectionIdChoice.setEnabled(true);
+			storageNameChoice.setEnabled(true);
 		}
 	}
 }
