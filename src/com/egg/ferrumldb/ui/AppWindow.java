@@ -16,10 +16,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class AppWindow {
 
@@ -125,9 +128,23 @@ public class AppWindow {
 		hardwareIdPanel.add(hardwareIdTextField);
 		hardwareIdTextField.setColumns(10);
 		
-		JButton placeholder = new JButton("Placeholder");
-		placeholder.setBounds(17, 48, 96, 20);
-		hardwareIdPanel.add(placeholder);
+		JButton refreshData = new JButton("Refresh");
+		refreshData.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//remove all the combo box choices before refreshing or else there will be duplicates
+				osNameChoice.removeAllItems();
+				cpuNumberChoice.removeAllItems();
+				gpuNumberChoice.removeAllItems(); //read the TODO in VideoController class
+				connectionIdChoice.removeAllItems();
+				storageNameChoice.removeAllItems(); //read the TODO in Storage class
+				
+				SwingUtilities.invokeLater(()-> refreshData.setEnabled(false));
+				initializeSystemInfo();
+				SwingUtilities.invokeLater(()-> refreshData.setEnabled(true));
+			}
+		});
+		refreshData.setBounds(17, 48, 88, 20);
+		hardwareIdPanel.add(refreshData);
 		
 		JPanel osPanel = new JPanel();
 		osPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Operating System", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
