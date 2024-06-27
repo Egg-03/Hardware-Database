@@ -19,7 +19,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
@@ -64,7 +63,7 @@ public class AppWindow {
 	private JTextField storageSmartTextField;
 	
 	
-	private JButton refreshDataButton;
+	private JButton restartButton;
 	private JButton dataDumpButton;
 
 	/**
@@ -133,30 +132,34 @@ public class AppWindow {
 		hardwareIdPanel.add(hardwareIdTextField);
 		hardwareIdTextField.setColumns(10);
 		
-		refreshDataButton = new JButton("Refresh");
-		refreshDataButton.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			//Disable the refresh button and the choice boxes once pressed
-			refreshDataButton.setEnabled(false);
-			osNameChoice.setEnabled(false);
-			cpuNumberChoice.setEnabled(false);
-			gpuNumberChoice.setEnabled(false);
-			connectionIdChoice.setEnabled(false);
-			storageNameChoice.setEnabled(false);
-			
-			//remove all the combo box choices before refreshing or else there will be duplicates
-			//invoke them in a separate thread to not freeze the UI
-			SwingUtilities.invokeLater(()->osNameChoice.removeAllItems());
-			SwingUtilities.invokeLater(()->cpuNumberChoice.removeAllItems());
-			SwingUtilities.invokeLater(()->gpuNumberChoice.removeAllItems());
-			SwingUtilities.invokeLater(()->connectionIdChoice.removeAllItems());
-			SwingUtilities.invokeLater(()->storageNameChoice.removeAllItems());
-			
-			SwingUtilities.invokeLater(()->initializeSystemInfo());
+		restartButton = new JButton("Restart");
+		restartButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//close app
+				feldbdmp.dispose();
+				
+				//restart
+				try {
+					UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
+				} catch (Throwable e1) {
+					e1.printStackTrace();
+				}
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						try {
+							AppWindow window = new AppWindow();
+							window.feldbdmp.setLocationRelativeTo(null);
+							window.feldbdmp.setVisible(true);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
+				
 			}
 		});
-		refreshDataButton.setBounds(17, 48, 83, 24);
-		hardwareIdPanel.add(refreshDataButton);
+		restartButton.setBounds(17, 48, 83, 24);
+		hardwareIdPanel.add(restartButton);
 		
 		JTextField ferrumEngineVersion = new JTextField();
 		ferrumEngineVersion.setFont(new Font("Segoe UI", Font.ITALIC, 11));
@@ -568,14 +571,6 @@ public class AppWindow {
 		} catch (RejectedExecutionException | NullPointerException e) {
 			//TODO Handle
 			e.printStackTrace();
-		} finally {
-			//re-enable the buttons and choice boxes after the refresh is complete
-			refreshDataButton.setEnabled(true);
-			osNameChoice.setEnabled(true);
-			cpuNumberChoice.setEnabled(true);
-			gpuNumberChoice.setEnabled(true);
-			connectionIdChoice.setEnabled(true);
-			storageNameChoice.setEnabled(true);
 		}
 	}
 }
