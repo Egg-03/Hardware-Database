@@ -62,9 +62,6 @@ public class AppWindow {
 	private JTextField storageSizeTextField;
 	private JTextField storageSmartTextField;
 	
-	
-	private JButton restartButton;
-	private JButton dataDumpButton;
 
 	/**
 	 * Launch the application.
@@ -119,6 +116,7 @@ public class AppWindow {
 		hardwareIdPanel.setLayout(null);
 		
 		JLabel hardwareLabel = new JLabel("Hardware ID");
+		hardwareLabel.setToolTipText("Hardware ID");
 		hardwareLabel.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		hardwareLabel.setBounds(17, 18, 73, 27);
 		hardwareIdPanel.add(hardwareLabel);
@@ -132,7 +130,8 @@ public class AppWindow {
 		hardwareIdPanel.add(hardwareIdTextField);
 		hardwareIdTextField.setColumns(10);
 		
-		restartButton = new JButton("Restart");
+		JButton restartButton = new JButton("Restart");
+		restartButton.setToolTipText("Restarts the application. \r\nThis should be used in case you have hot swapped a new detectable hardware. \r\nAfter a restart, the application should be able to detect the new hardware.");
 		restartButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//close app
@@ -170,7 +169,8 @@ public class AppWindow {
 		hardwareIdPanel.add(ferrumEngineVersion);
 		ferrumEngineVersion.setColumns(10);
 		
-		dataDumpButton = new JButton("Dump");
+		JButton dataDumpButton = new JButton("Dump");
+		dataDumpButton.setToolTipText("Not yet implemented");
 		dataDumpButton.setEnabled(false);
 		dataDumpButton.setBounds(112, 48, 83, 24);
 		hardwareIdPanel.add(dataDumpButton);
@@ -182,6 +182,7 @@ public class AppWindow {
 		osPanel.setLayout(null);
 		
 		JLabel osName = new JLabel("Name");
+		osName.setToolTipText("OS Name");
 		osName.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		osName.setBounds(12, 22, 30, 24);
 		osPanel.add(osName);
@@ -193,6 +194,7 @@ public class AppWindow {
 		osPanel.add(osNameChoice);
 		
 		JLabel osArch = new JLabel("Architecture");
+		osArch.setToolTipText("OS Architecture");
 		osArch.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		osArch.setBounds(270, 22, 64, 24);
 		osPanel.add(osArch);
@@ -206,6 +208,7 @@ public class AppWindow {
 		osPanel.add(osArchTextField);
 		
 		JLabel deviceName = new JLabel("Device Name");
+		deviceName.setToolTipText("Device Name: This is usually your PC name that you provide \r\nupon first time installation.");
 		deviceName.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		deviceName.setBounds(12, 54, 70, 24);
 		osPanel.add(deviceName);
@@ -219,6 +222,7 @@ public class AppWindow {
 		osPanel.add(deviceNameTextField);
 		
 		JLabel currentUser = new JLabel("Current User");
+		currentUser.setToolTipText("Current User: Username of the \r\ncurrently logged in user");
 		currentUser.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		currentUser.setBounds(222, 54, 70, 24);
 		osPanel.add(currentUser);
@@ -238,6 +242,7 @@ public class AppWindow {
 		feldbdmp.getContentPane().add(cpuPanel);
 		
 		JLabel cpuName = new JLabel("Name");
+		cpuName.setToolTipText("CPU Name: As provided by the manufacturer");
 		cpuName.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		cpuName.setBounds(111, 20, 30, 23);
 		cpuPanel.add(cpuName);
@@ -250,6 +255,7 @@ public class AppWindow {
 		cpuPanel.add(cpuNameTextField);
 		
 		JLabel cpuSocket = new JLabel("Socket");
+		cpuSocket.setToolTipText("CPU Socket");
 		cpuSocket.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		cpuSocket.setBounds(288, 49, 46, 22);
 		cpuPanel.add(cpuSocket);
@@ -264,6 +270,7 @@ public class AppWindow {
 		cpuPanel.add(cpuSocketTextField);
 		
 		JLabel cpuCoreCount = new JLabel("Cores");
+		cpuCoreCount.setToolTipText("CPU Cores");
 		cpuCoreCount.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		cpuCoreCount.setBounds(12, 49, 30, 22);
 		cpuPanel.add(cpuCoreCount);
@@ -278,6 +285,7 @@ public class AppWindow {
 		cpuPanel.add(cpuCoreTextField);
 		
 		JLabel cpuThreadCount = new JLabel("Threads");
+		cpuThreadCount.setToolTipText("CPU Threads");
 		cpuThreadCount.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		cpuThreadCount.setBounds(85, 49, 46, 22);
 		cpuPanel.add(cpuThreadCount);
@@ -291,6 +299,7 @@ public class AppWindow {
 		cpuPanel.add(cpuThreadTextField);
 		
 		JLabel cpuNumber = new JLabel("CPU#");
+		cpuNumber.setToolTipText("CPU Number: Some motherboards do support multiple CPUs");
 		cpuNumber.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		cpuNumber.setBounds(12, 20, 30, 22);
 		cpuPanel.add(cpuNumber);
@@ -309,6 +318,7 @@ public class AppWindow {
 		feldbdmp.getContentPane().add(memoryPanel);
 		
 		JLabel memorySlots = new JLabel("Slots Used");
+		memorySlots.setToolTipText("Memory Slots Used");
 		memorySlots.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		memorySlots.setBounds(12, 14, 66, 22);
 		memoryPanel.add(memorySlots);
@@ -323,6 +333,7 @@ public class AppWindow {
 		memoryPanel.add(memorySlotTextField);
 		
 		JLabel totalMemory = new JLabel("Total Memory");
+		totalMemory.setToolTipText("Total Memory: Combined total allocated memory \r\nfrom all the slots");
 		totalMemory.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		totalMemory.setBounds(207, 14, 81, 22);
 		memoryPanel.add(totalMemory);
@@ -343,6 +354,7 @@ public class AppWindow {
 		feldbdmp.getContentPane().add(gpuPanel);
 		
 		JLabel gpuNumber = new JLabel("GPU#");
+		gpuNumber.setToolTipText("GPU Number: Shows the number of enabled GPUs.\r\nNote: If a GPU is disabled, it won't appear here.\r\nOne such case is that if your CPU has an iGPU \r\nbut you're using a dGPU, only your dGPU will show up\r\n");
 		gpuNumber.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		gpuNumber.setBounds(12, 22, 30, 24);
 		gpuPanel.add(gpuNumber);
@@ -354,6 +366,7 @@ public class AppWindow {
 		gpuPanel.add(gpuNumberChoice);
 		
 		JLabel gpuName = new JLabel("Name");
+		gpuName.setToolTipText("GPU Name");
 		gpuName.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		gpuName.setBounds(125, 22, 35, 24);
 		gpuPanel.add(gpuName);
@@ -368,6 +381,7 @@ public class AppWindow {
 		gpuPanel.add(gpuNameTextField);
 		
 		JLabel gpuVram = new JLabel("VRAM");
+		gpuVram.setToolTipText("VRAM: The amount of VRAM physically available to the GPU.\r\nDoes not show the memory shared by your system RAM.\r\nIn case of iGPUs, it will only show the amount of RAM dedicated to it.");
 		gpuVram.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		gpuVram.setBounds(12, 54, 35, 24);
 		gpuPanel.add(gpuVram);
@@ -382,6 +396,7 @@ public class AppWindow {
 		gpuPanel.add(gpuVramTextField);
 		
 		JLabel gpuDriverVersion = new JLabel("Driver Version");
+		gpuDriverVersion.setToolTipText("Driver Version");
 		gpuDriverVersion.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		gpuDriverVersion.setBounds(188, 54, 90, 24);
 		gpuPanel.add(gpuDriverVersion);
@@ -401,6 +416,7 @@ public class AppWindow {
 		feldbdmp.getContentPane().add(mainboardPanel);
 		
 		JLabel mainboardName = new JLabel("Mainboard Name");
+		mainboardName.setToolTipText("Mainboard Name: The name of your system's motherboard");
 		mainboardName.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		mainboardName.setBounds(12, 21, 101, 24);
 		mainboardPanel.add(mainboardName);
@@ -415,6 +431,7 @@ public class AppWindow {
 		mainboardPanel.add(mainboardNameTextField);
 		
 		JLabel mainboardManufacturer = new JLabel("Manufacturer");
+		mainboardManufacturer.setToolTipText("Manufacturer");
 		mainboardManufacturer.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		mainboardManufacturer.setBounds(12, 54, 75, 24);
 		mainboardPanel.add(mainboardManufacturer);
@@ -429,6 +446,7 @@ public class AppWindow {
 		mainboardPanel.add(mainboardManufacturerTextField);
 		
 		JLabel biosVersion = new JLabel("BIOS Ver.");
+		biosVersion.setToolTipText("BIOS Version");
 		biosVersion.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		biosVersion.setBounds(268, 54, 67, 24);
 		mainboardPanel.add(biosVersion);
@@ -449,6 +467,7 @@ public class AppWindow {
 		feldbdmp.getContentPane().add(network);
 		
 		JLabel netConnectionId = new JLabel("Connection ID");
+		netConnectionId.setToolTipText("Connection ID: Only Links the connections which are active.\r\nRestart the application if u have installed a new active connection to see the changes.");
 		netConnectionId.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		netConnectionId.setBounds(12, 21, 75, 24);
 		network.add(netConnectionId);
@@ -460,6 +479,7 @@ public class AppWindow {
 		network.add(connectionIdChoice);
 		
 		JLabel networkDescription = new JLabel("Description");
+		networkDescription.setToolTipText("Description: The name of your Network Adapter");
 		networkDescription.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		networkDescription.setBounds(12, 54, 60, 24);
 		network.add(networkDescription);
@@ -494,6 +514,7 @@ public class AppWindow {
 		feldbdmp.getContentPane().add(storage);
 		
 		JLabel storageName = new JLabel("Caption");
+		storageName.setToolTipText("Caption: Shows the available drive names\r\nWARNING: Due to FeL's limitation, some USB drives are not properly recognized \r\nand multiple drives having the same might have problems showing their stats");
 		storageName.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		storageName.setBounds(12, 21, 47, 24);
 		storage.add(storageName);
@@ -505,6 +526,7 @@ public class AppWindow {
 		storage.add(storageNameChoice);
 		
 		JLabel storageSerial = new JLabel("Serial");
+		storageSerial.setToolTipText("Serial Number");
 		storageSerial.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		storageSerial.setBounds(12, 54, 37, 24);
 		storage.add(storageSerial);
@@ -519,6 +541,7 @@ public class AppWindow {
 		storage.add(storageSerialTextField);
 		
 		JLabel storageSize = new JLabel("Size");
+		storageSize.setToolTipText("Size");
 		storageSize.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		storageSize.setBounds(256, 21, 26, 24);
 		storage.add(storageSize);
@@ -533,6 +556,7 @@ public class AppWindow {
 		storage.add(storageSizeTextField);
 		
 		JLabel storageSmartStatus = new JLabel("S.M.A.R.T");
+		storageSmartStatus.setToolTipText("S.M.A.R.T Info\r\nOperational Statuses: OK, Degraded, Pred Fail\r\nNon Operational Statuses: Error, Starting, Stopping, Service");
 		storageSmartStatus.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		storageSmartStatus.setBounds(256, 54, 48, 24);
 		storage.add(storageSmartStatus);
@@ -569,7 +593,7 @@ public class AppWindow {
 	        infoFetch.submit(initializeNetwork);
 	        infoFetch.submit(initializeStorage);
 		} catch (RejectedExecutionException | NullPointerException e) {
-			//TODO Handle
+			//TODO Handle (But how ?)
 			e.printStackTrace();
 		}
 	}
