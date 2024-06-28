@@ -33,7 +33,7 @@ public class AppWindow {
 	private JComboBox<String> cpuNumberChoice;
 	private JComboBox<String> gpuNumberChoice;
 	private JComboBox<String> connectionIdChoice;
-	private JComboBox<String> storageNameChoice;
+	private JComboBox<String> storageIndexChoice;
 	
 	private JTextField cpuNameTextField;
 	private JTextField osArchTextField;
@@ -61,6 +61,7 @@ public class AppWindow {
 	private JTextField storageSerialTextField;
 	private JTextField storageSizeTextField;
 	private JTextField storageSmartTextField;
+	private JTextField storageNameTextField;
 	
 
 	/**
@@ -164,7 +165,7 @@ public class AppWindow {
 		ferrumEngineVersion.setFont(new Font("Segoe UI", Font.ITALIC, 11));
 		ferrumEngineVersion.setHorizontalAlignment(SwingConstants.CENTER);
 		ferrumEngineVersion.setEditable(false);
-		ferrumEngineVersion.setText("Running on FerrumL Core v1.2.4");
+		ferrumEngineVersion.setText("Running on FerrumL Core v1.2.5");
 		ferrumEngineVersion.setBounds(207, 48, 195, 24);
 		hardwareIdPanel.add(ferrumEngineVersion);
 		ferrumEngineVersion.setColumns(10);
@@ -513,17 +514,17 @@ public class AppWindow {
 		storage.setBounds(10, 583, 412, 90);
 		feldbdmp.getContentPane().add(storage);
 		
-		JLabel storageName = new JLabel("Caption");
-		storageName.setToolTipText("Caption: Shows the available drive names\r\nWARNING: Due to FeL's limitation, some USB drives are not properly recognized \r\nand multiple drives having the same might have problems showing their stats");
-		storageName.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		storageName.setBounds(12, 21, 47, 24);
-		storage.add(storageName);
+		JLabel storageIndex = new JLabel("Index");
+		storageIndex.setToolTipText("Caption: Shows the available drive names\r\nWARNING: Due to FeL's limitation, some USB drives are not properly recognized \r\nand multiple drives having the same might have problems showing their stats");
+		storageIndex.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		storageIndex.setBounds(12, 21, 37, 24);
+		storage.add(storageIndex);
 		
-		storageNameChoice = new JComboBox<>();
-		storageNameChoice.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-		storageNameChoice.setEditable(false);
-		storageNameChoice.setBounds(62, 21, 186, 24);
-		storage.add(storageNameChoice);
+		storageIndexChoice = new JComboBox<>();
+		storageIndexChoice.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		storageIndexChoice.setEditable(false);
+		storageIndexChoice.setBounds(52, 21, 48, 24);
+		storage.add(storageIndexChoice);
 		
 		JLabel storageSerial = new JLabel("Serial");
 		storageSerial.setToolTipText("Serial Number");
@@ -537,13 +538,13 @@ public class AppWindow {
 		storageSerialTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		storageSerialTextField.setEditable(false);
 		storageSerialTextField.setColumns(10);
-		storageSerialTextField.setBounds(52, 54, 196, 24);
+		storageSerialTextField.setBounds(52, 54, 100, 24);
 		storage.add(storageSerialTextField);
 		
 		JLabel storageSize = new JLabel("Size");
 		storageSize.setToolTipText("Size");
 		storageSize.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		storageSize.setBounds(256, 21, 26, 24);
+		storageSize.setBounds(159, 54, 26, 24);
 		storage.add(storageSize);
 		
 		storageSizeTextField = new JTextField();
@@ -552,7 +553,7 @@ public class AppWindow {
 		storageSizeTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		storageSizeTextField.setEditable(false);
 		storageSizeTextField.setColumns(10);
-		storageSizeTextField.setBounds(289, 22, 111, 24);
+		storageSizeTextField.setBounds(189, 54, 59, 24);
 		storage.add(storageSizeTextField);
 		
 		JLabel storageSmartStatus = new JLabel("S.M.A.R.T");
@@ -569,6 +570,21 @@ public class AppWindow {
 		storageSmartTextField.setColumns(10);
 		storageSmartTextField.setBounds(311, 54, 89, 24);
 		storage.add(storageSmartTextField);
+		
+		storageNameTextField = new JTextField();
+		storageNameTextField.setText((String) null);
+		storageNameTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		storageNameTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		storageNameTextField.setEditable(false);
+		storageNameTextField.setColumns(10);
+		storageNameTextField.setBounds(159, 21, 241, 24);
+		storage.add(storageNameTextField);
+		
+		JLabel storageName = new JLabel("Name");
+		storageName.setToolTipText("Name");
+		storageName.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		storageName.setBounds(118, 21, 37, 24);
+		storage.add(storageName);
 	}
 	
 	private void initializeSystemInfo() {
@@ -581,7 +597,7 @@ public class AppWindow {
 	        Runnable initializeVideoController = () -> VideoController.initializeVideoController(gpuNumberChoice, gpuNameTextField, gpuVramTextField, gpuDriverVersionTextField);
 	        Runnable initializeMainboard = () -> Mainboard.initializeMainboard(mainboardNameTextField, mainboardManufacturerTextField, biosVersionTextField);
 	        Runnable initializeNetwork = () -> Network.initializeNetwork(connectionIdChoice, networkMacTextField, networkDescriptionTextField);
-	        Runnable initializeStorage = () -> Storage.initializeStorage(storageNameChoice, storageSerialTextField, storageSmartTextField, storageSizeTextField);
+	        Runnable initializeStorage = () -> Storage.initializeStorage(storageIndexChoice, storageNameTextField, storageSerialTextField, storageSmartTextField, storageSizeTextField);
 
 	        // Submit all tasks to the executor service
 	        infoFetch.submit(initializeHardwareId);

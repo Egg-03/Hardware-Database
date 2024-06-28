@@ -25,13 +25,15 @@ final class Storage {
 				storageNameChoice.addItem(disk);
 			}
 			Map<String, String> diskProperties = Win32_DiskDrive.getDrive(storageNameChoice.getItemAt(storageNameChoice.getSelectedIndex()));
+			storageFields[0].setText(diskProperties.get("Caption"));
+			
+			storageFields[1].setText(diskProperties.get("SerialNumber"));
+			storageFields[1].setCaretPosition(0);
+			
+			storageFields[2].setText(diskProperties.get("Status"));
+			
 			Long diskSize = Long.parseLong(diskProperties.get("Size"))/(1024*1024*1024);
-			
-			storageFields[0].setText(diskProperties.get("SerialNumber"));
-			storageFields[0].setCaretPosition(0);
-			
-			storageFields[1].setText(diskProperties.get("Status"));
-			storageFields[2].setText(String.valueOf(diskSize)+" GB");
+			storageFields[3].setText(String.valueOf(diskSize)+" GB");
 		} catch (IndexOutOfBoundsException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -43,13 +45,15 @@ final class Storage {
 				Map<String, String> diskProperties;
 				try {
 					diskProperties = Win32_DiskDrive.getDrive(storageNameChoice.getItemAt(storageNameChoice.getSelectedIndex()));
+					storageFields[0].setText(diskProperties.get("Caption"));
+					
+					storageFields[1].setText(diskProperties.get("SerialNumber"));
+					storageFields[1].setCaretPosition(0);
+					
+					storageFields[2].setText(diskProperties.get("Status"));
+					
 					Long diskSize = Long.parseLong(diskProperties.get("Size"))/(1024*1024*1024);
-					
-					storageFields[0].setText(diskProperties.get("SerialNumber"));
-					storageFields[0].setCaretPosition(0);
-					
-					storageFields[1].setText(diskProperties.get("Status"));
-					storageFields[2].setText(String.valueOf(diskSize)+" GB");
+					storageFields[3].setText(String.valueOf(diskSize)+" GB");
 				} catch (IndexOutOfBoundsException | IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
