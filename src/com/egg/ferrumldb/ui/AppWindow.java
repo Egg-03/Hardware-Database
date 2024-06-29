@@ -94,14 +94,14 @@ public class AppWindow {
 	 * @throws IndexOutOfBoundsException 
 	 */
 	public AppWindow() {
-		initialize();
+		initializeComponents();
 		initializeSystemInfo();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initializeComponents() {
 		feldbdmp = new JFrame();
 		feldbdmp.setResizable(false);
 		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/ferrum_legacy.png")));
@@ -110,6 +110,17 @@ public class AppWindow {
 		feldbdmp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		feldbdmp.getContentPane().setLayout(null);
 		
+		hardwareIdPanel();
+		osPanel();
+		cpuPanel();
+		memoryPanel();
+		gpuPanel();
+		mainboardPanel();
+		networkPanel();
+		storagePanel();
+	}
+	
+	private void hardwareIdPanel() {
 		JPanel hardwareIdPanel = new JPanel();
 		hardwareIdPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Unique ID", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		hardwareIdPanel.setBounds(10, 11, 414, 80);
@@ -175,7 +186,9 @@ public class AppWindow {
 		dataDumpButton.setEnabled(false);
 		dataDumpButton.setBounds(112, 48, 83, 24);
 		hardwareIdPanel.add(dataDumpButton);
-		
+	}
+	
+	private void osPanel() {
 		JPanel osPanel = new JPanel();
 		osPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Operating System", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		osPanel.setBounds(10, 93, 412, 90);
@@ -235,7 +248,9 @@ public class AppWindow {
 		currentUserTextField.setColumns(10);
 		currentUserTextField.setBounds(294, 54, 104, 24);
 		osPanel.add(currentUserTextField);
-		
+	}
+	
+	private void cpuPanel() {
 		JPanel cpuPanel = new JPanel();
 		cpuPanel.setLayout(null);
 		cpuPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "CPU", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
@@ -311,7 +326,9 @@ public class AppWindow {
 		cpuNumberChoice.setEditable(false);
 		cpuNumberChoice.setBounds(48, 20, 57, 22);
 		cpuPanel.add(cpuNumberChoice);
-		
+	}
+	
+	private void memoryPanel() {
 		JPanel memoryPanel = new JPanel();
 		memoryPanel.setLayout(null);
 		memoryPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Memory", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
@@ -347,7 +364,9 @@ public class AppWindow {
 		totalMemoryTextField.setColumns(10);
 		totalMemoryTextField.setBounds(288, 14, 100, 22);
 		memoryPanel.add(totalMemoryTextField);
-		
+	}
+	
+	private void gpuPanel() {
 		JPanel gpuPanel = new JPanel();
 		gpuPanel.setLayout(null);
 		gpuPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Video Controller", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
@@ -409,7 +428,9 @@ public class AppWindow {
 		gpuDriverVersionTextField.setColumns(10);
 		gpuDriverVersionTextField.setBounds(283, 54, 115, 24);
 		gpuPanel.add(gpuDriverVersionTextField);
-		
+	}
+	
+	private void mainboardPanel() {
 		JPanel mainboardPanel = new JPanel();
 		mainboardPanel.setLayout(null);
 		mainboardPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Mainboard", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
@@ -460,7 +481,9 @@ public class AppWindow {
 		biosVersionTextField.setColumns(10);
 		biosVersionTextField.setBounds(338, 54, 60, 24);
 		mainboardPanel.add(biosVersionTextField);
-		
+	}
+	
+	private void networkPanel() {
 		JPanel network = new JPanel();
 		network.setLayout(null);
 		network.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Network", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
@@ -507,7 +530,9 @@ public class AppWindow {
 		networkMacTextField.setColumns(10);
 		networkMacTextField.setBounds(247, 22, 153, 24);
 		network.add(networkMacTextField);
-		
+	}
+	
+	private void storagePanel() {
 		JPanel storage = new JPanel();
 		storage.setLayout(null);
 		storage.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Storage", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
