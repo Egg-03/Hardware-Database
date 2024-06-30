@@ -1,11 +1,8 @@
 package com.egg.ferrumldb.ui;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -19,10 +16,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
+
+import com.egg.errorui.ExceptionUI;
+import com.ferruml.error.ErrorLog;
 
 public class AppWindow {
 
@@ -68,22 +70,9 @@ public class AppWindow {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		try {
-			UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					AppWindow window = new AppWindow();
-					window.feldbdmp.setLocationRelativeTo(null);
-					window.feldbdmp.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		AppWindow window = new AppWindow();
+		window.feldbdmp.setLocationRelativeTo(null);
+		window.feldbdmp.setVisible(true);			
 	}
 
 	/**
@@ -95,7 +84,17 @@ public class AppWindow {
 	 */
 	public AppWindow() {
 		initializeComponents();
+		setTheme();
 		initializeSystemInfo();
+	}
+	
+	private void setTheme() {
+		try {
+			UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
+			SwingUtilities.updateComponentTreeUI(feldbdmp);
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+			new ErrorLog().log(" ExceptionUI Theme Load Error: "+e.getMessage());
+		}
 	}
 
 	/**
@@ -105,7 +104,7 @@ public class AppWindow {
 		feldbdmp = new JFrame();
 		feldbdmp.setResizable(false);
 		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/ferrum_legacy.png")));
-		feldbdmp.setTitle("FerrumL DBDump Tool v1.00-Beta");
+		feldbdmp.setTitle("FerrumL Dumper Tool v1.00-Beta");
 		feldbdmp.setBounds(100, 100, 450, 721);
 		feldbdmp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		feldbdmp.getContentPane().setLayout(null);
@@ -144,30 +143,13 @@ public class AppWindow {
 		
 		JButton restartButton = new JButton("Restart");
 		restartButton.setToolTipText("Restarts the application. \r\nThis should be used in case you have hot swapped a new detectable hardware. \r\nAfter a restart, the application should be able to detect the new hardware.");
-		restartButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//close app
-				feldbdmp.dispose();
-				
-				//restart
-				try {
-					UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
-				} catch (Throwable e1) {
-					e1.printStackTrace();
-				}
-				EventQueue.invokeLater(new Runnable() {
-					public void run() {
-						try {
-							AppWindow window = new AppWindow();
-							window.feldbdmp.setLocationRelativeTo(null);
-							window.feldbdmp.setVisible(true);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				});
-				
-			}
+		restartButton.addActionListener(e-> {
+			//close app
+			feldbdmp.dispose();
+			//restart
+			AppWindow window = new AppWindow();
+			window.feldbdmp.setLocationRelativeTo(null);
+			window.feldbdmp.setVisible(true);
 		});
 		restartButton.setBounds(17, 48, 83, 24);
 		hardwareIdPanel.add(restartButton);
@@ -540,7 +522,7 @@ public class AppWindow {
 		feldbdmp.getContentPane().add(storage);
 		
 		JLabel storageIndex = new JLabel("Index");
-		storageIndex.setToolTipText("Caption: Shows the available drive names\r\nWARNING: Due to FeL's limitation, some USB drives are not properly recognized \r\nand multiple drives having the same might have problems showing their stats");
+		storageIndex.setToolTipText("Caption: Shows the available drive counts based on their unsorted indexes\r\n");
 		storageIndex.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		storageIndex.setBounds(12, 21, 37, 24);
 		storage.add(storageIndex);
@@ -634,8 +616,7 @@ public class AppWindow {
 	        infoFetch.submit(initializeNetwork);
 	        infoFetch.submit(initializeStorage);
 		} catch (RejectedExecutionException | NullPointerException e) {
-			//TODO Handle (But how ?)
-			e.printStackTrace();
+			new ExceptionUI("Host Gather System Info Error", e.getMessage()).setVisible(true);
 		}
 	}
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.swing.JTextField;
 
+import com.egg.errorui.ExceptionUI;
 import com.ferruml.system.hardware.Win32_PhysicalMemory;
 
 final class Memory {
@@ -31,8 +32,7 @@ final class Memory {
 			
 			memoryFields[1].setText(String.valueOf(totalSize/(1024*1024))+" MB");
 		} catch (IndexOutOfBoundsException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			new ExceptionUI("Memory Error", e.getMessage()).setVisible(true);
 		}
 		
 	}

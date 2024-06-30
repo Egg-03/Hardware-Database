@@ -1,7 +1,5 @@
 package com.egg.ferrumldb.ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +7,7 @@ import java.util.Map;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
+import com.egg.errorui.ExceptionUI;
 import com.ferruml.system.network.Win32_NetworkAdapter;
 
 final class Network {
@@ -28,23 +27,18 @@ final class Network {
 			networkFields[0].setText(networkProperties.get("MACAddress"));
 			networkFields[1].setText(networkProperties.get("Description"));
 		} catch (IndexOutOfBoundsException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			new ExceptionUI("Network Error", e.getMessage()).setVisible(true);
 		}
 		
 		//action listener for multiple network adapter choices
-		connectionIdChoice.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Map<String, String> networkProperties;
-				try {
-					networkProperties = Win32_NetworkAdapter.getNetworkAdapters(connectionIdChoice.getItemAt(connectionIdChoice.getSelectedIndex()));
-					networkFields[0].setText(networkProperties.get("MACAddress"));
-					networkFields[1].setText(networkProperties.get("Description"));
-				} catch (IndexOutOfBoundsException | IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+		connectionIdChoice.addActionListener(e-> {
+			Map<String, String> networkProperties;
+			try {
+				networkProperties = Win32_NetworkAdapter.getNetworkAdapters(connectionIdChoice.getItemAt(connectionIdChoice.getSelectedIndex()));
+				networkFields[0].setText(networkProperties.get("MACAddress"));
+				networkFields[1].setText(networkProperties.get("Description"));
+			} catch (IndexOutOfBoundsException | IOException e1) {
+				new ExceptionUI("Network Error", e1.getMessage()).setVisible(true);
 			}
 		});
 	}

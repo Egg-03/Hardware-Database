@@ -4,6 +4,7 @@ import javax.swing.JTextField;
 
 import java.util.concurrent.ExecutionException;
 
+import com.egg.errorui.ExceptionUI;
 import com.ferruml.system.hardware.HWID;
 
 final class HardwareId {
@@ -17,8 +18,8 @@ final class HardwareId {
 			hardwareIdTextField.setText(HWID.getHardwareID());
 			hardwareIdTextField.setCaretPosition(0);
 		} catch (ExecutionException | InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			new ExceptionUI("HWID Error", e.getMessage()).setVisible(true);
+			Thread.currentThread().interrupt();
 		}
 	}
 }

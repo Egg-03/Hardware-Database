@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.swing.JTextField;
 
+import com.egg.errorui.ExceptionUI;
 import com.ferruml.system.hardware.Win32_BIOS;
 import com.ferruml.system.hardware.Win32_Baseboard;
 
@@ -24,8 +25,7 @@ final class Mainboard {
 			mainboardFields[1].setText(mainboard.get("Manufacturer"));
 			mainboardFields[2].setText(bios.get("Caption"));
 		} catch (IndexOutOfBoundsException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			new ExceptionUI("Mainboard Error", e.getMessage()).setVisible(true);
 		}
 	}
 }
