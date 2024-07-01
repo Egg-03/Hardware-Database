@@ -8,5 +8,21 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/flatlaf-3.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/FerrumL-core-v1.2.5.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-2.0.13.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/FerrumL_dbDumpTool/lib/slf4j-api-2.0.13-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/slf4j-jdk-platform-logging-2.0.13.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/FerrumL_dbDumpTool/lib/slf4j-jdk-platform-logging-2.0.13-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/slf4j-simple-2.0.13.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/FerrumL_dbDumpTool/lib/slf4j-simple-2.0.13-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.46.0.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
