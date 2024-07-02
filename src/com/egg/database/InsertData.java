@@ -29,13 +29,15 @@ public class InsertData {
 	}
 	
 	//Populate the HardwareId Table
-	private static void insertHardwareId() {
+	private static boolean insertHardwareId() {
 		String query = "INSERT INTO HardwareId (UniqueId) VALUES ('"+HARDWAREID+"');";
 		
 		try(PreparedStatement ps = connect.prepareStatement(query)){
 			ps.executeUpdate();
+			return true;
 		} catch (SQLException e) {
 			new ExceptionUI("Data Insertion Error", e.getMessage()).setVisible(true);
+			return false;
 		}
 	}
 	
@@ -63,8 +65,9 @@ public class InsertData {
 	}
 	
 	public static void main(String[] args) {
-		insertHardwareId();
-		insertOperatingSystem();
+		if(insertHardwareId()) {
+			insertOperatingSystem();
+		}
 		DatabaseConnectivity.close(connect);
 	}
 			
