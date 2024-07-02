@@ -29,13 +29,14 @@ import com.ferruml.error.ErrorLog;
 public class AppWindow {
 
 	private JFrame feldbdmp;
-	private JTextField hardwareIdTextField;
-	
+
 	private JComboBox<String> osNameChoice;
 	private JComboBox<String> cpuNumberChoice;
 	private JComboBox<String> gpuNumberChoice;
 	private JComboBox<String> connectionIdChoice;
 	private JComboBox<String> storageIndexChoice;
+	
+	private JTextField hardwareIdTextField;
 	
 	private JTextField cpuNameTextField;
 	private JTextField osArchTextField;

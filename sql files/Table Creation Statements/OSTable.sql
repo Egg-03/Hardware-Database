@@ -1,8 +1,8 @@
 CREATE TABLE "OperatingSystem" (
-	"HardwareId"	INTEGER NOT NULL,
-	"Name"	INTEGER NOT NULL,
-	"Architecture"	INTEGER NOT NULL,
-	"DeviceName"	INTEGER NOT NULL,
-	"CurrentUser"	INTEGER NOT NULL,
+	"HardwareId"	TEXT NOT NULL,
+	"Name"	TEXT NOT NULL,
+	"Architecture"	TEXT NOT NULL,
+	"DeviceName"	TEXT NOT NULL,
+	"CurrentUser"	TEXT NOT NULL,
 	CONSTRAINT "fk_os_hwid" FOREIGN KEY("HardwareId") REFERENCES HardwareId(UniqueId)
 );

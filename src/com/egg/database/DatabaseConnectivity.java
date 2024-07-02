@@ -17,9 +17,16 @@ class DatabaseConnectivity {
 			Class.forName("org.sqlite.JDBC");
 			return DriverManager.getConnection("jdbc:sqlite:database\\dumprecords");
 		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
 			new ExceptionUI("Database Connectivity Error", e.getClass().getSimpleName()+": "+e.getMessage()).setVisible(true);
 			return null;
+		}
+	}
+	
+	protected static void close(Connection connect) {
+		try {
+			connect.close();
+		} catch (SQLException e) {
+			new ExceptionUI("Database Connection Termination Error", e.getClass().getSimpleName()+": "+e.getMessage()).setVisible(true);
 		}
 	}
 }
