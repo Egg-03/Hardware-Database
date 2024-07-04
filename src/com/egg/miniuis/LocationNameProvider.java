@@ -16,15 +16,15 @@ import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
-import com.egg.database.NewDataInsertion;
+import com.egg.database.DataInsertion;
 import com.ferruml.error.ErrorLog;
 
 //Location and Name Selector UI
 //This should appear when you're dumping new data or updating it
-public class LNSelectorUI extends JFrame {
+public class LocationNameProvider extends JFrame {
 	private static final long serialVersionUID = 8198578061033325272L;
 	
-	public LNSelectorUI() {
+	public LocationNameProvider() {
 		super("LN Selector Window");
 		setTheme();
 		initialize();
@@ -40,7 +40,7 @@ public class LNSelectorUI extends JFrame {
 	}
 	
 	private void initialize() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(ExceptionUI.class.getResource("/res/ferrum_legacy.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(LocationNameProvider.class.getResource("/res/ferrum_legacy.png")));
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setSize(490,190);
@@ -84,7 +84,7 @@ public class LNSelectorUI extends JFrame {
 				statusDisplay.setText("❌ User and Location fields cannot be empty");
 			else {
 				this.dispose();
-				NewDataInsertion.insert(compUserTextField.getText(), compLocationTextField.getText());
+				DataInsertion.insert(compUserTextField.getText(), compLocationTextField.getText());
 			}
 		});
 		btnConfirm.setBounds(10, 95, 89, 23);

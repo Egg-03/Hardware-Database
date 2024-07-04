@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import com.egg.miniuis.ExceptionUI;
+import com.egg.miniuis.InformationUI;
 import com.ferruml.system.currentuser.User;
 import com.ferruml.system.hardware.HWID;
 import com.ferruml.system.hardware.Win32_BIOS;
@@ -20,12 +21,12 @@ import com.ferruml.system.hardware.Win32_VideoController;
 import com.ferruml.system.network.Win32_NetworkAdapter;
 import com.ferruml.system.operatingsystem.Win32_OperatingSystem;
 
-public class NewDataInsertion {
+public class DataInsertion {
 	
 	private static Connection connect;
 	private static final String HARDWAREID = getHWID();
 	
-	private NewDataInsertion() {
+	private DataInsertion() {
 		throw new IllegalStateException("Utility Class: Should be called only by AppWindow");
 	}
 	
@@ -47,8 +48,14 @@ public class NewDataInsertion {
 			ps.executeUpdate();
 			return true;
 		} catch (SQLException e) {
-			new ExceptionUI("HWID Data Dump Error", e.getMessage()).setVisible(true);
-			return false;
+			if(e.getErrorCode()==19) { //Error code for Primary Key Constraint Failing
+				new InformationUI("HWID Already Exists").setVisible(true);
+				return false;
+			}
+			else {
+				new ExceptionUI("HWID Data Dump Error", e.getMessage()).setVisible(true);
+				return false;
+			}
 		}
 	}
 	
@@ -222,7 +229,7 @@ public class NewDataInsertion {
 		}
 	}
 	
-	public static void insert(String username, String location) {
+	public static final void insert(String username, String location) {
 		connect = DatabaseConnectivity.initialize();
 		if(insertHardwareId(username, location)) {
 			insertMainboard();

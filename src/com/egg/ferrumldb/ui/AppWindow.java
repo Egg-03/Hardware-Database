@@ -23,8 +23,9 @@ import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
+import com.egg.database.DataDeletion;
 import com.egg.miniuis.ExceptionUI;
-import com.egg.miniuis.LNSelectorUI;
+import com.egg.miniuis.LocationNameProvider;
 import com.ferruml.error.ErrorLog;
 
 public class AppWindow {
@@ -160,16 +161,24 @@ public class AppWindow {
 		ferrumEngineVersion.setFont(new Font("Segoe UI", Font.ITALIC, 11));
 		ferrumEngineVersion.setHorizontalAlignment(SwingConstants.CENTER);
 		ferrumEngineVersion.setEditable(false);
-		ferrumEngineVersion.setText("Running on FerrumL Core v1.2.5");
-		ferrumEngineVersion.setBounds(207, 48, 195, 24);
+		ferrumEngineVersion.setText("FeL Core v1.2.5");
+		ferrumEngineVersion.setBounds(294, 48, 108, 24);
 		hardwareIdPanel.add(ferrumEngineVersion);
 		ferrumEngineVersion.setColumns(10);
 		
 		JButton dataDumpButton = new JButton("Dump");
 		dataDumpButton.setToolTipText("Dumps the visible data into a local database");
-		dataDumpButton.setBounds(112, 48, 83, 24);
-		dataDumpButton.addActionListener(e-> new LNSelectorUI().setVisible(true));
+		dataDumpButton.setBounds(107, 48, 83, 24);
+		dataDumpButton.addActionListener(e-> new LocationNameProvider().setVisible(true));
 		hardwareIdPanel.add(dataDumpButton);
+		
+		JButton dataDeleteButton = new JButton("Delete");
+		dataDeleteButton.setToolTipText("Deletes existing information");
+		dataDeleteButton.setBounds(197, 48, 83, 24);
+		dataDeleteButton.addActionListener(e->{
+			DataDeletion.delete();
+		});
+		hardwareIdPanel.add(dataDeleteButton);
 	}
 	
 	private void osPanel() {
