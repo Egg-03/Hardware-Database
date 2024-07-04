@@ -4,7 +4,7 @@ import javax.swing.JTextField;
 
 import java.util.concurrent.ExecutionException;
 
-import com.egg.errorui.ExceptionUI;
+import com.egg.miniuis.ExceptionUI;
 import com.ferruml.system.hardware.HWID;
 
 final class HardwareId {

@@ -23,7 +23,8 @@ import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
-import com.egg.errorui.ExceptionUI;
+import com.egg.miniuis.ExceptionUI;
+import com.egg.miniuis.LNSelectorUI;
 import com.ferruml.error.ErrorLog;
 
 public class AppWindow {
@@ -165,9 +166,9 @@ public class AppWindow {
 		ferrumEngineVersion.setColumns(10);
 		
 		JButton dataDumpButton = new JButton("Dump");
-		dataDumpButton.setToolTipText("Not yet implemented");
-		dataDumpButton.setEnabled(false);
+		dataDumpButton.setToolTipText("Dumps the visible data into a local database");
 		dataDumpButton.setBounds(112, 48, 83, 24);
+		dataDumpButton.addActionListener(e-> new LNSelectorUI().setVisible(true));
 		hardwareIdPanel.add(dataDumpButton);
 	}
 	

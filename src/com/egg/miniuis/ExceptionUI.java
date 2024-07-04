@@ -1,4 +1,4 @@
-package com.egg.errorui;
+package com.egg.miniuis;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;

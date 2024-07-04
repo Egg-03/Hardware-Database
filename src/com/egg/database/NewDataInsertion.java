@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import com.egg.errorui.ExceptionUI;
+import com.egg.miniuis.ExceptionUI;
 import com.ferruml.system.currentuser.User;
 import com.ferruml.system.hardware.HWID;
 import com.ferruml.system.hardware.Win32_BIOS;
@@ -20,10 +20,14 @@ import com.ferruml.system.hardware.Win32_VideoController;
 import com.ferruml.system.network.Win32_NetworkAdapter;
 import com.ferruml.system.operatingsystem.Win32_OperatingSystem;
 
-public class InsertData {
+public class NewDataInsertion {
 	
 	private static final Connection connect = DatabaseConnectivity.initialize();
 	private static final String HARDWAREID = getHWID();
+	
+	private NewDataInsertion() {
+		throw new IllegalStateException("Utility Class: Should be called only by AppWindow");
+	}
 	
 	private static String getHWID() {
 		try {
@@ -36,14 +40,14 @@ public class InsertData {
 	}
 	
 	//Populate the HardwareId Table
-	private static boolean insertHardwareId() {
-		String query = "INSERT INTO HardwareId (UniqueId) VALUES ('"+HARDWAREID+"');";
+	private static boolean insertHardwareId(String username, String location) {
+		String query = "INSERT INTO HardwareId (UniqueId, Username, Location) VALUES ('"+HARDWAREID+"', '"+username+"', '"+location+"');";
 		
 		try(PreparedStatement ps = connect.prepareStatement(query)){
 			ps.executeUpdate();
 			return true;
 		} catch (SQLException e) {
-			new ExceptionUI("Data Insertion Error", e.getMessage()).setVisible(true);
+			new ExceptionUI("HWID Data Dump Error", e.getMessage()).setVisible(true);
 			return false;
 		}
 	}
@@ -218,17 +222,16 @@ public class InsertData {
 		}
 	}
 	
-	public static void main(String[] args) {
-		if(insertHardwareId()) {
-			insertOperatingSystem();
+	public static void insert(String username, String location) {
+		if(insertHardwareId(username, location)) {
+			insertMainboard();
 			insertCpu();
 			insertMemory();
 			insertGpu();
-			insertMainboard();
-			insertNetwork();
 			insertStorage();
+			insertNetwork();
+			insertOperatingSystem();
 		}
 		DatabaseConnectivity.close(connect);
 	}
-			
 }
