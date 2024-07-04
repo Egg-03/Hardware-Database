@@ -80,7 +80,7 @@ public class LNSelectorUI extends JFrame {
 		
 		JButton btnConfirm = new JButton("Confirm");
 		btnConfirm.addActionListener(e-> {
-			if(compUserTextField.getText().isBlank() && compLocationTextField.getText().isBlank())
+			if(compUserTextField.getText().isBlank() || compLocationTextField.getText().isBlank())
 				statusDisplay.setText("❌ User and Location fields cannot be empty");
 			else {
 				this.dispose();

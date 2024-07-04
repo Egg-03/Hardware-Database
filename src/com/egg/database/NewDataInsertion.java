@@ -22,7 +22,7 @@ import com.ferruml.system.operatingsystem.Win32_OperatingSystem;
 
 public class NewDataInsertion {
 	
-	private static final Connection connect = DatabaseConnectivity.initialize();
+	private static Connection connect;
 	private static final String HARDWAREID = getHWID();
 	
 	private NewDataInsertion() {
@@ -223,6 +223,7 @@ public class NewDataInsertion {
 	}
 	
 	public static void insert(String username, String location) {
+		connect = DatabaseConnectivity.initialize();
 		if(insertHardwareId(username, location)) {
 			insertMainboard();
 			insertCpu();
