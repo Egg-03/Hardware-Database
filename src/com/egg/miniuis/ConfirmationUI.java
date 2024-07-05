@@ -81,8 +81,4 @@ public class ConfirmationUI extends JFrame {
 	public JLabel getQuestionLabel() {
 		return questionLabel;
 	}
-
-	public static void main(String[] args) {
-		new ConfirmationUI().setVisible(true);
-	}
 }
