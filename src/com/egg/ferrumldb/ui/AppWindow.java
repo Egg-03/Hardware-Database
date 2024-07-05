@@ -94,7 +94,7 @@ public class AppWindow {
 	
 	private void setTheme() {
 		try {
-			UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
+			UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarculaLaf");
 			SwingUtilities.updateComponentTreeUI(feldbdmp);
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			new ErrorLog().log(" ExceptionUI Theme Load Error: "+e.getMessage());
@@ -108,7 +108,7 @@ public class AppWindow {
 		feldbdmp = new JFrame();
 		feldbdmp.setResizable(false);
 		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/ferrum_legacy.png")));
-		feldbdmp.setTitle("FerrumL Dumper Tool v1.00-Beta");
+		feldbdmp.setTitle("FeL Dump Tool DevBuild-InternalRelease v05072024");
 		feldbdmp.setBounds(100, 100, 450, 721);
 		feldbdmp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		feldbdmp.getContentPane().setLayout(null);
