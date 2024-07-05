@@ -24,6 +24,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
 import com.egg.database.DataDeletion;
+import com.egg.miniuis.ConfirmationUI;
 import com.egg.miniuis.ExceptionUI;
 import com.egg.miniuis.LocationNameProvider;
 import com.ferruml.error.ErrorLog;
@@ -176,7 +177,14 @@ public class AppWindow {
 		dataDeleteButton.setToolTipText("Deletes existing information");
 		dataDeleteButton.setBounds(197, 48, 83, 24);
 		dataDeleteButton.addActionListener(e->{
-			DataDeletion.delete();
+			ConfirmationUI warning = new ConfirmationUI();
+			warning.getQuestionLabel().setText("Destructive operation ahead. Continue ?");
+			warning.getBtnYes().addActionListener(e1->{
+				warning.dispose();
+				DataDeletion.delete();
+			});
+			warning.getBtnNo().addActionListener(e1->warning.dispose());
+			warning.setVisible(true);
 		});
 		hardwareIdPanel.add(dataDeleteButton);
 	}
