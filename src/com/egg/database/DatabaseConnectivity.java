@@ -15,7 +15,7 @@ class DatabaseConnectivity {
 	protected static Connection initialize() {
 		try {
 			Class.forName("org.sqlite.JDBC");
-			return DriverManager.getConnection("jdbc:sqlite:database\\dumprecords");
+			return DriverManager.getConnection("jdbc:sqlite:database\\ComputerRecords.db");
 		} catch (ClassNotFoundException | SQLException e) {
 			new ExceptionUI("Database Connectivity Error", e.getClass().getSimpleName()+": "+e.getMessage()).setVisible(true);
 			return null;

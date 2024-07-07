@@ -63,6 +63,7 @@ public class AppWindow {
 	
 	private JTextField networkDescriptionTextField;
 	private JTextField networkMacTextField;
+	private JTextField ipAddressTextField;
 	
 	private JTextField storageSerialTextField;
 	private JTextField storageSizeTextField;
@@ -108,7 +109,7 @@ public class AppWindow {
 		feldbdmp = new JFrame();
 		feldbdmp.setResizable(false);
 		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/ferrum_legacy.png")));
-		feldbdmp.setTitle("FeL Dump Tool DevBuild-InternalRelease v05072024");
+		feldbdmp.setTitle("FeL Dump Tool DevBuild-InternalRelease v07072024");
 		feldbdmp.setBounds(100, 100, 450, 721);
 		feldbdmp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		feldbdmp.getContentPane().setLayout(null);
@@ -512,10 +513,10 @@ public class AppWindow {
 		networkDescriptionTextField = new JTextField();
 		networkDescriptionTextField.setText((String) null);
 		networkDescriptionTextField.setHorizontalAlignment(SwingConstants.CENTER);
-		networkDescriptionTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		networkDescriptionTextField.setFont(new Font("Segoe UI", Font.PLAIN, 9));
 		networkDescriptionTextField.setEditable(false);
 		networkDescriptionTextField.setColumns(10);
-		networkDescriptionTextField.setBounds(78, 55, 322, 24);
+		networkDescriptionTextField.setBounds(78, 55, 153, 24);
 		network.add(networkDescriptionTextField);
 		
 		JLabel networkMac = new JLabel("MAC Address");
@@ -531,6 +532,21 @@ public class AppWindow {
 		networkMacTextField.setColumns(10);
 		networkMacTextField.setBounds(247, 22, 153, 24);
 		network.add(networkMacTextField);
+		
+		ipAddressTextField = new JTextField();
+		ipAddressTextField.setText((String) null);
+		ipAddressTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		ipAddressTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		ipAddressTextField.setEditable(false);
+		ipAddressTextField.setColumns(10);
+		ipAddressTextField.setBounds(280, 56, 120, 24);
+		network.add(ipAddressTextField);
+		
+		JLabel networkIp = new JLabel("IPv4");
+		networkIp.setToolTipText("The Link Local IPv4 address assigned automatically/manually");
+		networkIp.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		networkIp.setBounds(243, 56, 29, 20);
+		network.add(networkIp);
 	}
 	
 	private void storagePanel() {
@@ -622,7 +638,7 @@ public class AppWindow {
 	        Runnable initializeMemory = () -> Memory.initializeMemory(memorySlotTextField, totalMemoryTextField);
 	        Runnable initializeVideoController = () -> VideoController.initializeVideoController(gpuNumberChoice, gpuNameTextField, gpuVramTextField, gpuDriverVersionTextField);
 	        Runnable initializeMainboard = () -> Mainboard.initializeMainboard(mainboardNameTextField, mainboardManufacturerTextField, biosVersionTextField);
-	        Runnable initializeNetwork = () -> Network.initializeNetwork(connectionIdChoice, networkMacTextField, networkDescriptionTextField);
+	        Runnable initializeNetwork = () -> Network.initializeNetwork(connectionIdChoice, networkMacTextField, networkDescriptionTextField, ipAddressTextField);
 	        Runnable initializeStorage = () -> Storage.initializeStorage(storageIndexChoice, storageNameTextField, storageSerialTextField, storageSmartTextField, storageSizeTextField);
 
 	        // Submit all tasks to the executor service

@@ -18,6 +18,7 @@ final class Network {
 	
 	protected static void initializeNetwork(JComboBox<String> connectionIdChoice, JTextField...networkFields) {
 		List<String> networkAdapters;
+		Map<String, String> inetAddress = NetworkEnhanced.getInterfaceAddress();
 		try {
 			networkAdapters = Win32_NetworkAdapter.getAdapterID();
 			for(String networkAdapter: networkAdapters) {
@@ -26,6 +27,8 @@ final class Network {
 			Map<String, String> networkProperties = Win32_NetworkAdapter.getNetworkAdapters(connectionIdChoice.getItemAt(connectionIdChoice.getSelectedIndex()));
 			networkFields[0].setText(networkProperties.get("MACAddress"));
 			networkFields[1].setText(networkProperties.get("Description"));
+			networkFields[2].setText(inetAddress.get(networkProperties.get("Name")));
+				
 		} catch (IndexOutOfBoundsException | IOException e) {
 			new ExceptionUI("Network Error", e.getMessage()).setVisible(true);
 		}
@@ -36,7 +39,8 @@ final class Network {
 			try {
 				networkProperties = Win32_NetworkAdapter.getNetworkAdapters(connectionIdChoice.getItemAt(connectionIdChoice.getSelectedIndex()));
 				networkFields[0].setText(networkProperties.get("MACAddress"));
-				networkFields[1].setText(networkProperties.get("Description"));
+				networkFields[1].setText(networkProperties.get("Name"));
+				networkFields[2].setText(inetAddress.get(networkProperties.get("Name")));
 			} catch (IndexOutOfBoundsException | IOException e1) {
 				new ExceptionUI("Network Error", e1.getMessage()).setVisible(true);
 			}
