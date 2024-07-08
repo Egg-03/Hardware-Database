@@ -109,7 +109,7 @@ public class AppWindow {
 		feldbdmp = new JFrame();
 		feldbdmp.setResizable(false);
 		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/ferrum_legacy.png")));
-		feldbdmp.setTitle("FeL Dump Tool DevBuild-InternalRelease v07072024");
+		feldbdmp.setTitle("FeL Dump Tool DevBuild-InternalRelease v08072024");
 		feldbdmp.setBounds(100, 100, 450, 721);
 		feldbdmp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		feldbdmp.getContentPane().setLayout(null);
@@ -163,7 +163,7 @@ public class AppWindow {
 		ferrumEngineVersion.setFont(new Font("Segoe UI", Font.ITALIC, 11));
 		ferrumEngineVersion.setHorizontalAlignment(SwingConstants.CENTER);
 		ferrumEngineVersion.setEditable(false);
-		ferrumEngineVersion.setText("FeL Core v1.2.5");
+		ferrumEngineVersion.setText("FeL Core v1.2.6");
 		ferrumEngineVersion.setBounds(294, 48, 108, 24);
 		hardwareIdPanel.add(ferrumEngineVersion);
 		ferrumEngineVersion.setColumns(10);
@@ -469,7 +469,7 @@ public class AppWindow {
 		mainboardManufacturerTextField.setBounds(90, 55, 173, 24);
 		mainboardPanel.add(mainboardManufacturerTextField);
 		
-		JLabel biosVersion = new JLabel("BIOS Ver.");
+		JLabel biosVersion = new JLabel("BIOS Version");
 		biosVersion.setToolTipText("BIOS Version");
 		biosVersion.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		biosVersion.setBounds(268, 54, 67, 24);

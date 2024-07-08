@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import com.egg.ferrumldb.ui.NetworkEnhanced;
 import com.egg.miniuis.ExceptionUI;
 import com.egg.miniuis.InformationUI;
 import com.ferruml.system.currentuser.User;
@@ -185,13 +184,12 @@ public class DataInsertion {
 		
 		try(PreparedStatement ps = connect.prepareStatement(query)){
 			List<String> adapterList = Win32_NetworkAdapter.getAdapterID();
-			Map<String, String> adapterIp = NetworkEnhanced.getInterfaceAddress();
 			for(String networkAdapter: adapterList) {
 				Map<String, String> adapterProperties = Win32_NetworkAdapter.getNetworkAdapters(networkAdapter);
 				ps.setString(1, HARDWAREID);
 				ps.setString(2, adapterProperties.get("Description"));
 				ps.setString(3, adapterProperties.get("MACAddress"));
-				ps.setString(4, adapterIp.get(adapterProperties.get("Name")));
+				ps.setString(4, adapterProperties.get("AdapterIP"));
 				
 				ps.addBatch();
 				ps.executeBatch();
