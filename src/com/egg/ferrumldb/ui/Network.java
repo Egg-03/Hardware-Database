@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
-import com.egg.errorui.ExceptionUI;
+import com.egg.miniuis.ExceptionUI;
 import com.ferruml.system.network.Win32_NetworkAdapter;
 
 final class Network {
@@ -26,6 +26,8 @@ final class Network {
 			Map<String, String> networkProperties = Win32_NetworkAdapter.getNetworkAdapters(connectionIdChoice.getItemAt(connectionIdChoice.getSelectedIndex()));
 			networkFields[0].setText(networkProperties.get("MACAddress"));
 			networkFields[1].setText(networkProperties.get("Description"));
+			networkFields[2].setText(networkProperties.get("AdapterIP"));
+				
 		} catch (IndexOutOfBoundsException | IOException e) {
 			new ExceptionUI("Network Error", e.getMessage()).setVisible(true);
 		}
@@ -36,7 +38,8 @@ final class Network {
 			try {
 				networkProperties = Win32_NetworkAdapter.getNetworkAdapters(connectionIdChoice.getItemAt(connectionIdChoice.getSelectedIndex()));
 				networkFields[0].setText(networkProperties.get("MACAddress"));
-				networkFields[1].setText(networkProperties.get("Description"));
+				networkFields[1].setText(networkProperties.get("Name"));
+				networkFields[2].setText(networkProperties.get("AdapterIP"));
 			} catch (IndexOutOfBoundsException | IOException e1) {
 				new ExceptionUI("Network Error", e1.getMessage()).setVisible(true);
 			}

@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
-import com.egg.errorui.ExceptionUI;
+import com.egg.miniuis.ExceptionUI;
 import com.ferruml.system.hardware.Win32_Processor;
 
 final class Cpu {

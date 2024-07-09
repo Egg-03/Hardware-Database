@@ -23,19 +23,23 @@ import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
-import com.egg.errorui.ExceptionUI;
+import com.egg.database.DataDeletion;
+import com.egg.miniuis.ConfirmationUI;
+import com.egg.miniuis.ExceptionUI;
+import com.egg.miniuis.LocationNameProvider;
 import com.ferruml.error.ErrorLog;
 
 public class AppWindow {
 
 	private JFrame feldbdmp;
-	private JTextField hardwareIdTextField;
-	
+
 	private JComboBox<String> osNameChoice;
 	private JComboBox<String> cpuNumberChoice;
 	private JComboBox<String> gpuNumberChoice;
 	private JComboBox<String> connectionIdChoice;
 	private JComboBox<String> storageIndexChoice;
+	
+	private JTextField hardwareIdTextField;
 	
 	private JTextField cpuNameTextField;
 	private JTextField osArchTextField;
@@ -59,6 +63,7 @@ public class AppWindow {
 	
 	private JTextField networkDescriptionTextField;
 	private JTextField networkMacTextField;
+	private JTextField ipAddressTextField;
 	
 	private JTextField storageSerialTextField;
 	private JTextField storageSizeTextField;
@@ -90,7 +95,7 @@ public class AppWindow {
 	
 	private void setTheme() {
 		try {
-			UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
+			UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarculaLaf");
 			SwingUtilities.updateComponentTreeUI(feldbdmp);
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			new ErrorLog().log(" ExceptionUI Theme Load Error: "+e.getMessage());
@@ -104,7 +109,7 @@ public class AppWindow {
 		feldbdmp = new JFrame();
 		feldbdmp.setResizable(false);
 		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/ferrum_legacy.png")));
-		feldbdmp.setTitle("FerrumL Dumper Tool v1.00-Beta");
+		feldbdmp.setTitle("FeL Dump Tool DevBuild-InternalRelease v08072024");
 		feldbdmp.setBounds(100, 100, 450, 721);
 		feldbdmp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		feldbdmp.getContentPane().setLayout(null);
@@ -158,16 +163,31 @@ public class AppWindow {
 		ferrumEngineVersion.setFont(new Font("Segoe UI", Font.ITALIC, 11));
 		ferrumEngineVersion.setHorizontalAlignment(SwingConstants.CENTER);
 		ferrumEngineVersion.setEditable(false);
-		ferrumEngineVersion.setText("Running on FerrumL Core v1.2.5");
-		ferrumEngineVersion.setBounds(207, 48, 195, 24);
+		ferrumEngineVersion.setText("FeL Core v1.2.6");
+		ferrumEngineVersion.setBounds(294, 48, 108, 24);
 		hardwareIdPanel.add(ferrumEngineVersion);
 		ferrumEngineVersion.setColumns(10);
 		
 		JButton dataDumpButton = new JButton("Dump");
-		dataDumpButton.setToolTipText("Not yet implemented");
-		dataDumpButton.setEnabled(false);
-		dataDumpButton.setBounds(112, 48, 83, 24);
+		dataDumpButton.setToolTipText("Dumps the visible data into a local database");
+		dataDumpButton.setBounds(107, 48, 83, 24);
+		dataDumpButton.addActionListener(e-> new LocationNameProvider().setVisible(true));
 		hardwareIdPanel.add(dataDumpButton);
+		
+		JButton dataDeleteButton = new JButton("Delete");
+		dataDeleteButton.setToolTipText("Deletes existing information");
+		dataDeleteButton.setBounds(197, 48, 83, 24);
+		dataDeleteButton.addActionListener(e->{
+			ConfirmationUI warning = new ConfirmationUI();
+			warning.getQuestionLabel().setText("Destructive operation ahead. Continue ?");
+			warning.getBtnYes().addActionListener(e1->{
+				warning.dispose();
+				DataDeletion.delete();
+			});
+			warning.getBtnNo().addActionListener(e1->warning.dispose());
+			warning.setVisible(true);
+		});
+		hardwareIdPanel.add(dataDeleteButton);
 	}
 	
 	private void osPanel() {
@@ -449,7 +469,7 @@ public class AppWindow {
 		mainboardManufacturerTextField.setBounds(90, 55, 173, 24);
 		mainboardPanel.add(mainboardManufacturerTextField);
 		
-		JLabel biosVersion = new JLabel("BIOS Ver.");
+		JLabel biosVersion = new JLabel("BIOS Version");
 		biosVersion.setToolTipText("BIOS Version");
 		biosVersion.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
 		biosVersion.setBounds(268, 54, 67, 24);
@@ -493,10 +513,10 @@ public class AppWindow {
 		networkDescriptionTextField = new JTextField();
 		networkDescriptionTextField.setText((String) null);
 		networkDescriptionTextField.setHorizontalAlignment(SwingConstants.CENTER);
-		networkDescriptionTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		networkDescriptionTextField.setFont(new Font("Segoe UI", Font.PLAIN, 9));
 		networkDescriptionTextField.setEditable(false);
 		networkDescriptionTextField.setColumns(10);
-		networkDescriptionTextField.setBounds(78, 55, 322, 24);
+		networkDescriptionTextField.setBounds(78, 55, 153, 24);
 		network.add(networkDescriptionTextField);
 		
 		JLabel networkMac = new JLabel("MAC Address");
@@ -512,6 +532,21 @@ public class AppWindow {
 		networkMacTextField.setColumns(10);
 		networkMacTextField.setBounds(247, 22, 153, 24);
 		network.add(networkMacTextField);
+		
+		ipAddressTextField = new JTextField();
+		ipAddressTextField.setText((String) null);
+		ipAddressTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		ipAddressTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		ipAddressTextField.setEditable(false);
+		ipAddressTextField.setColumns(10);
+		ipAddressTextField.setBounds(280, 56, 120, 24);
+		network.add(ipAddressTextField);
+		
+		JLabel networkIp = new JLabel("IPv4");
+		networkIp.setToolTipText("The Link Local IPv4 address assigned automatically/manually");
+		networkIp.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		networkIp.setBounds(243, 56, 29, 20);
+		network.add(networkIp);
 	}
 	
 	private void storagePanel() {
@@ -603,7 +638,7 @@ public class AppWindow {
 	        Runnable initializeMemory = () -> Memory.initializeMemory(memorySlotTextField, totalMemoryTextField);
 	        Runnable initializeVideoController = () -> VideoController.initializeVideoController(gpuNumberChoice, gpuNameTextField, gpuVramTextField, gpuDriverVersionTextField);
 	        Runnable initializeMainboard = () -> Mainboard.initializeMainboard(mainboardNameTextField, mainboardManufacturerTextField, biosVersionTextField);
-	        Runnable initializeNetwork = () -> Network.initializeNetwork(connectionIdChoice, networkMacTextField, networkDescriptionTextField);
+	        Runnable initializeNetwork = () -> Network.initializeNetwork(connectionIdChoice, networkMacTextField, networkDescriptionTextField, ipAddressTextField);
 	        Runnable initializeStorage = () -> Storage.initializeStorage(storageIndexChoice, storageNameTextField, storageSerialTextField, storageSmartTextField, storageSizeTextField);
 
 	        // Submit all tasks to the executor service
