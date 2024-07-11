@@ -31,6 +31,7 @@ final class Memory {
 			}
 			
 			memoryFields[1].setText(String.valueOf(totalSize/(1024*1024))+" MB");
+			System.out.println("Memory Success");
 		} catch (IndexOutOfBoundsException | IOException e) {
 			new ExceptionUI("Memory Error", e.getMessage()).setVisible(true);
 		}

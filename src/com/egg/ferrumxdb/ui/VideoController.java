@@ -28,6 +28,7 @@ final class VideoController {
 			Long adapterRam = Long.parseLong(gpuProperties.get("AdapterRAM"))/(1024*1024);
 			gpuFields[1].setText(String.valueOf(adapterRam)+" MB");
 			gpuFields[2].setText(gpuProperties.get("DriverVersion"));
+			System.out.println("GPU Success");
 		} catch (IndexOutOfBoundsException | IOException e) {
 			new ExceptionUI("GPU Error", e.getMessage()).setVisible(true);
 		}

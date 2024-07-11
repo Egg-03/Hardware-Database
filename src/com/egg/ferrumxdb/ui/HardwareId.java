@@ -17,6 +17,7 @@ final class HardwareId {
 		try {
 			hardwareIdTextField.setText(HardwareID.getHardwareID());
 			hardwareIdTextField.setCaretPosition(0);
+			System.out.println("HWID Success");
 		} catch (ExecutionException | InterruptedException e) {
 			new ExceptionUI("HWID Error", e.getMessage()).setVisible(true);
 			Thread.currentThread().interrupt();

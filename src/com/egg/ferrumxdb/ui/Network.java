@@ -33,6 +33,7 @@ final class Network {
 			networkFields[0].setText(networkProperties.get("MACAddress"));
 			networkFields[1].setText(networkProperties.get("Description"));
 			networkFields[2].setText(networkAddress.get("IPAddress"));
+			System.out.println("Network Success");
 				
 		} catch (IndexOutOfBoundsException | IOException e) {
 			new ExceptionUI("Network Error", e.getMessage()).setVisible(true);

@@ -30,6 +30,7 @@ final class Cpu {
 			cpuFields[1].setText(cpuProperties.get("NumberOfCores"));
 			cpuFields[2].setText(cpuProperties.get("ThreadCount"));
 			cpuFields[3].setText(cpuProperties.get("SocketDesignation"));
+			System.out.println("CPU Success");
 		} catch (IndexOutOfBoundsException | IOException e) {
 			new ExceptionUI("CPU Error", e.getMessage()).setVisible(true);
 		}

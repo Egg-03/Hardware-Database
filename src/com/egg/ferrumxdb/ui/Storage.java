@@ -33,6 +33,7 @@ final class Storage {
 			
 			Long diskSize = Long.parseLong(diskProperties.get("Size"))/(1024*1024*1024);
 			storageFields[3].setText(String.valueOf(diskSize)+" GB");
+			System.out.println("Storage Success");
 		} catch (IndexOutOfBoundsException | IOException e) {
 			new ExceptionUI("Storage Error", e.getMessage()).setVisible(true);
 		}

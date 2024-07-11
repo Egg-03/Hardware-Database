@@ -28,6 +28,7 @@ final class OperatingSystem {
 			deviceNameTextField.setText(osProperties.get("CSName"));
 			osArchTextField.setText(osProperties.get("OSArchitecture"));
 			currentUserTextField.setText(User.getUsername());
+			System.out.println("Network Success");
 		} catch (IndexOutOfBoundsException | IOException e) {
 			new ExceptionUI("OS Error", e.getMessage()).setVisible(true);
 		}
