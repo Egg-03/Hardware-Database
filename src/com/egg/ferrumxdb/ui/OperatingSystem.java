@@ -1,4 +1,4 @@
-package com.egg.ferrumldb.ui;
+package com.egg.ferrumxdb.ui;
 
 import java.io.IOException;
 import java.util.List;
@@ -8,8 +8,8 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 import com.egg.miniuis.ExceptionUI;
-import com.ferruml.system.currentuser.User;
-import com.ferruml.system.operatingsystem.Win32_OperatingSystem;
+import com.ferrumx.system.currentuser.User;
+import com.ferrumx.system.operating_system.Win32_OperatingSystem;
 
 final class OperatingSystem {
 	

@@ -1,4 +1,4 @@
-package com.egg.ferrumldb.ui;
+package com.egg.ferrumxdb.ui;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.swing.JTextField;
 
 import com.egg.miniuis.ExceptionUI;
-import com.ferruml.system.hardware.Win32_PhysicalMemory;
+import com.ferrumx.system.hardware.Win32_PhysicalMemory;
 
 final class Memory {
 	

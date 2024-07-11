@@ -1,4 +1,4 @@
-package com.egg.ferrumldb.ui;
+package com.egg.ferrumxdb.ui;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -27,7 +27,7 @@ import com.egg.database.DataDeletion;
 import com.egg.miniuis.ConfirmationUI;
 import com.egg.miniuis.ExceptionUI;
 import com.egg.miniuis.LocationNameProvider;
-import com.ferruml.error.ErrorLog;
+import com.ferrumx.system.logger.ErrorLog;
 
 public class AppWindow {
 
@@ -95,7 +95,7 @@ public class AppWindow {
 	
 	private void setTheme() {
 		try {
-			UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarculaLaf");
+			UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
 			SwingUtilities.updateComponentTreeUI(feldbdmp);
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			new ErrorLog().log(" ExceptionUI Theme Load Error: "+e.getMessage());
@@ -108,8 +108,8 @@ public class AppWindow {
 	private void initializeComponents() {
 		feldbdmp = new JFrame();
 		feldbdmp.setResizable(false);
-		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/ferrum_legacy.png")));
-		feldbdmp.setTitle("FeL Dump Tool DevBuild-InternalRelease v08072024");
+		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/icon_main.png")));
+		feldbdmp.setTitle("FeX Dump Tool DevBuild-InternalRelease v11072024");
 		feldbdmp.setBounds(100, 100, 450, 721);
 		feldbdmp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		feldbdmp.getContentPane().setLayout(null);
@@ -163,7 +163,7 @@ public class AppWindow {
 		ferrumEngineVersion.setFont(new Font("Segoe UI", Font.ITALIC, 11));
 		ferrumEngineVersion.setHorizontalAlignment(SwingConstants.CENTER);
 		ferrumEngineVersion.setEditable(false);
-		ferrumEngineVersion.setText("FeL Core v1.2.6");
+		ferrumEngineVersion.setText("FeX Core v1.2.4");
 		ferrumEngineVersion.setBounds(294, 48, 108, 24);
 		hardwareIdPanel.add(ferrumEngineVersion);
 		ferrumEngineVersion.setColumns(10);
@@ -542,10 +542,11 @@ public class AppWindow {
 		ipAddressTextField.setBounds(280, 56, 120, 24);
 		network.add(ipAddressTextField);
 		
-		JLabel networkIp = new JLabel("IPv4");
-		networkIp.setToolTipText("The Link Local IPv4 address assigned automatically/manually");
+		JLabel networkIp = new JLabel("IPv4/6");
+		networkIp.setHorizontalAlignment(SwingConstants.RIGHT);
+		networkIp.setToolTipText("The Link Local IPv4/IPv6 address assigned automatically/manually");
 		networkIp.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		networkIp.setBounds(243, 56, 29, 20);
+		networkIp.setBounds(232, 56, 40, 20);
 		network.add(networkIp);
 	}
 	

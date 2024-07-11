@@ -17,7 +17,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
 import com.egg.database.DataInsertion;
-import com.ferruml.error.ErrorLog;
+import com.ferrumx.system.logger.ErrorLog;
 
 //Location and Name Selector UI
 //This should appear when you're dumping new data or updating it

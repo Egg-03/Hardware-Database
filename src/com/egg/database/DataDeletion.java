@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutionException;
 
 import com.egg.miniuis.ExceptionUI;
 import com.egg.miniuis.InformationUI;
-import com.ferruml.system.hardware.HWID;
+import com.ferrumx.system.hardware.HardwareID;
 
 //WARNING: THIS WILL WORK IFF THE HARDWARE ID OF THE CURRENT MACHINE MATCHES WITH ONE OF THE ID's STORED IN THE DB
 public class DataDeletion {
@@ -19,7 +19,7 @@ public class DataDeletion {
 	
 	private static String getHWID() {
 		try {
-			return HWID.getHardwareID();
+			return HardwareID.getHardwareID();
 		} catch (ExecutionException | InterruptedException e) {
 			new ExceptionUI("Database Dump Error", "HWID could not be retrieved\n"+e.getMessage()).setVisible(true);
 			Thread.currentThread().interrupt();

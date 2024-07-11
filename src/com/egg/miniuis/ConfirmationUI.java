@@ -1,10 +1,14 @@
 package com.egg.miniuis;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Toolkit;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -12,11 +16,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
-import com.ferruml.error.ErrorLog;
-import javax.swing.JButton;
-import java.awt.Font;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
+import com.ferrumx.system.logger.ErrorLog;
 
 public class ConfirmationUI extends JFrame {
 	private static final long serialVersionUID = -4503451098970252115L;
