@@ -641,7 +641,7 @@ public class AppWindow {
 	        startScreen.setNetworkLabel(initializeNetwork.get());
 	        startScreen.setStorageLabel(initializeStorage.get());
 	        
-	        TimeUnit.SECONDS.sleep(1);
+	        TimeUnit.MILLISECONDS.sleep(250);
 	        startScreen.dispose();
 		} catch (RejectedExecutionException | NullPointerException | InterruptedException | ExecutionException e) {
 			new ExceptionUI("Host Gather System Info Error", e.getMessage()).setVisible(true);

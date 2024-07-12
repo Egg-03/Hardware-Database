@@ -29,7 +29,7 @@ public class InformationUI extends JFrame {
 	
 	private void setTheme() {
 		try {
-			UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarculaLaf");
+			UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
 			SwingUtilities.updateComponentTreeUI(this);
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			new ErrorLog().log(" InformationUI Theme Load Error: "+e.getMessage());
