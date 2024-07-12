@@ -17,7 +17,7 @@ final class OperatingSystem {
 		throw new IllegalStateException("Class method to be used only in the main frame class");
 	}
 	
-	protected static void initializeOs(JComboBox<String> osNameChoice, JTextField deviceNameTextField, JTextField osArchTextField, JTextField currentUserTextField ) {
+	protected static boolean initializeOs(JComboBox<String> osNameChoice, JTextField deviceNameTextField, JTextField osArchTextField, JTextField currentUserTextField ) {
 		List<String> osNames;
 		try {
 			osNames = Win32_OperatingSystem.getOSList();
@@ -28,9 +28,10 @@ final class OperatingSystem {
 			deviceNameTextField.setText(osProperties.get("CSName"));
 			osArchTextField.setText(osProperties.get("OSArchitecture"));
 			currentUserTextField.setText(User.getUsername());
-			System.out.println("Network Success");
+			
 		} catch (IndexOutOfBoundsException | IOException e) {
 			new ExceptionUI("OS Error", e.getMessage()).setVisible(true);
+			return false;
 		}
 		
 		
@@ -45,5 +46,6 @@ final class OperatingSystem {
 				new ExceptionUI("OS Error", e1.getMessage()).setVisible(true);
 			}
 		});
+		return true;
 	}
 }

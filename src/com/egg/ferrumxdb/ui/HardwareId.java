@@ -13,14 +13,15 @@ final class HardwareId {
 		throw new IllegalStateException("Class method to be used only in the main frame class");
 	}
 	
-	protected static void initializeHardwareId(JTextField hardwareIdTextField){
+	protected static boolean initializeHardwareId(JTextField hardwareIdTextField){
 		try {
 			hardwareIdTextField.setText(HardwareID.getHardwareID());
 			hardwareIdTextField.setCaretPosition(0);
-			System.out.println("HWID Success");
+			return true;
 		} catch (ExecutionException | InterruptedException e) {
 			new ExceptionUI("HWID Error", e.getMessage()).setVisible(true);
 			Thread.currentThread().interrupt();
+			return false;
 		}
 	}
 }

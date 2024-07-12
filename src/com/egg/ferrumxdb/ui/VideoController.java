@@ -16,7 +16,7 @@ final class VideoController {
 		throw new IllegalStateException("Class method to be used only in the main frame class");
 	}
 	
-	protected static void initializeVideoController(JComboBox<String> gpuNumberChoice, JTextField...gpuFields) {
+	protected static boolean initializeVideoController(JComboBox<String> gpuNumberChoice, JTextField...gpuFields) {
 		List<String> gpus;
 		try {
 			gpus = Win32_VideoController.getGPUID();
@@ -28,11 +28,11 @@ final class VideoController {
 			Long adapterRam = Long.parseLong(gpuProperties.get("AdapterRAM"))/(1024*1024);
 			gpuFields[1].setText(String.valueOf(adapterRam)+" MB");
 			gpuFields[2].setText(gpuProperties.get("DriverVersion"));
-			System.out.println("GPU Success");
+			
 		} catch (IndexOutOfBoundsException | IOException e) {
 			new ExceptionUI("GPU Error", e.getMessage()).setVisible(true);
+			return false;
 		}
-		
 		
 		gpuNumberChoice.addActionListener(e-> {
 			Map<String, String> gpuProperties;
@@ -54,5 +54,6 @@ final class VideoController {
 				gpuFields[1].setText("0 MB");
 			}
 		});
+		return true;
 	}
 }

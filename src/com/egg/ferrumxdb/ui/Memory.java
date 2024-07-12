@@ -16,7 +16,7 @@ final class Memory {
 		throw new IllegalStateException("Class method to be used only in the main frame class");
 	}
 	
-	protected static void initializeMemory(JTextField...memoryFields){
+	protected static boolean initializeMemory(JTextField...memoryFields){
 		List<String> memoryList;
 		try {
 			memoryList = Win32_PhysicalMemory.getTag();
@@ -31,9 +31,10 @@ final class Memory {
 			}
 			
 			memoryFields[1].setText(String.valueOf(totalSize/(1024*1024))+" MB");
-			System.out.println("Memory Success");
+			return true;
 		} catch (IndexOutOfBoundsException | IOException e) {
 			new ExceptionUI("Memory Error", e.getMessage()).setVisible(true);
+			return false;
 		}
 		
 	}

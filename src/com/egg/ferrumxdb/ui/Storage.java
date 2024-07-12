@@ -16,7 +16,7 @@ final class Storage {
 		throw new IllegalStateException("Class method to be used only in the main frame class");
 	}
 	
-	protected static void initializeStorage(JComboBox<String> storageNameChoice, JTextField...storageFields) {
+	protected static boolean initializeStorage(JComboBox<String> storageNameChoice, JTextField...storageFields) {
 		List<String> disks;
 		try {
 			disks = Win32_DiskDrive.getDriveID();
@@ -33,9 +33,10 @@ final class Storage {
 			
 			Long diskSize = Long.parseLong(diskProperties.get("Size"))/(1024*1024*1024);
 			storageFields[3].setText(String.valueOf(diskSize)+" GB");
-			System.out.println("Storage Success");
+			
 		} catch (IndexOutOfBoundsException | IOException e) {
 			new ExceptionUI("Storage Error", e.getMessage()).setVisible(true);
+			return false;
 		}
 		
 		storageNameChoice.addActionListener(e-> {
@@ -61,5 +62,6 @@ final class Storage {
 				storageFields[2].setText("0 GB");
 			}
 		});
+		return true;
 	}
 }

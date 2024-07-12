@@ -19,7 +19,7 @@ final class Network {
 	}
 	
 	
-	protected static void initializeNetwork(JComboBox<String> connectionIdChoice, JTextField...networkFields) {
+	protected static boolean initializeNetwork(JComboBox<String> connectionIdChoice, JTextField...networkFields) {
 		List<String> networkAdapters;
 		try {
 			networkAdapters = Win32_NetworkAdapter.getDeviceIDList();
@@ -33,10 +33,10 @@ final class Network {
 			networkFields[0].setText(networkProperties.get("MACAddress"));
 			networkFields[1].setText(networkProperties.get("Description"));
 			networkFields[2].setText(networkAddress.get("IPAddress"));
-			System.out.println("Network Success");
 				
 		} catch (IndexOutOfBoundsException | IOException e) {
 			new ExceptionUI("Network Error", e.getMessage()).setVisible(true);
+			return false;
 		}
 		
 		//action listener for multiple network adapter choices
@@ -52,5 +52,6 @@ final class Network {
 				new ExceptionUI("Network Error", e1.getMessage()).setVisible(true);
 			}
 		});
+		return true;
 	}
 }

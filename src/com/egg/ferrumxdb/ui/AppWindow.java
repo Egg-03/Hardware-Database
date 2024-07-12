@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -27,6 +29,7 @@ import com.egg.database.DataDeletion;
 import com.egg.miniuis.ConfirmationUI;
 import com.egg.miniuis.ExceptionUI;
 import com.egg.miniuis.LocationNameProvider;
+import com.egg.miniuis.StatusUI;
 import com.ferrumx.system.logger.ErrorLog;
 
 public class AppWindow {
@@ -70,7 +73,7 @@ public class AppWindow {
 	private JTextField storageSmartTextField;
 	private JTextField storageNameTextField;
 	
-
+	
 	/**
 	 * Launch the application.
 	 */
@@ -90,7 +93,7 @@ public class AppWindow {
 	public AppWindow() {
 		initializeComponents();
 		setTheme();
-		initializeSystemInfo();
+		initializeSystemInfo(new StatusUI());
 	}
 	
 	private void setTheme() {
@@ -630,29 +633,32 @@ public class AppWindow {
 		storage.add(storageName);
 	}
 	
-	private void initializeSystemInfo() {
+	private void initializeSystemInfo(StatusUI startScreen) {
 		try(ExecutorService infoFetch = Executors.newFixedThreadPool(8)){
 			// Define tasks for each function call
-	        Runnable initializeHardwareId = () -> HardwareId.initializeHardwareId(hardwareIdTextField);
-	        Runnable initializeOs = () -> OperatingSystem.initializeOs(osNameChoice, deviceNameTextField, osArchTextField, currentUserTextField);
-	        Runnable initializeCpu = () -> Cpu.initializeCpu(cpuNumberChoice, cpuNameTextField, cpuCoreTextField, cpuThreadTextField, cpuSocketTextField);
-	        Runnable initializeMemory = () -> Memory.initializeMemory(memorySlotTextField, totalMemoryTextField);
-	        Runnable initializeVideoController = () -> VideoController.initializeVideoController(gpuNumberChoice, gpuNameTextField, gpuVramTextField, gpuDriverVersionTextField);
-	        Runnable initializeMainboard = () -> Mainboard.initializeMainboard(mainboardNameTextField, mainboardManufacturerTextField, biosVersionTextField);
-	        Runnable initializeNetwork = () -> Network.initializeNetwork(connectionIdChoice, networkMacTextField, networkDescriptionTextField, ipAddressTextField);
-	        Runnable initializeStorage = () -> Storage.initializeStorage(storageIndexChoice, storageNameTextField, storageSerialTextField, storageSmartTextField, storageSizeTextField);
-
-	        // Submit all tasks to the executor service
-	        infoFetch.submit(initializeHardwareId);
-	        infoFetch.submit(initializeOs);
-	        infoFetch.submit(initializeCpu);
-	        infoFetch.submit(initializeMemory);
-	        infoFetch.submit(initializeVideoController);
-	        infoFetch.submit(initializeMainboard);
-	        infoFetch.submit(initializeNetwork);
-	        infoFetch.submit(initializeStorage);
-		} catch (RejectedExecutionException | NullPointerException e) {
+	        Future<Boolean> initializeHardwareId = infoFetch.submit(() -> HardwareId.initializeHardwareId(hardwareIdTextField));
+	        Future<Boolean> initializeOs = infoFetch.submit(() -> OperatingSystem.initializeOs(osNameChoice, deviceNameTextField, osArchTextField, currentUserTextField));
+	        Future<Boolean> initializeCpu = infoFetch.submit(() -> Cpu.initializeCpu(cpuNumberChoice, cpuNameTextField, cpuCoreTextField, cpuThreadTextField, cpuSocketTextField));
+	        Future<Boolean> initializeMemory = infoFetch.submit(() -> Memory.initializeMemory(memorySlotTextField, totalMemoryTextField));
+	        Future<Boolean> initializeVideoController = infoFetch.submit(() -> VideoController.initializeVideoController(gpuNumberChoice, gpuNameTextField, gpuVramTextField, gpuDriverVersionTextField));
+	        Future<Boolean> initializeMainboard = infoFetch.submit(() -> Mainboard.initializeMainboard(mainboardNameTextField, mainboardManufacturerTextField, biosVersionTextField));
+	        Future<Boolean> initializeNetwork = infoFetch.submit(() -> Network.initializeNetwork(connectionIdChoice, networkMacTextField, networkDescriptionTextField, ipAddressTextField));
+	        Future<Boolean> initializeStorage = infoFetch.submit(() -> Storage.initializeStorage(storageIndexChoice, storageNameTextField, storageSerialTextField, storageSmartTextField, storageSizeTextField));
+	        
+	        startScreen.setHardwareLabel(initializeHardwareId.get());
+	        startScreen.setOsLabel(initializeOs.get());
+	        startScreen.setCpuLabel(initializeCpu.get());
+	        startScreen.setMemoryLabel(initializeMemory.get());
+	        startScreen.setGpuLabel(initializeVideoController.get());
+	        startScreen.setMainboardLabel(initializeMainboard.get());
+	        startScreen.setNetworkLabel(initializeNetwork.get());
+	        startScreen.setStorageLabel(initializeStorage.get());
+	        
+	        TimeUnit.SECONDS.sleep(1);
+	        startScreen.dispose();
+		} catch (RejectedExecutionException | NullPointerException | InterruptedException | ExecutionException e) {
 			new ExceptionUI("Host Gather System Info Error", e.getMessage()).setVisible(true);
+			Thread.currentThread().interrupt();
 		}
 	}
 }
