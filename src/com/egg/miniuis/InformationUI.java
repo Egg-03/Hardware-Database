@@ -37,7 +37,7 @@ public class InformationUI extends JFrame {
 	}
 	
 	private void initialize(String infoLabel) {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(InformationUI.class.getResource("/res/ferrum_legacy.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(InformationUI.class.getResource("/res/icon_main.png")));
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setSize(300,140);

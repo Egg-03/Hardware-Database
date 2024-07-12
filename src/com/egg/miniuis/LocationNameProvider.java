@@ -40,7 +40,7 @@ public class LocationNameProvider extends JFrame {
 	}
 	
 	private void initialize() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(LocationNameProvider.class.getResource("/res/ferrum_legacy.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(LocationNameProvider.class.getResource("/res/icon_main.png")));
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setSize(490,190);

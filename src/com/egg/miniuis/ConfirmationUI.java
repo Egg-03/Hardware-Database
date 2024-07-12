@@ -40,7 +40,7 @@ public class ConfirmationUI extends JFrame {
 	}
 	
 	private void initialize() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(ConfirmationUI.class.getResource("/res/ferrum_legacy.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(ConfirmationUI.class.getResource("/res/icon_main.png")));
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setSize(300,140);

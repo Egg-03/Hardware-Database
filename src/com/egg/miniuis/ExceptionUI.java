@@ -30,7 +30,7 @@ public class ExceptionUI extends JFrame{
 	}
 	
 	private void initialize(String errorName, String errorMessage) {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(ExceptionUI.class.getResource("/res/ferrum_legacy.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(ExceptionUI.class.getResource("/res/icon_main.png")));
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setSize(490,190);
