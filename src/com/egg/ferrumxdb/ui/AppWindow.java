@@ -93,7 +93,7 @@ public class AppWindow {
 	public AppWindow() {
 		initializeComponents();
 		setTheme();
-		initializeSystemInfo(new StatusUI());
+		initializeSystemInfo(new StatusUI("Booting Up", "Please wait till FerrumX gathers information about your system"));
 	}
 	
 	private void setTheme() {
@@ -112,7 +112,7 @@ public class AppWindow {
 		feldbdmp = new JFrame();
 		feldbdmp.setResizable(false);
 		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/icon_main.png")));
-		feldbdmp.setTitle("FeX Dump Tool DevBuild-InternalRelease v11072024");
+		feldbdmp.setTitle("FeX Dump Tool DevBuild-InternalRelease v12072024");
 		feldbdmp.setBounds(100, 100, 450, 721);
 		feldbdmp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		feldbdmp.getContentPane().setLayout(null);
@@ -149,37 +149,24 @@ public class AppWindow {
 		hardwareIdPanel.add(hardwareIdTextField);
 		hardwareIdTextField.setColumns(10);
 		
-		JButton restartButton = new JButton("Restart");
-		restartButton.setToolTipText("Restarts the application. \r\nThis should be used in case you have hot swapped a new detectable hardware. \r\nAfter a restart, the application should be able to detect the new hardware.");
-		restartButton.addActionListener(e-> {
-			//close app
-			feldbdmp.dispose();
-			//restart
-			AppWindow window = new AppWindow();
-			window.feldbdmp.setLocationRelativeTo(null);
-			window.feldbdmp.setVisible(true);
-		});
-		restartButton.setBounds(17, 48, 83, 24);
-		hardwareIdPanel.add(restartButton);
-		
 		JTextField ferrumEngineVersion = new JTextField();
 		ferrumEngineVersion.setFont(new Font("Segoe UI", Font.ITALIC, 11));
 		ferrumEngineVersion.setHorizontalAlignment(SwingConstants.CENTER);
 		ferrumEngineVersion.setEditable(false);
-		ferrumEngineVersion.setText("FeX Core v1.2.4");
-		ferrumEngineVersion.setBounds(294, 48, 108, 24);
+		ferrumEngineVersion.setText("Running on FerrumX Core v1.2.4");
+		ferrumEngineVersion.setBounds(195, 48, 207, 24);
 		hardwareIdPanel.add(ferrumEngineVersion);
 		ferrumEngineVersion.setColumns(10);
 		
 		JButton dataDumpButton = new JButton("Dump");
 		dataDumpButton.setToolTipText("Dumps the visible data into a local database");
-		dataDumpButton.setBounds(107, 48, 83, 24);
+		dataDumpButton.setBounds(17, 48, 83, 24);
 		dataDumpButton.addActionListener(e-> new LocationNameProvider().setVisible(true));
 		hardwareIdPanel.add(dataDumpButton);
 		
 		JButton dataDeleteButton = new JButton("Delete");
 		dataDeleteButton.setToolTipText("Deletes existing information");
-		dataDeleteButton.setBounds(197, 48, 83, 24);
+		dataDeleteButton.setBounds(102, 48, 83, 24);
 		dataDeleteButton.addActionListener(e->{
 			ConfirmationUI warning = new ConfirmationUI();
 			warning.getQuestionLabel().setText("Destructive operation ahead. Continue ?");

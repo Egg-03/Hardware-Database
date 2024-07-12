@@ -33,9 +33,12 @@ public class StatusUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public StatusUI() {
-		setTheme();
-		initialize();
+	public StatusUI(String title, String message) {
+		SwingUtilities.invokeLater(()->{
+			setTheme();
+			initialize(title, message);
+		});
+		
 	}
 	
 	private void setTheme() {
@@ -47,10 +50,10 @@ public class StatusUI extends JFrame {
 		}
 	}
 	
-	private void initialize() {
+	private void initialize(String title, String message) {
 		JPanel contentPane;
 		setVisible(true);
-		setTitle("Booting Up");
+		setTitle(title);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(StatusUI.class.getResource("/res/icon_main.png")));
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 200);
@@ -67,7 +70,7 @@ public class StatusUI extends JFrame {
 		getContentPane().add(statusPanel);
 		statusPanel.setLayout(null);
 		
-		JLabel infoLabel = new JLabel("Please wait while FerrumX gathers information about your system");
+		JLabel infoLabel = new JLabel(message);
 		infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		infoLabel.setBounds(10, 11, 394, 24);
 		statusPanel.add(infoLabel);
