@@ -29,7 +29,8 @@ final class Cpu {
 			cpuFields[0].setText(cpuProperties.get("Name"));
 			cpuFields[1].setText(cpuProperties.get("NumberOfCores"));
 			cpuFields[2].setText(cpuProperties.get("ThreadCount"));
-			cpuFields[3].setText(cpuProperties.get("SocketDesignation"));
+			cpuFields[3].setText(cpuProperties.get("MaxClockSpeed")+" MHz");
+			cpuFields[4].setText(cpuProperties.get("SocketDesignation"));
 			
 		} catch (IndexOutOfBoundsException | IOException e) {
 			new ExceptionUI("CPU Error", e.getMessage()).setVisible(true);
@@ -45,7 +46,8 @@ final class Cpu {
 				cpuFields[0].setText(cpuProperties.get("Name"));
 				cpuFields[1].setText(cpuProperties.get("NumberOfCores"));
 				cpuFields[2].setText(cpuProperties.get("ThreadCount"));
-				cpuFields[3].setText(cpuProperties.get("SocketDesignation"));
+				cpuFields[3].setText(cpuProperties.get("MaxClockSpeed")+" MHz");
+				cpuFields[4].setText(cpuProperties.get("SocketDesignation"));
 			} catch (IndexOutOfBoundsException | IOException e1) {
 				new ExceptionUI("CPU Error", e1.getMessage()).setVisible(true);
 			}	

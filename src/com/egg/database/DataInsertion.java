@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.egg.miniuis.ExceptionUI;
 import com.egg.miniuis.InformationUI;
@@ -237,13 +239,23 @@ public class DataInsertion {
 	public static final void insert(String username, String location) {
 		connect = DatabaseConnectivity.initialize();
 		if(insertHardwareId(username, location)) {
-			insertMainboard();
-			insertCpu();
-			insertMemory();
-			insertGpu();
-			insertStorage();
-			insertNetwork();
-			insertOperatingSystem();
+			try(ExecutorService dumperThreads = Executors.newFixedThreadPool(7)){
+				Runnable mainboard = ()->insertMainboard();
+				Runnable cpu = ()->insertCpu();
+				Runnable memory = ()->insertMemory();
+				Runnable gpu = ()->insertGpu();
+				Runnable storage = ()->insertStorage();
+				Runnable network = ()->insertNetwork();
+				Runnable os = ()->insertOperatingSystem();
+				
+				dumperThreads.submit(mainboard);
+				dumperThreads.submit(cpu);
+				dumperThreads.submit(memory);
+				dumperThreads.submit(gpu);
+				dumperThreads.submit(storage);
+				dumperThreads.submit(network);
+				dumperThreads.submit(os);
+			}
 		}
 		DatabaseConnectivity.close(connect);
 	}

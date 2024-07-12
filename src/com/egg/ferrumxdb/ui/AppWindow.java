@@ -72,6 +72,7 @@ public class AppWindow {
 	private JTextField storageSizeTextField;
 	private JTextField storageSmartTextField;
 	private JTextField storageNameTextField;
+	private JTextField cpuBaseClockTextField;
 	
 	
 	/**
@@ -265,7 +266,7 @@ public class AppWindow {
 		JLabel cpuSocket = new JLabel("Socket");
 		cpuSocket.setToolTipText("CPU Socket");
 		cpuSocket.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		cpuSocket.setBounds(288, 49, 46, 22);
+		cpuSocket.setBounds(295, 49, 40, 22);
 		cpuPanel.add(cpuSocket);
 		
 		cpuSocketTextField = new JTextField();
@@ -274,7 +275,7 @@ public class AppWindow {
 		cpuSocketTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		cpuSocketTextField.setEditable(false);
 		cpuSocketTextField.setColumns(10);
-		cpuSocketTextField.setBounds(334, 50, 57, 22);
+		cpuSocketTextField.setBounds(345, 50, 46, 22);
 		cpuPanel.add(cpuSocketTextField);
 		
 		JLabel cpuCoreCount = new JLabel("Cores");
@@ -289,13 +290,13 @@ public class AppWindow {
 		cpuCoreTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		cpuCoreTextField.setEditable(false);
 		cpuCoreTextField.setColumns(10);
-		cpuCoreTextField.setBounds(48, 50, 30, 22);
+		cpuCoreTextField.setBounds(48, 50, 35, 22);
 		cpuPanel.add(cpuCoreTextField);
 		
 		JLabel cpuThreadCount = new JLabel("Threads");
 		cpuThreadCount.setToolTipText("CPU Threads");
 		cpuThreadCount.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		cpuThreadCount.setBounds(85, 49, 46, 22);
+		cpuThreadCount.setBounds(90, 49, 46, 22);
 		cpuPanel.add(cpuThreadCount);
 		
 		cpuThreadTextField = new JTextField();
@@ -303,7 +304,7 @@ public class AppWindow {
 		cpuThreadTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		cpuThreadTextField.setEditable(false);
 		cpuThreadTextField.setColumns(10);
-		cpuThreadTextField.setBounds(133, 50, 30, 22);
+		cpuThreadTextField.setBounds(136, 50, 35, 22);
 		cpuPanel.add(cpuThreadTextField);
 		
 		JLabel cpuNumber = new JLabel("CPU#");
@@ -318,6 +319,20 @@ public class AppWindow {
 		cpuNumberChoice.setEditable(false);
 		cpuNumberChoice.setBounds(48, 20, 57, 22);
 		cpuPanel.add(cpuNumberChoice);
+		
+		JLabel cpuBaseFreq = new JLabel("BCLK");
+		cpuBaseFreq.setToolTipText("CPU Base Clock");
+		cpuBaseFreq.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		cpuBaseFreq.setBounds(181, 49, 30, 22);
+		cpuPanel.add(cpuBaseFreq);
+		
+		cpuBaseClockTextField = new JTextField();
+		cpuBaseClockTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		cpuBaseClockTextField.setFont(new Font("Segoe UI", Font.PLAIN, 9));
+		cpuBaseClockTextField.setEditable(false);
+		cpuBaseClockTextField.setColumns(10);
+		cpuBaseClockTextField.setBounds(215, 49, 70, 22);
+		cpuPanel.add(cpuBaseClockTextField);
 	}
 	
 	private void memoryPanel() {
@@ -625,7 +640,7 @@ public class AppWindow {
 			// Define tasks for each function call
 	        Future<Boolean> initializeHardwareId = infoFetch.submit(() -> HardwareId.initializeHardwareId(hardwareIdTextField));
 	        Future<Boolean> initializeOs = infoFetch.submit(() -> OperatingSystem.initializeOs(osNameChoice, deviceNameTextField, osArchTextField, currentUserTextField));
-	        Future<Boolean> initializeCpu = infoFetch.submit(() -> Cpu.initializeCpu(cpuNumberChoice, cpuNameTextField, cpuCoreTextField, cpuThreadTextField, cpuSocketTextField));
+	        Future<Boolean> initializeCpu = infoFetch.submit(() -> Cpu.initializeCpu(cpuNumberChoice, cpuNameTextField, cpuCoreTextField, cpuThreadTextField, cpuBaseClockTextField, cpuSocketTextField));
 	        Future<Boolean> initializeMemory = infoFetch.submit(() -> Memory.initializeMemory(memorySlotTextField, totalMemoryTextField));
 	        Future<Boolean> initializeVideoController = infoFetch.submit(() -> VideoController.initializeVideoController(gpuNumberChoice, gpuNameTextField, gpuVramTextField, gpuDriverVersionTextField));
 	        Future<Boolean> initializeMainboard = infoFetch.submit(() -> Mainboard.initializeMainboard(mainboardNameTextField, mainboardManufacturerTextField, biosVersionTextField));
