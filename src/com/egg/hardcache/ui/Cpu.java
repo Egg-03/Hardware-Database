@@ -1,4 +1,4 @@
-package com.egg.ferrumldb.ui;
+package com.egg.hardcache.ui;
 
 import java.io.IOException;
 import java.util.List;
@@ -8,7 +8,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 import com.egg.miniuis.ExceptionUI;
-import com.ferruml.system.hardware.Win32_Processor;
+import com.ferrumx.system.hardware.Win32_Processor;
 
 final class Cpu {
 	
@@ -16,7 +16,7 @@ final class Cpu {
 		throw new IllegalStateException("Class method to be used only in the main frame class");
 	}
 	
-	protected static void initializeCpu(JComboBox<String> cpuNumberChoice, JTextField...cpuFields){
+	protected static boolean initializeCpu(JComboBox<String> cpuNumberChoice, JTextField...cpuFields){
 		try {
 			List<String> cpuNames = Win32_Processor.getProcessorList();
 			
@@ -29,9 +29,12 @@ final class Cpu {
 			cpuFields[0].setText(cpuProperties.get("Name"));
 			cpuFields[1].setText(cpuProperties.get("NumberOfCores"));
 			cpuFields[2].setText(cpuProperties.get("ThreadCount"));
-			cpuFields[3].setText(cpuProperties.get("SocketDesignation"));
+			cpuFields[3].setText(cpuProperties.get("MaxClockSpeed")+" MHz");
+			cpuFields[4].setText(cpuProperties.get("SocketDesignation"));
+			
 		} catch (IndexOutOfBoundsException | IOException e) {
 			new ExceptionUI("CPU Error", e.getMessage()).setVisible(true);
+			return false;
 		}
 		
 		
@@ -43,10 +46,12 @@ final class Cpu {
 				cpuFields[0].setText(cpuProperties.get("Name"));
 				cpuFields[1].setText(cpuProperties.get("NumberOfCores"));
 				cpuFields[2].setText(cpuProperties.get("ThreadCount"));
-				cpuFields[3].setText(cpuProperties.get("SocketDesignation"));
+				cpuFields[3].setText(cpuProperties.get("MaxClockSpeed")+" MHz");
+				cpuFields[4].setText(cpuProperties.get("SocketDesignation"));
 			} catch (IndexOutOfBoundsException | IOException e1) {
 				new ExceptionUI("CPU Error", e1.getMessage()).setVisible(true);
 			}	
-		});	
+		});
+		return true;
 	}
 }

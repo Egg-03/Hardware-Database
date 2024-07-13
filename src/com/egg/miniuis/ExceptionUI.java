@@ -1,24 +1,23 @@
 package com.egg.miniuis;
 
+import java.awt.Color;
+import java.awt.Toolkit;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.WindowConstants;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
-
-import com.ferruml.error.ErrorLog;
-
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
-import java.awt.Color;
+import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
-import javax.swing.JScrollPane;
-import java.awt.Toolkit;
-import javax.swing.JButton;
-import javax.swing.JLabel;
+import javax.swing.border.TitledBorder;
+
+import com.ferrumx.system.logger.ErrorLog;
 
 public class ExceptionUI extends JFrame{
 	private static final long serialVersionUID = 5951705399700376822L;
@@ -31,7 +30,7 @@ public class ExceptionUI extends JFrame{
 	}
 	
 	private void initialize(String errorName, String errorMessage) {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(ExceptionUI.class.getResource("/res/ferrum_legacy.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(ExceptionUI.class.getResource("/res/icon_main.png")));
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setSize(490,190);
@@ -70,7 +69,7 @@ public class ExceptionUI extends JFrame{
 	
 	private void setTheme() {
 		try {
-			UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarculaLaf");
+			UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
 			SwingUtilities.updateComponentTreeUI(this);
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			new ErrorLog().log(" ExceptionUI Theme Load Error: "+e.getMessage());

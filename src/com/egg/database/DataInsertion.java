@@ -7,19 +7,23 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.egg.miniuis.ExceptionUI;
 import com.egg.miniuis.InformationUI;
-import com.ferruml.system.currentuser.User;
-import com.ferruml.system.hardware.HWID;
-import com.ferruml.system.hardware.Win32_BIOS;
-import com.ferruml.system.hardware.Win32_Baseboard;
-import com.ferruml.system.hardware.Win32_DiskDrive;
-import com.ferruml.system.hardware.Win32_PhysicalMemory;
-import com.ferruml.system.hardware.Win32_Processor;
-import com.ferruml.system.hardware.Win32_VideoController;
-import com.ferruml.system.network.Win32_NetworkAdapter;
-import com.ferruml.system.operatingsystem.Win32_OperatingSystem;
+import com.ferrumx.system.currentuser.User;
+import com.ferrumx.system.hardware.HardwareID;
+import com.ferrumx.system.hardware.Win32_BIOS;
+import com.ferrumx.system.hardware.Win32_Baseboard;
+import com.ferrumx.system.hardware.Win32_DiskDrive;
+import com.ferrumx.system.hardware.Win32_NetworkAdapter;
+import com.ferrumx.system.hardware.Win32_PhysicalMemory;
+import com.ferrumx.system.hardware.Win32_Processor;
+import com.ferrumx.system.hardware.Win32_VideoController;
+import com.ferrumx.system.networking.Win32_NetworkAdapterConfiguration;
+import com.ferrumx.system.networking.Win32_NetworkAdapterSetting;
+import com.ferrumx.system.operating_system.Win32_OperatingSystem;
 
 public class DataInsertion {
 	
@@ -32,7 +36,7 @@ public class DataInsertion {
 	
 	private static String getHWID() {
 		try {
-			return HWID.getHardwareID();
+			return HardwareID.getHardwareID();
 		} catch (ExecutionException | InterruptedException e) {
 			new ExceptionUI("Database Dump Error", "HWID could not be retrieved\n"+e.getMessage()).setVisible(true);
 			Thread.currentThread().interrupt();
@@ -183,13 +187,15 @@ public class DataInsertion {
 		String query = "INSERT INTO Network (HardwareId, Description, MACAddress, IPAddress) VALUES (?,?,?,?);";
 		
 		try(PreparedStatement ps = connect.prepareStatement(query)){
-			List<String> adapterList = Win32_NetworkAdapter.getAdapterID();
+			List<String> adapterList = Win32_NetworkAdapter.getDeviceIDList();
 			for(String networkAdapter: adapterList) {
 				Map<String, String> adapterProperties = Win32_NetworkAdapter.getNetworkAdapters(networkAdapter);
+				String networkIndex = Win32_NetworkAdapterSetting.getIndex(networkAdapter);
+				Map<String, String> adapterAddress = Win32_NetworkAdapterConfiguration.getAdapterConfiguration(networkIndex);
 				ps.setString(1, HARDWAREID);
 				ps.setString(2, adapterProperties.get("Description"));
 				ps.setString(3, adapterProperties.get("MACAddress"));
-				ps.setString(4, adapterProperties.get("AdapterIP"));
+				ps.setString(4, adapterAddress.get("IPAddress"));
 				
 				ps.addBatch();
 				ps.executeBatch();
@@ -233,13 +239,23 @@ public class DataInsertion {
 	public static final void insert(String username, String location) {
 		connect = DatabaseConnectivity.initialize();
 		if(insertHardwareId(username, location)) {
-			insertMainboard();
-			insertCpu();
-			insertMemory();
-			insertGpu();
-			insertStorage();
-			insertNetwork();
-			insertOperatingSystem();
+			try(ExecutorService dumperThreads = Executors.newFixedThreadPool(7)){
+				Runnable mainboard = ()->insertMainboard();
+				Runnable cpu = ()->insertCpu();
+				Runnable memory = ()->insertMemory();
+				Runnable gpu = ()->insertGpu();
+				Runnable storage = ()->insertStorage();
+				Runnable network = ()->insertNetwork();
+				Runnable os = ()->insertOperatingSystem();
+				
+				dumperThreads.submit(mainboard);
+				dumperThreads.submit(cpu);
+				dumperThreads.submit(memory);
+				dumperThreads.submit(gpu);
+				dumperThreads.submit(storage);
+				dumperThreads.submit(network);
+				dumperThreads.submit(os);
+			}
 		}
 		DatabaseConnectivity.close(connect);
 	}

@@ -17,7 +17,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
 import com.egg.database.DataInsertion;
-import com.ferruml.error.ErrorLog;
+import com.ferrumx.system.logger.ErrorLog;
 
 //Location and Name Selector UI
 //This should appear when you're dumping new data or updating it
@@ -32,7 +32,7 @@ public class LocationNameProvider extends JFrame {
 	
 	private void setTheme() {
 		try {
-			UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarculaLaf");
+			UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
 			SwingUtilities.updateComponentTreeUI(this);
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			new ErrorLog().log(" LN Selector Window Theme Load Error: "+e.getMessage());
@@ -40,7 +40,7 @@ public class LocationNameProvider extends JFrame {
 	}
 	
 	private void initialize() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(LocationNameProvider.class.getResource("/res/ferrum_legacy.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(LocationNameProvider.class.getResource("/res/icon_main.png")));
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setSize(490,190);

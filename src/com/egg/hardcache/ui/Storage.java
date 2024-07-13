@@ -1,4 +1,4 @@
-package com.egg.ferrumldb.ui;
+package com.egg.hardcache.ui;
 
 import java.io.IOException;
 import java.util.List;
@@ -8,7 +8,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 import com.egg.miniuis.ExceptionUI;
-import com.ferruml.system.hardware.Win32_DiskDrive;
+import com.ferrumx.system.hardware.Win32_DiskDrive;
 
 final class Storage {
 	
@@ -16,7 +16,7 @@ final class Storage {
 		throw new IllegalStateException("Class method to be used only in the main frame class");
 	}
 	
-	protected static void initializeStorage(JComboBox<String> storageNameChoice, JTextField...storageFields) {
+	protected static boolean initializeStorage(JComboBox<String> storageNameChoice, JTextField...storageFields) {
 		List<String> disks;
 		try {
 			disks = Win32_DiskDrive.getDriveID();
@@ -33,8 +33,10 @@ final class Storage {
 			
 			Long diskSize = Long.parseLong(diskProperties.get("Size"))/(1024*1024*1024);
 			storageFields[3].setText(String.valueOf(diskSize)+" GB");
+			
 		} catch (IndexOutOfBoundsException | IOException e) {
 			new ExceptionUI("Storage Error", e.getMessage()).setVisible(true);
+			return false;
 		}
 		
 		storageNameChoice.addActionListener(e-> {
@@ -60,5 +62,6 @@ final class Storage {
 				storageFields[2].setText("0 GB");
 			}
 		});
+		return true;
 	}
 }

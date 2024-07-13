@@ -1,4 +1,4 @@
-package com.egg.ferrumldb.ui;
+package com.egg.hardcache.ui;
 
 import java.io.IOException;
 import java.util.List;
@@ -8,8 +8,8 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 import com.egg.miniuis.ExceptionUI;
-import com.ferruml.system.currentuser.User;
-import com.ferruml.system.operatingsystem.Win32_OperatingSystem;
+import com.ferrumx.system.currentuser.User;
+import com.ferrumx.system.operating_system.Win32_OperatingSystem;
 
 final class OperatingSystem {
 	
@@ -17,7 +17,7 @@ final class OperatingSystem {
 		throw new IllegalStateException("Class method to be used only in the main frame class");
 	}
 	
-	protected static void initializeOs(JComboBox<String> osNameChoice, JTextField deviceNameTextField, JTextField osArchTextField, JTextField currentUserTextField ) {
+	protected static boolean initializeOs(JComboBox<String> osNameChoice, JTextField deviceNameTextField, JTextField osArchTextField, JTextField currentUserTextField ) {
 		List<String> osNames;
 		try {
 			osNames = Win32_OperatingSystem.getOSList();
@@ -28,8 +28,10 @@ final class OperatingSystem {
 			deviceNameTextField.setText(osProperties.get("CSName"));
 			osArchTextField.setText(osProperties.get("OSArchitecture"));
 			currentUserTextField.setText(User.getUsername());
+			
 		} catch (IndexOutOfBoundsException | IOException e) {
 			new ExceptionUI("OS Error", e.getMessage()).setVisible(true);
+			return false;
 		}
 		
 		
@@ -44,5 +46,6 @@ final class OperatingSystem {
 				new ExceptionUI("OS Error", e1.getMessage()).setVisible(true);
 			}
 		});
+		return true;
 	}
 }

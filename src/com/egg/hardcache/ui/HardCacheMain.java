@@ -1,4 +1,4 @@
-package com.egg.ferrumldb.ui;
+package com.egg.hardcache.ui;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -27,11 +29,12 @@ import com.egg.database.DataDeletion;
 import com.egg.miniuis.ConfirmationUI;
 import com.egg.miniuis.ExceptionUI;
 import com.egg.miniuis.LocationNameProvider;
-import com.ferruml.error.ErrorLog;
+import com.egg.miniuis.StatusUI;
+import com.ferrumx.system.logger.ErrorLog;
 
-public class AppWindow {
+public class HardCacheMain {
 
-	private JFrame feldbdmp;
+	private JFrame hardcache;
 
 	private JComboBox<String> osNameChoice;
 	private JComboBox<String> cpuNumberChoice;
@@ -69,15 +72,16 @@ public class AppWindow {
 	private JTextField storageSizeTextField;
 	private JTextField storageSmartTextField;
 	private JTextField storageNameTextField;
+	private JTextField cpuBaseClockTextField;
 	
-
+	
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		AppWindow window = new AppWindow();
-		window.feldbdmp.setLocationRelativeTo(null);
-		window.feldbdmp.setVisible(true);			
+		HardCacheMain window = new HardCacheMain();
+		window.hardcache.setLocationRelativeTo(null);
+		window.hardcache.setVisible(true);			
 	}
 
 	/**
@@ -87,16 +91,16 @@ public class AppWindow {
 	 * @throws IOException 
 	 * @throws IndexOutOfBoundsException 
 	 */
-	public AppWindow() {
+	public HardCacheMain() {
 		initializeComponents();
 		setTheme();
-		initializeSystemInfo();
+		initializeSystemInfo(new StatusUI("Booting Up", "Please wait till FerrumX gathers information about your system"));
 	}
 	
 	private void setTheme() {
 		try {
-			UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarculaLaf");
-			SwingUtilities.updateComponentTreeUI(feldbdmp);
+			UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
+			SwingUtilities.updateComponentTreeUI(hardcache);
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			new ErrorLog().log(" ExceptionUI Theme Load Error: "+e.getMessage());
 		}
@@ -106,13 +110,13 @@ public class AppWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initializeComponents() {
-		feldbdmp = new JFrame();
-		feldbdmp.setResizable(false);
-		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/ferrum_legacy.png")));
-		feldbdmp.setTitle("FeL Dump Tool DevBuild-InternalRelease v08072024");
-		feldbdmp.setBounds(100, 100, 450, 721);
-		feldbdmp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		feldbdmp.getContentPane().setLayout(null);
+		hardcache = new JFrame();
+		hardcache.setResizable(false);
+		hardcache.setIconImage(Toolkit.getDefaultToolkit().getImage(HardCacheMain.class.getResource("/res/icon_main.png")));
+		hardcache.setTitle("HardCache v1.00");
+		hardcache.setBounds(100, 100, 450, 721);
+		hardcache.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		hardcache.getContentPane().setLayout(null);
 		
 		hardwareIdPanel();
 		osPanel();
@@ -128,7 +132,7 @@ public class AppWindow {
 		JPanel hardwareIdPanel = new JPanel();
 		hardwareIdPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Unique ID", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		hardwareIdPanel.setBounds(10, 11, 414, 80);
-		feldbdmp.getContentPane().add(hardwareIdPanel);
+		hardcache.getContentPane().add(hardwareIdPanel);
 		hardwareIdPanel.setLayout(null);
 		
 		JLabel hardwareLabel = new JLabel("Hardware ID");
@@ -146,37 +150,24 @@ public class AppWindow {
 		hardwareIdPanel.add(hardwareIdTextField);
 		hardwareIdTextField.setColumns(10);
 		
-		JButton restartButton = new JButton("Restart");
-		restartButton.setToolTipText("Restarts the application. \r\nThis should be used in case you have hot swapped a new detectable hardware. \r\nAfter a restart, the application should be able to detect the new hardware.");
-		restartButton.addActionListener(e-> {
-			//close app
-			feldbdmp.dispose();
-			//restart
-			AppWindow window = new AppWindow();
-			window.feldbdmp.setLocationRelativeTo(null);
-			window.feldbdmp.setVisible(true);
-		});
-		restartButton.setBounds(17, 48, 83, 24);
-		hardwareIdPanel.add(restartButton);
-		
 		JTextField ferrumEngineVersion = new JTextField();
 		ferrumEngineVersion.setFont(new Font("Segoe UI", Font.ITALIC, 11));
 		ferrumEngineVersion.setHorizontalAlignment(SwingConstants.CENTER);
 		ferrumEngineVersion.setEditable(false);
-		ferrumEngineVersion.setText("FeL Core v1.2.6");
-		ferrumEngineVersion.setBounds(294, 48, 108, 24);
+		ferrumEngineVersion.setText("Running on FerrumX Core v1.2.4");
+		ferrumEngineVersion.setBounds(195, 48, 207, 24);
 		hardwareIdPanel.add(ferrumEngineVersion);
 		ferrumEngineVersion.setColumns(10);
 		
 		JButton dataDumpButton = new JButton("Dump");
 		dataDumpButton.setToolTipText("Dumps the visible data into a local database");
-		dataDumpButton.setBounds(107, 48, 83, 24);
+		dataDumpButton.setBounds(17, 48, 83, 24);
 		dataDumpButton.addActionListener(e-> new LocationNameProvider().setVisible(true));
 		hardwareIdPanel.add(dataDumpButton);
 		
 		JButton dataDeleteButton = new JButton("Delete");
 		dataDeleteButton.setToolTipText("Deletes existing information");
-		dataDeleteButton.setBounds(197, 48, 83, 24);
+		dataDeleteButton.setBounds(102, 48, 83, 24);
 		dataDeleteButton.addActionListener(e->{
 			ConfirmationUI warning = new ConfirmationUI();
 			warning.getQuestionLabel().setText("Destructive operation ahead. Continue ?");
@@ -194,7 +185,7 @@ public class AppWindow {
 		JPanel osPanel = new JPanel();
 		osPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Operating System", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		osPanel.setBounds(10, 93, 412, 90);
-		feldbdmp.getContentPane().add(osPanel);
+		hardcache.getContentPane().add(osPanel);
 		osPanel.setLayout(null);
 		
 		JLabel osName = new JLabel("Name");
@@ -257,7 +248,7 @@ public class AppWindow {
 		cpuPanel.setLayout(null);
 		cpuPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "CPU", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		cpuPanel.setBounds(10, 185, 414, 80);
-		feldbdmp.getContentPane().add(cpuPanel);
+		hardcache.getContentPane().add(cpuPanel);
 		
 		JLabel cpuName = new JLabel("Name");
 		cpuName.setToolTipText("CPU Name: As provided by the manufacturer");
@@ -275,7 +266,7 @@ public class AppWindow {
 		JLabel cpuSocket = new JLabel("Socket");
 		cpuSocket.setToolTipText("CPU Socket");
 		cpuSocket.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		cpuSocket.setBounds(288, 49, 46, 22);
+		cpuSocket.setBounds(295, 49, 40, 22);
 		cpuPanel.add(cpuSocket);
 		
 		cpuSocketTextField = new JTextField();
@@ -284,7 +275,7 @@ public class AppWindow {
 		cpuSocketTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		cpuSocketTextField.setEditable(false);
 		cpuSocketTextField.setColumns(10);
-		cpuSocketTextField.setBounds(334, 50, 57, 22);
+		cpuSocketTextField.setBounds(345, 50, 46, 22);
 		cpuPanel.add(cpuSocketTextField);
 		
 		JLabel cpuCoreCount = new JLabel("Cores");
@@ -299,13 +290,13 @@ public class AppWindow {
 		cpuCoreTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		cpuCoreTextField.setEditable(false);
 		cpuCoreTextField.setColumns(10);
-		cpuCoreTextField.setBounds(48, 50, 30, 22);
+		cpuCoreTextField.setBounds(48, 50, 35, 22);
 		cpuPanel.add(cpuCoreTextField);
 		
 		JLabel cpuThreadCount = new JLabel("Threads");
 		cpuThreadCount.setToolTipText("CPU Threads");
 		cpuThreadCount.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		cpuThreadCount.setBounds(85, 49, 46, 22);
+		cpuThreadCount.setBounds(90, 49, 46, 22);
 		cpuPanel.add(cpuThreadCount);
 		
 		cpuThreadTextField = new JTextField();
@@ -313,7 +304,7 @@ public class AppWindow {
 		cpuThreadTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		cpuThreadTextField.setEditable(false);
 		cpuThreadTextField.setColumns(10);
-		cpuThreadTextField.setBounds(133, 50, 30, 22);
+		cpuThreadTextField.setBounds(136, 50, 35, 22);
 		cpuPanel.add(cpuThreadTextField);
 		
 		JLabel cpuNumber = new JLabel("CPU#");
@@ -328,6 +319,20 @@ public class AppWindow {
 		cpuNumberChoice.setEditable(false);
 		cpuNumberChoice.setBounds(48, 20, 57, 22);
 		cpuPanel.add(cpuNumberChoice);
+		
+		JLabel cpuBaseFreq = new JLabel("BCLK");
+		cpuBaseFreq.setToolTipText("CPU Base Clock");
+		cpuBaseFreq.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
+		cpuBaseFreq.setBounds(181, 49, 30, 22);
+		cpuPanel.add(cpuBaseFreq);
+		
+		cpuBaseClockTextField = new JTextField();
+		cpuBaseClockTextField.setHorizontalAlignment(SwingConstants.CENTER);
+		cpuBaseClockTextField.setFont(new Font("Segoe UI", Font.PLAIN, 9));
+		cpuBaseClockTextField.setEditable(false);
+		cpuBaseClockTextField.setColumns(10);
+		cpuBaseClockTextField.setBounds(215, 49, 70, 22);
+		cpuPanel.add(cpuBaseClockTextField);
 	}
 	
 	private void memoryPanel() {
@@ -335,7 +340,7 @@ public class AppWindow {
 		memoryPanel.setLayout(null);
 		memoryPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Memory", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		memoryPanel.setBounds(10, 265, 414, 44);
-		feldbdmp.getContentPane().add(memoryPanel);
+		hardcache.getContentPane().add(memoryPanel);
 		
 		JLabel memorySlots = new JLabel("Slots Used");
 		memorySlots.setToolTipText("Memory Slots Used");
@@ -373,7 +378,7 @@ public class AppWindow {
 		gpuPanel.setLayout(null);
 		gpuPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Video Controller", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		gpuPanel.setBounds(10, 310, 412, 90);
-		feldbdmp.getContentPane().add(gpuPanel);
+		hardcache.getContentPane().add(gpuPanel);
 		
 		JLabel gpuNumber = new JLabel("GPU#");
 		gpuNumber.setToolTipText("GPU Number: Shows the number of enabled GPUs.\r\nNote: If a GPU is disabled, it won't appear here.\r\nOne such case is that if your CPU has an iGPU \r\nbut you're using a dGPU, only your dGPU will show up\r\n");
@@ -437,7 +442,7 @@ public class AppWindow {
 		mainboardPanel.setLayout(null);
 		mainboardPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Mainboard", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		mainboardPanel.setBounds(10, 402, 412, 90);
-		feldbdmp.getContentPane().add(mainboardPanel);
+		hardcache.getContentPane().add(mainboardPanel);
 		
 		JLabel mainboardName = new JLabel("Mainboard Name");
 		mainboardName.setToolTipText("Mainboard Name: The name of your system's motherboard");
@@ -490,7 +495,7 @@ public class AppWindow {
 		network.setLayout(null);
 		network.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Network", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		network.setBounds(10, 492, 412, 90);
-		feldbdmp.getContentPane().add(network);
+		hardcache.getContentPane().add(network);
 		
 		JLabel netConnectionId = new JLabel("Connection ID");
 		netConnectionId.setToolTipText("Connection ID: Only Links the connections which are active.\r\nRestart the application if u have installed a new active connection to see the changes.");
@@ -542,10 +547,11 @@ public class AppWindow {
 		ipAddressTextField.setBounds(280, 56, 120, 24);
 		network.add(ipAddressTextField);
 		
-		JLabel networkIp = new JLabel("IPv4");
-		networkIp.setToolTipText("The Link Local IPv4 address assigned automatically/manually");
+		JLabel networkIp = new JLabel("IPv4/6");
+		networkIp.setHorizontalAlignment(SwingConstants.RIGHT);
+		networkIp.setToolTipText("The Link Local IPv4/IPv6 address assigned automatically/manually");
 		networkIp.setFont(new Font("Segoe UI Variable", Font.BOLD, 11));
-		networkIp.setBounds(243, 56, 29, 20);
+		networkIp.setBounds(232, 56, 40, 20);
 		network.add(networkIp);
 	}
 	
@@ -554,7 +560,7 @@ public class AppWindow {
 		storage.setLayout(null);
 		storage.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Storage", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		storage.setBounds(10, 583, 412, 90);
-		feldbdmp.getContentPane().add(storage);
+		hardcache.getContentPane().add(storage);
 		
 		JLabel storageIndex = new JLabel("Index");
 		storageIndex.setToolTipText("Caption: Shows the available drive counts based on their unsorted indexes\r\n");
@@ -629,29 +635,32 @@ public class AppWindow {
 		storage.add(storageName);
 	}
 	
-	private void initializeSystemInfo() {
-		try(ExecutorService infoFetch = Executors.newFixedThreadPool(8)){
+	private void initializeSystemInfo(StatusUI startScreen) {
+		try(ExecutorService infoFetch = Executors.newCachedThreadPool()){
 			// Define tasks for each function call
-	        Runnable initializeHardwareId = () -> HardwareId.initializeHardwareId(hardwareIdTextField);
-	        Runnable initializeOs = () -> OperatingSystem.initializeOs(osNameChoice, deviceNameTextField, osArchTextField, currentUserTextField);
-	        Runnable initializeCpu = () -> Cpu.initializeCpu(cpuNumberChoice, cpuNameTextField, cpuCoreTextField, cpuThreadTextField, cpuSocketTextField);
-	        Runnable initializeMemory = () -> Memory.initializeMemory(memorySlotTextField, totalMemoryTextField);
-	        Runnable initializeVideoController = () -> VideoController.initializeVideoController(gpuNumberChoice, gpuNameTextField, gpuVramTextField, gpuDriverVersionTextField);
-	        Runnable initializeMainboard = () -> Mainboard.initializeMainboard(mainboardNameTextField, mainboardManufacturerTextField, biosVersionTextField);
-	        Runnable initializeNetwork = () -> Network.initializeNetwork(connectionIdChoice, networkMacTextField, networkDescriptionTextField, ipAddressTextField);
-	        Runnable initializeStorage = () -> Storage.initializeStorage(storageIndexChoice, storageNameTextField, storageSerialTextField, storageSmartTextField, storageSizeTextField);
-
-	        // Submit all tasks to the executor service
-	        infoFetch.submit(initializeHardwareId);
-	        infoFetch.submit(initializeOs);
-	        infoFetch.submit(initializeCpu);
-	        infoFetch.submit(initializeMemory);
-	        infoFetch.submit(initializeVideoController);
-	        infoFetch.submit(initializeMainboard);
-	        infoFetch.submit(initializeNetwork);
-	        infoFetch.submit(initializeStorage);
-		} catch (RejectedExecutionException | NullPointerException e) {
+	        Future<Boolean> initializeHardwareId = infoFetch.submit(() -> HardwareId.initializeHardwareId(hardwareIdTextField));
+	        Future<Boolean> initializeOs = infoFetch.submit(() -> OperatingSystem.initializeOs(osNameChoice, deviceNameTextField, osArchTextField, currentUserTextField));
+	        Future<Boolean> initializeCpu = infoFetch.submit(() -> Cpu.initializeCpu(cpuNumberChoice, cpuNameTextField, cpuCoreTextField, cpuThreadTextField, cpuBaseClockTextField, cpuSocketTextField));
+	        Future<Boolean> initializeMemory = infoFetch.submit(() -> Memory.initializeMemory(memorySlotTextField, totalMemoryTextField));
+	        Future<Boolean> initializeVideoController = infoFetch.submit(() -> VideoController.initializeVideoController(gpuNumberChoice, gpuNameTextField, gpuVramTextField, gpuDriverVersionTextField));
+	        Future<Boolean> initializeMainboard = infoFetch.submit(() -> Mainboard.initializeMainboard(mainboardNameTextField, mainboardManufacturerTextField, biosVersionTextField));
+	        Future<Boolean> initializeNetwork = infoFetch.submit(() -> Network.initializeNetwork(connectionIdChoice, networkMacTextField, networkDescriptionTextField, ipAddressTextField));
+	        Future<Boolean> initializeStorage = infoFetch.submit(() -> Storage.initializeStorage(storageIndexChoice, storageNameTextField, storageSerialTextField, storageSmartTextField, storageSizeTextField));
+	        
+	        startScreen.setHardwareLabel(initializeHardwareId.get());
+	        startScreen.setOsLabel(initializeOs.get());
+	        startScreen.setCpuLabel(initializeCpu.get());
+	        startScreen.setMemoryLabel(initializeMemory.get());
+	        startScreen.setGpuLabel(initializeVideoController.get());
+	        startScreen.setMainboardLabel(initializeMainboard.get());
+	        startScreen.setNetworkLabel(initializeNetwork.get());
+	        startScreen.setStorageLabel(initializeStorage.get());
+	        
+	        TimeUnit.MILLISECONDS.sleep(250);
+	        startScreen.dispose();
+		} catch (RejectedExecutionException | NullPointerException | InterruptedException | ExecutionException e) {
 			new ExceptionUI("Host Gather System Info Error", e.getMessage()).setVisible(true);
+			Thread.currentThread().interrupt();
 		}
 	}
 }
