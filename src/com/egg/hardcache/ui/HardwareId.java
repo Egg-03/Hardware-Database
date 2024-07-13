@@ -1,4 +1,4 @@
-package com.egg.ferrumxdb.ui;
+package com.egg.hardcache.ui;
 
 import javax.swing.JTextField;
 

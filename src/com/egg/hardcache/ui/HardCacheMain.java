@@ -1,4 +1,4 @@
-package com.egg.ferrumxdb.ui;
+package com.egg.hardcache.ui;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -32,9 +32,9 @@ import com.egg.miniuis.LocationNameProvider;
 import com.egg.miniuis.StatusUI;
 import com.ferrumx.system.logger.ErrorLog;
 
-public class AppWindow {
+public class HardCacheMain {
 
-	private JFrame feldbdmp;
+	private JFrame hardcache;
 
 	private JComboBox<String> osNameChoice;
 	private JComboBox<String> cpuNumberChoice;
@@ -79,9 +79,9 @@ public class AppWindow {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		AppWindow window = new AppWindow();
-		window.feldbdmp.setLocationRelativeTo(null);
-		window.feldbdmp.setVisible(true);			
+		HardCacheMain window = new HardCacheMain();
+		window.hardcache.setLocationRelativeTo(null);
+		window.hardcache.setVisible(true);			
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class AppWindow {
 	 * @throws IOException 
 	 * @throws IndexOutOfBoundsException 
 	 */
-	public AppWindow() {
+	public HardCacheMain() {
 		initializeComponents();
 		setTheme();
 		initializeSystemInfo(new StatusUI("Booting Up", "Please wait till FerrumX gathers information about your system"));
@@ -100,7 +100,7 @@ public class AppWindow {
 	private void setTheme() {
 		try {
 			UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
-			SwingUtilities.updateComponentTreeUI(feldbdmp);
+			SwingUtilities.updateComponentTreeUI(hardcache);
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			new ErrorLog().log(" ExceptionUI Theme Load Error: "+e.getMessage());
 		}
@@ -110,13 +110,13 @@ public class AppWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initializeComponents() {
-		feldbdmp = new JFrame();
-		feldbdmp.setResizable(false);
-		feldbdmp.setIconImage(Toolkit.getDefaultToolkit().getImage(AppWindow.class.getResource("/res/icon_main.png")));
-		feldbdmp.setTitle("FeX Dump Tool DevBuild-InternalRelease v12072024");
-		feldbdmp.setBounds(100, 100, 450, 721);
-		feldbdmp.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		feldbdmp.getContentPane().setLayout(null);
+		hardcache = new JFrame();
+		hardcache.setResizable(false);
+		hardcache.setIconImage(Toolkit.getDefaultToolkit().getImage(HardCacheMain.class.getResource("/res/icon_main.png")));
+		hardcache.setTitle("HardCache v1.00");
+		hardcache.setBounds(100, 100, 450, 721);
+		hardcache.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		hardcache.getContentPane().setLayout(null);
 		
 		hardwareIdPanel();
 		osPanel();
@@ -132,7 +132,7 @@ public class AppWindow {
 		JPanel hardwareIdPanel = new JPanel();
 		hardwareIdPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Unique ID", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		hardwareIdPanel.setBounds(10, 11, 414, 80);
-		feldbdmp.getContentPane().add(hardwareIdPanel);
+		hardcache.getContentPane().add(hardwareIdPanel);
 		hardwareIdPanel.setLayout(null);
 		
 		JLabel hardwareLabel = new JLabel("Hardware ID");
@@ -185,7 +185,7 @@ public class AppWindow {
 		JPanel osPanel = new JPanel();
 		osPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Operating System", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		osPanel.setBounds(10, 93, 412, 90);
-		feldbdmp.getContentPane().add(osPanel);
+		hardcache.getContentPane().add(osPanel);
 		osPanel.setLayout(null);
 		
 		JLabel osName = new JLabel("Name");
@@ -248,7 +248,7 @@ public class AppWindow {
 		cpuPanel.setLayout(null);
 		cpuPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "CPU", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		cpuPanel.setBounds(10, 185, 414, 80);
-		feldbdmp.getContentPane().add(cpuPanel);
+		hardcache.getContentPane().add(cpuPanel);
 		
 		JLabel cpuName = new JLabel("Name");
 		cpuName.setToolTipText("CPU Name: As provided by the manufacturer");
@@ -340,7 +340,7 @@ public class AppWindow {
 		memoryPanel.setLayout(null);
 		memoryPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Memory", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		memoryPanel.setBounds(10, 265, 414, 44);
-		feldbdmp.getContentPane().add(memoryPanel);
+		hardcache.getContentPane().add(memoryPanel);
 		
 		JLabel memorySlots = new JLabel("Slots Used");
 		memorySlots.setToolTipText("Memory Slots Used");
@@ -378,7 +378,7 @@ public class AppWindow {
 		gpuPanel.setLayout(null);
 		gpuPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Video Controller", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		gpuPanel.setBounds(10, 310, 412, 90);
-		feldbdmp.getContentPane().add(gpuPanel);
+		hardcache.getContentPane().add(gpuPanel);
 		
 		JLabel gpuNumber = new JLabel("GPU#");
 		gpuNumber.setToolTipText("GPU Number: Shows the number of enabled GPUs.\r\nNote: If a GPU is disabled, it won't appear here.\r\nOne such case is that if your CPU has an iGPU \r\nbut you're using a dGPU, only your dGPU will show up\r\n");
@@ -442,7 +442,7 @@ public class AppWindow {
 		mainboardPanel.setLayout(null);
 		mainboardPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Mainboard", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		mainboardPanel.setBounds(10, 402, 412, 90);
-		feldbdmp.getContentPane().add(mainboardPanel);
+		hardcache.getContentPane().add(mainboardPanel);
 		
 		JLabel mainboardName = new JLabel("Mainboard Name");
 		mainboardName.setToolTipText("Mainboard Name: The name of your system's motherboard");
@@ -495,7 +495,7 @@ public class AppWindow {
 		network.setLayout(null);
 		network.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Network", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		network.setBounds(10, 492, 412, 90);
-		feldbdmp.getContentPane().add(network);
+		hardcache.getContentPane().add(network);
 		
 		JLabel netConnectionId = new JLabel("Connection ID");
 		netConnectionId.setToolTipText("Connection ID: Only Links the connections which are active.\r\nRestart the application if u have installed a new active connection to see the changes.");
@@ -560,7 +560,7 @@ public class AppWindow {
 		storage.setLayout(null);
 		storage.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Storage", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		storage.setBounds(10, 583, 412, 90);
-		feldbdmp.getContentPane().add(storage);
+		hardcache.getContentPane().add(storage);
 		
 		JLabel storageIndex = new JLabel("Index");
 		storageIndex.setToolTipText("Caption: Shows the available drive counts based on their unsorted indexes\r\n");
