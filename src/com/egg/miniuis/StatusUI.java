@@ -34,6 +34,7 @@ public class StatusUI extends JFrame {
 	 * Create the frame.
 	 */
 	public StatusUI(String title, String message) {
+		setResizable(false);
 		SwingUtilities.invokeLater(()->{
 			setTheme();
 			initialize(title, message);

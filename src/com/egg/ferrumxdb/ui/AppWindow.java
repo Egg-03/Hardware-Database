@@ -636,7 +636,7 @@ public class AppWindow {
 	}
 	
 	private void initializeSystemInfo(StatusUI startScreen) {
-		try(ExecutorService infoFetch = Executors.newFixedThreadPool(8)){
+		try(ExecutorService infoFetch = Executors.newCachedThreadPool()){
 			// Define tasks for each function call
 	        Future<Boolean> initializeHardwareId = infoFetch.submit(() -> HardwareId.initializeHardwareId(hardwareIdTextField));
 	        Future<Boolean> initializeOs = infoFetch.submit(() -> OperatingSystem.initializeOs(osNameChoice, deviceNameTextField, osArchTextField, currentUserTextField));
