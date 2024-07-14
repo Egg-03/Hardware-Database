@@ -1,4 +1,4 @@
-package com.egg.miniuis;
+package com.hardcache.miniuis;
 
 import java.awt.Color;
 import java.awt.Toolkit;

@@ -1,4 +1,4 @@
-package com.egg.miniuis;
+package com.hardcache.miniuis;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -16,8 +16,8 @@ import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
-import com.egg.database.DataInsertion;
 import com.ferrumx.system.logger.ErrorLog;
+import com.hardcache.database.DataInsertion;
 
 //Location and Name Selector UI
 //This should appear when you're dumping new data or updating it

@@ -1,11 +1,11 @@
-package com.egg.hardcache.ui;
+package com.hardcache.ui;
 
 import javax.swing.JTextField;
 
 import java.util.concurrent.ExecutionException;
 
-import com.egg.miniuis.ExceptionUI;
 import com.ferrumx.system.hardware.HardwareID;
+import com.hardcache.miniuis.ExceptionUI;
 
 final class HardwareId {
 	

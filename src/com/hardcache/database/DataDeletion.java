@@ -1,13 +1,13 @@
-package com.egg.database;
+package com.hardcache.database;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.ExecutionException;
 
-import com.egg.miniuis.ExceptionUI;
-import com.egg.miniuis.InformationUI;
 import com.ferrumx.system.hardware.HardwareID;
+import com.hardcache.miniuis.ExceptionUI;
+import com.hardcache.miniuis.InformationUI;
 
 //WARNING: THIS WILL WORK IFF THE HARDWARE ID OF THE CURRENT MACHINE MATCHES WITH ONE OF THE ID's STORED IN THE DB
 public class DataDeletion {

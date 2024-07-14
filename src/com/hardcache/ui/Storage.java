@@ -1,4 +1,4 @@
-package com.egg.hardcache.ui;
+package com.hardcache.ui;
 
 import java.io.IOException;
 import java.util.List;
@@ -7,8 +7,8 @@ import java.util.Map;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
-import com.egg.miniuis.ExceptionUI;
 import com.ferrumx.system.hardware.Win32_DiskDrive;
+import com.hardcache.miniuis.ExceptionUI;
 
 final class Storage {
 	

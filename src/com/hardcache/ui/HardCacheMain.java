@@ -1,4 +1,4 @@
-package com.egg.hardcache.ui;
+package com.hardcache.ui;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -25,12 +25,12 @@ import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
-import com.egg.database.DataDeletion;
-import com.egg.miniuis.ConfirmationUI;
-import com.egg.miniuis.ExceptionUI;
-import com.egg.miniuis.LocationNameProvider;
-import com.egg.miniuis.StatusUI;
 import com.ferrumx.system.logger.ErrorLog;
+import com.hardcache.database.DataDeletion;
+import com.hardcache.miniuis.ConfirmationUI;
+import com.hardcache.miniuis.ExceptionUI;
+import com.hardcache.miniuis.LocationNameProvider;
+import com.hardcache.miniuis.StatusUI;
 
 public class HardCacheMain {
 

@@ -1,4 +1,4 @@
-package com.egg.database;
+package com.hardcache.database;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -10,8 +10,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.egg.miniuis.ExceptionUI;
-import com.egg.miniuis.InformationUI;
 import com.ferrumx.system.currentuser.User;
 import com.ferrumx.system.hardware.HardwareID;
 import com.ferrumx.system.hardware.Win32_BIOS;
@@ -24,6 +22,8 @@ import com.ferrumx.system.hardware.Win32_VideoController;
 import com.ferrumx.system.networking.Win32_NetworkAdapterConfiguration;
 import com.ferrumx.system.networking.Win32_NetworkAdapterSetting;
 import com.ferrumx.system.operating_system.Win32_OperatingSystem;
+import com.hardcache.miniuis.ExceptionUI;
+import com.hardcache.miniuis.InformationUI;
 
 public class DataInsertion {
 	

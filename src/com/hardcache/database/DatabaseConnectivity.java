@@ -1,10 +1,10 @@
-package com.egg.database;
+package com.hardcache.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import com.egg.miniuis.ExceptionUI;
+import com.hardcache.miniuis.ExceptionUI;
 
 
 class DatabaseConnectivity {

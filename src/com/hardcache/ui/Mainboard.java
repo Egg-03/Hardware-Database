@@ -1,13 +1,13 @@
-package com.egg.hardcache.ui;
+package com.hardcache.ui;
 
 import java.io.IOException;
 import java.util.Map;
 
 import javax.swing.JTextField;
 
-import com.egg.miniuis.ExceptionUI;
 import com.ferrumx.system.hardware.Win32_BIOS;
 import com.ferrumx.system.hardware.Win32_Baseboard;
+import com.hardcache.miniuis.ExceptionUI;
 
 final class Mainboard {
 	
