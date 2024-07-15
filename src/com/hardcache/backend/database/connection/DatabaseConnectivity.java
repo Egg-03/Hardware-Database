@@ -1,18 +1,18 @@
-package com.hardcache.database;
+package com.hardcache.backend.database.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import com.hardcache.miniuis.ExceptionUI;
+import com.hardcache.frontend.miniuis.ExceptionUI;
 
 
-class DatabaseConnectivity {
+public class DatabaseConnectivity {
 	private DatabaseConnectivity() {
 		throw new IllegalStateException("Utility Class");
 	}
 	
-	protected static Connection initialize() {
+	public static Connection initialize() {
 		try {
 			Class.forName("org.sqlite.JDBC");
 			return DriverManager.getConnection("jdbc:sqlite:database\\ComputerRecords.db");
@@ -22,7 +22,7 @@ class DatabaseConnectivity {
 		}
 	}
 	
-	protected static void close(Connection connect) {
+	public static void close(Connection connect) {
 		try {
 			connect.close();
 		} catch (SQLException e) {

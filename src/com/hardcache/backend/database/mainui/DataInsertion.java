@@ -1,4 +1,4 @@
-package com.hardcache.database;
+package com.hardcache.backend.database.mainui;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -22,8 +22,9 @@ import com.ferrumx.system.hardware.Win32_VideoController;
 import com.ferrumx.system.networking.Win32_NetworkAdapterConfiguration;
 import com.ferrumx.system.networking.Win32_NetworkAdapterSetting;
 import com.ferrumx.system.operating_system.Win32_OperatingSystem;
-import com.hardcache.miniuis.ExceptionUI;
-import com.hardcache.miniuis.InformationUI;
+import com.hardcache.backend.database.connection.DatabaseConnectivity;
+import com.hardcache.frontend.miniuis.ExceptionUI;
+import com.hardcache.frontend.miniuis.InformationUI;
 
 public class DataInsertion {
 	

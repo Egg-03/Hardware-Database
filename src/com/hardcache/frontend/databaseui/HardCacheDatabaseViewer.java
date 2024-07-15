@@ -1,4 +1,4 @@
-package com.hardcache.database.ui;
+package com.hardcache.frontend.databaseui;
 
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
@@ -19,7 +19,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
-public class DatabaseAppWindow {
+public class HardCacheDatabaseViewer {
 
 	private JFrame frmHcDatabaseViewer;
 	private JTextField cpuNameTf;
@@ -56,7 +56,7 @@ public class DatabaseAppWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					DatabaseAppWindow window = new DatabaseAppWindow();
+					HardCacheDatabaseViewer window = new HardCacheDatabaseViewer();
 					window.frmHcDatabaseViewer.pack();
 					window.frmHcDatabaseViewer.setVisible(true);
 				} catch (Exception e) {
@@ -69,7 +69,7 @@ public class DatabaseAppWindow {
 	/**
 	 * Create the application.
 	 */
-	public DatabaseAppWindow() {
+	public HardCacheDatabaseViewer() {
 		initialize();
 	}
 
@@ -78,11 +78,10 @@ public class DatabaseAppWindow {
 	 */
 	private void initialize() {
 		frmHcDatabaseViewer = new JFrame();
-		frmHcDatabaseViewer.setIconImage(Toolkit.getDefaultToolkit().getImage(DatabaseAppWindow.class.getResource("/res/icon_main.png")));
+		frmHcDatabaseViewer.setIconImage(Toolkit.getDefaultToolkit().getImage(HardCacheDatabaseViewer.class.getResource("/res/icon_main.png")));
 		frmHcDatabaseViewer.setTitle("HC Database Viewer");
 		frmHcDatabaseViewer.setBounds(100, 100, 723, 430);
 		frmHcDatabaseViewer.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frmHcDatabaseViewer.setLocationRelativeTo(null);
 		frmHcDatabaseViewer.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
 		
 		JPanel hardwarePanel = new JPanel();

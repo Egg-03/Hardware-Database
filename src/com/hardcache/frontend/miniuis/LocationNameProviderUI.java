@@ -1,4 +1,4 @@
-package com.hardcache.miniuis;
+package com.hardcache.frontend.miniuis;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -17,14 +17,14 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
 import com.ferrumx.system.logger.ErrorLog;
-import com.hardcache.database.DataInsertion;
+import com.hardcache.backend.database.mainui.DataInsertion;
 
 //Location and Name Selector UI
 //This should appear when you're dumping new data or updating it
-public class LocationNameProvider extends JFrame {
+public class LocationNameProviderUI extends JFrame {
 	private static final long serialVersionUID = 8198578061033325272L;
 	
-	public LocationNameProvider() {
+	public LocationNameProviderUI() {
 		super("LN Selector Window");
 		setTheme();
 		initialize();
@@ -40,7 +40,7 @@ public class LocationNameProvider extends JFrame {
 	}
 	
 	private void initialize() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(LocationNameProvider.class.getResource("/res/icon_main.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(LocationNameProviderUI.class.getResource("/res/icon_main.png")));
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setSize(490,190);

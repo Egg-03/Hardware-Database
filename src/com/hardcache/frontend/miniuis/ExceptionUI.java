@@ -1,4 +1,4 @@
-package com.hardcache.miniuis;
+package com.hardcache.frontend.miniuis;
 
 import java.awt.Color;
 import java.awt.Toolkit;

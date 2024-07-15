@@ -1,4 +1,4 @@
-package com.hardcache.database;
+package com.hardcache.backend.database.mainui;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -6,8 +6,9 @@ import java.sql.Statement;
 import java.util.concurrent.ExecutionException;
 
 import com.ferrumx.system.hardware.HardwareID;
-import com.hardcache.miniuis.ExceptionUI;
-import com.hardcache.miniuis.InformationUI;
+import com.hardcache.backend.database.connection.DatabaseConnectivity;
+import com.hardcache.frontend.miniuis.ExceptionUI;
+import com.hardcache.frontend.miniuis.InformationUI;
 
 //WARNING: THIS WILL WORK IFF THE HARDWARE ID OF THE CURRENT MACHINE MATCHES WITH ONE OF THE ID's STORED IN THE DB
 public class DataDeletion {

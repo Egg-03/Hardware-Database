@@ -1,4 +1,4 @@
-package com.hardcache.ui;
+package com.hardcache.frontend.mainui;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.swing.JTextField;
 
 import com.ferrumx.system.hardware.Win32_PhysicalMemory;
-import com.hardcache.miniuis.ExceptionUI;
+import com.hardcache.frontend.miniuis.ExceptionUI;
 
 final class Memory {
 	

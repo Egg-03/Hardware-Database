@@ -1,4 +1,4 @@
-package com.hardcache.ui;
+package com.hardcache.frontend.mainui;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,7 +9,7 @@ import javax.swing.JTextField;
 
 import com.ferrumx.system.currentuser.User;
 import com.ferrumx.system.operating_system.Win32_OperatingSystem;
-import com.hardcache.miniuis.ExceptionUI;
+import com.hardcache.frontend.miniuis.ExceptionUI;
 
 final class OperatingSystem {
 	

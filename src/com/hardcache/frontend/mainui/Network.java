@@ -1,4 +1,4 @@
-package com.hardcache.ui;
+package com.hardcache.frontend.mainui;
 
 import java.io.IOException;
 import java.util.List;
@@ -10,7 +10,7 @@ import javax.swing.JTextField;
 import com.ferrumx.system.hardware.Win32_NetworkAdapter;
 import com.ferrumx.system.networking.Win32_NetworkAdapterConfiguration;
 import com.ferrumx.system.networking.Win32_NetworkAdapterSetting;
-import com.hardcache.miniuis.ExceptionUI;
+import com.hardcache.frontend.miniuis.ExceptionUI;
 
 final class Network {
 	

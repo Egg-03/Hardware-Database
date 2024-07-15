@@ -1,4 +1,4 @@
-package com.hardcache.ui;
+package com.hardcache.frontend.mainui;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -26,11 +26,11 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
 import com.ferrumx.system.logger.ErrorLog;
-import com.hardcache.database.DataDeletion;
-import com.hardcache.miniuis.ConfirmationUI;
-import com.hardcache.miniuis.ExceptionUI;
-import com.hardcache.miniuis.LocationNameProvider;
-import com.hardcache.miniuis.StatusUI;
+import com.hardcache.backend.database.mainui.DataDeletion;
+import com.hardcache.frontend.miniuis.ConfirmationUI;
+import com.hardcache.frontend.miniuis.ExceptionUI;
+import com.hardcache.frontend.miniuis.LocationNameProviderUI;
+import com.hardcache.frontend.miniuis.StatusUI;
 
 public class HardCacheMain {
 
@@ -162,7 +162,7 @@ public class HardCacheMain {
 		JButton dataDumpButton = new JButton("Dump");
 		dataDumpButton.setToolTipText("Dumps the visible data into a local database");
 		dataDumpButton.setBounds(17, 48, 83, 24);
-		dataDumpButton.addActionListener(e-> new LocationNameProvider().setVisible(true));
+		dataDumpButton.addActionListener(e-> new LocationNameProviderUI().setVisible(true));
 		hardwareIdPanel.add(dataDumpButton);
 		
 		JButton dataDeleteButton = new JButton("Delete");
