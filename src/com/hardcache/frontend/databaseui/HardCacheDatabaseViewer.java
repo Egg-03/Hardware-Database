@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -14,55 +15,60 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
+import com.ferrumx.system.logger.ErrorLog;
+import com.hardcache.backend.database.databaseui.HardwareIdDatabase;
+
 public class HardCacheDatabaseViewer {
 
 	private JFrame frmHcDatabaseViewer;
+	
+	private JComboBox<String> userNameComboBox;
+	private JComboBox<String> locationComboBox;
+	
 	private JTextField cpuNameTf;
 	private JTextField cpuCoreTf;
 	private JTextField cpuThreadTf;
 	private JTextField cpuSocketTf;
+	
 	private JComboBox<String> currentGpuChoice;
 	private JTextField gpuNameTf;
 	private JTextField gpuVramTf;
 	private JTextField gpuDriverTf;
+	
 	private JTextField totalSlotTf;
 	private JTextField totalMemoryTf;
+	
 	private JTextField motherboardNameTf;
 	private JTextField motherboardManufacturerTf;
-	private JTextField textField_2;
+	private JTextField biosVersionTextField;
+	
 	private JTextField netDescriptiontextField;
 	private JTextField networkMacTextField;
 	private JTextField networkIpTextField;
 	private JTextField networkSubnetTextField;
 	private JTextField networkDnsTextField;
+	
 	private JTextField driveNameTextField;
 	private JTextField driveSerialTextField;
 	private JTextField driveSizeTextField;
 	private JTextField driveSmartTextField;
+	
+	
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		try {
-			UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					HardCacheDatabaseViewer window = new HardCacheDatabaseViewer();
-					window.frmHcDatabaseViewer.pack();
-					window.frmHcDatabaseViewer.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
+		EventQueue.invokeLater(()->{
+			HardCacheDatabaseViewer window = new HardCacheDatabaseViewer();
+			window.frmHcDatabaseViewer.pack();
+			window.frmHcDatabaseViewer.setVisible(true);
 		});
 	}
 
@@ -70,584 +76,627 @@ public class HardCacheDatabaseViewer {
 	 * Create the application.
 	 */
 	public HardCacheDatabaseViewer() {
-		initialize();
+		initializeUI();
+		initializeData();
+	}
+	
+	private void setTheme() {
+		try {
+			UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
+			SwingUtilities.updateComponentTreeUI(frmHcDatabaseViewer);
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+			new ErrorLog().log(" ExceptionUI Theme Load Error: "+e.getMessage());
+		}
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initializeUI() {
 		frmHcDatabaseViewer = new JFrame();
+		setTheme();
 		frmHcDatabaseViewer.setIconImage(Toolkit.getDefaultToolkit().getImage(HardCacheDatabaseViewer.class.getResource("/res/icon_main.png")));
 		frmHcDatabaseViewer.setTitle("HC Database Viewer");
 		frmHcDatabaseViewer.setBounds(100, 100, 723, 430);
 		frmHcDatabaseViewer.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frmHcDatabaseViewer.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
 		
+		setHardwarePanel();
+		setCpuPanel();
+		setGpuPanel();
+		setMemoryPanel();
+		setMainboardPanel();
+		setNetworkPanel();
+		setStoragePanel();
+	}
+	
+	private void setHardwarePanel() {
 		JPanel hardwarePanel = new JPanel();
 		hardwarePanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "HardwareID", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		frmHcDatabaseViewer.getContentPane().add(hardwarePanel);
-		GridBagLayout gbl_hardwarePanel = new GridBagLayout();
-		gbl_hardwarePanel.columnWidths = new int[] {0, 0, 0, 0, 0};
-		gbl_hardwarePanel.rowHeights = new int[]{0, 0, 0};
-		gbl_hardwarePanel.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE, 0.0};
-		gbl_hardwarePanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		hardwarePanel.setLayout(gbl_hardwarePanel);
+		GridBagLayout gblhardwarePanel = new GridBagLayout();
+		gblhardwarePanel.columnWidths = new int[] {0, 0, 0, 0, 0};
+		gblhardwarePanel.rowHeights = new int[]{0, 0, 0};
+		gblhardwarePanel.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE, 0.0};
+		gblhardwarePanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		hardwarePanel.setLayout(gblhardwarePanel);
 		
 		JLabel usernameLabel = new JLabel("Username");
-		GridBagConstraints gbc_usernameLabel = new GridBagConstraints();
-		gbc_usernameLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_usernameLabel.gridx = 0;
-		gbc_usernameLabel.gridy = 0;
-		hardwarePanel.add(usernameLabel, gbc_usernameLabel);
+		GridBagConstraints gbcusernameLabel = new GridBagConstraints();
+		gbcusernameLabel.insets = new Insets(0, 0, 5, 5);
+		gbcusernameLabel.gridx = 0;
+		gbcusernameLabel.gridy = 0;
+		hardwarePanel.add(usernameLabel, gbcusernameLabel);
 		
 		JLabel locationLabel = new JLabel("Location");
-		GridBagConstraints gbc_locationLabel = new GridBagConstraints();
-		gbc_locationLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_locationLabel.gridx = 1;
-		gbc_locationLabel.gridy = 0;
-		hardwarePanel.add(locationLabel, gbc_locationLabel);
+		GridBagConstraints gbclocationLabel = new GridBagConstraints();
+		gbclocationLabel.insets = new Insets(0, 0, 5, 5);
+		gbclocationLabel.gridx = 1;
+		gbclocationLabel.gridy = 0;
+		hardwarePanel.add(locationLabel, gbclocationLabel);
 		
 		JLabel hwidLabel = new JLabel("HardwareID");
-		GridBagConstraints gbc_hwidLabel = new GridBagConstraints();
-		gbc_hwidLabel.gridwidth = 2;
-		gbc_hwidLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_hwidLabel.gridx = 2;
-		gbc_hwidLabel.gridy = 0;
-		hardwarePanel.add(hwidLabel, gbc_hwidLabel);
+		GridBagConstraints gbchwidLabel = new GridBagConstraints();
+		gbchwidLabel.gridwidth = 2;
+		gbchwidLabel.insets = new Insets(0, 0, 5, 5);
+		gbchwidLabel.gridx = 2;
+		gbchwidLabel.gridy = 0;
+		hardwarePanel.add(hwidLabel, gbchwidLabel);
 		
-		JComboBox<String> userNameComboBox = new JComboBox<>();
-		GridBagConstraints gbc_userNameComboBox = new GridBagConstraints();
-		gbc_userNameComboBox.insets = new Insets(0, 0, 0, 5);
-		gbc_userNameComboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_userNameComboBox.gridx = 0;
-		gbc_userNameComboBox.gridy = 1;
-		hardwarePanel.add(userNameComboBox, gbc_userNameComboBox);
+		userNameComboBox = new JComboBox<>();
+		GridBagConstraints gbcuserNameComboBox = new GridBagConstraints();
+		gbcuserNameComboBox.insets = new Insets(0, 0, 0, 5);
+		gbcuserNameComboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbcuserNameComboBox.gridx = 0;
+		gbcuserNameComboBox.gridy = 1;
+		hardwarePanel.add(userNameComboBox, gbcuserNameComboBox);
 		
-		JComboBox<String> locationComboBox = new JComboBox<>();
-		GridBagConstraints gbc_locationComboBox = new GridBagConstraints();
-		gbc_locationComboBox.insets = new Insets(0, 0, 0, 5);
-		gbc_locationComboBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_locationComboBox.gridx = 1;
-		gbc_locationComboBox.gridy = 1;
-		hardwarePanel.add(locationComboBox, gbc_locationComboBox);
+		locationComboBox = new JComboBox<>();
+		GridBagConstraints gbclocationComboBox = new GridBagConstraints();
+		gbclocationComboBox.insets = new Insets(0, 0, 0, 5);
+		gbclocationComboBox.fill = GridBagConstraints.HORIZONTAL;
+		gbclocationComboBox.gridx = 1;
+		gbclocationComboBox.gridy = 1;
+		hardwarePanel.add(locationComboBox, gbclocationComboBox);
 		
 		JComboBox<String> hwidChoice = new JComboBox<>();
-		GridBagConstraints gbc_hwidChoice = new GridBagConstraints();
-		gbc_hwidChoice.insets = new Insets(0, 0, 0, 5);
-		gbc_hwidChoice.gridwidth = 2;
-		gbc_hwidChoice.weightx = 4.0;
-		gbc_hwidChoice.fill = GridBagConstraints.HORIZONTAL;
-		gbc_hwidChoice.gridx = 2;
-		gbc_hwidChoice.gridy = 1;
-		hardwarePanel.add(hwidChoice, gbc_hwidChoice);
+		GridBagConstraints gbchwidChoice = new GridBagConstraints();
+		gbchwidChoice.insets = new Insets(0, 0, 0, 5);
+		gbchwidChoice.gridwidth = 2;
+		gbchwidChoice.weightx = 4.0;
+		gbchwidChoice.fill = GridBagConstraints.HORIZONTAL;
+		gbchwidChoice.gridx = 2;
+		gbchwidChoice.gridy = 1;
+		hardwarePanel.add(hwidChoice, gbchwidChoice);
 		
 		JButton showButton = new JButton("Show");
-		GridBagConstraints gbc_showButton = new GridBagConstraints();
-		gbc_showButton.gridx = 4;
-		gbc_showButton.gridy = 1;
-		hardwarePanel.add(showButton, gbc_showButton);
-		
+		GridBagConstraints gbcshowButton = new GridBagConstraints();
+		gbcshowButton.gridx = 4;
+		gbcshowButton.gridy = 1;
+		hardwarePanel.add(showButton, gbcshowButton);
+	}
+	
+	private void setCpuPanel() {
 		JPanel cpuPanel = new JPanel();
 		cpuPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "CPU", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		frmHcDatabaseViewer.getContentPane().add(cpuPanel);
-		GridBagLayout gbl_cpuPanel = new GridBagLayout();
-		gbl_cpuPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0};
-		gbl_cpuPanel.rowHeights = new int[]{0, 0, 0};
-		gbl_cpuPanel.columnWeights = new double[]{1.0, 1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
-		gbl_cpuPanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		cpuPanel.setLayout(gbl_cpuPanel);
+		GridBagLayout gblcpuPanel = new GridBagLayout();
+		gblcpuPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0};
+		gblcpuPanel.rowHeights = new int[]{0, 0, 0};
+		gblcpuPanel.columnWeights = new double[]{1.0, 1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+		gblcpuPanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		cpuPanel.setLayout(gblcpuPanel);
 		
 		JLabel cpuChoice = new JLabel("Current CPU");
-		GridBagConstraints gbc_cpuChoice = new GridBagConstraints();
-		gbc_cpuChoice.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cpuChoice.insets = new Insets(0, 0, 5, 5);
-		gbc_cpuChoice.gridx = 0;
-		gbc_cpuChoice.gridy = 0;
-		cpuPanel.add(cpuChoice, gbc_cpuChoice);
+		GridBagConstraints gbccpuChoice = new GridBagConstraints();
+		gbccpuChoice.fill = GridBagConstraints.HORIZONTAL;
+		gbccpuChoice.insets = new Insets(0, 0, 5, 5);
+		gbccpuChoice.gridx = 0;
+		gbccpuChoice.gridy = 0;
+		cpuPanel.add(cpuChoice, gbccpuChoice);
 		
 		JComboBox<String> cpuChoiceBox = new JComboBox<>();
-		GridBagConstraints gbc_cpuChoiceBox = new GridBagConstraints();
-		gbc_cpuChoiceBox.insets = new Insets(0, 0, 5, 5);
-		gbc_cpuChoiceBox.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cpuChoiceBox.gridx = 1;
-		gbc_cpuChoiceBox.gridy = 0;
-		cpuPanel.add(cpuChoiceBox, gbc_cpuChoiceBox);
+		GridBagConstraints gbccpuChoiceBox = new GridBagConstraints();
+		gbccpuChoiceBox.insets = new Insets(0, 0, 5, 5);
+		gbccpuChoiceBox.fill = GridBagConstraints.HORIZONTAL;
+		gbccpuChoiceBox.gridx = 1;
+		gbccpuChoiceBox.gridy = 0;
+		cpuPanel.add(cpuChoiceBox, gbccpuChoiceBox);
 		
 		JLabel cpuName = new JLabel("CPU Name");
-		GridBagConstraints gbc_cpuName = new GridBagConstraints();
-		gbc_cpuName.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cpuName.insets = new Insets(0, 0, 5, 5);
-		gbc_cpuName.gridx = 2;
-		gbc_cpuName.gridy = 0;
-		cpuPanel.add(cpuName, gbc_cpuName);
+		GridBagConstraints gbccpuName = new GridBagConstraints();
+		gbccpuName.fill = GridBagConstraints.HORIZONTAL;
+		gbccpuName.insets = new Insets(0, 0, 5, 5);
+		gbccpuName.gridx = 2;
+		gbccpuName.gridy = 0;
+		cpuPanel.add(cpuName, gbccpuName);
 		
 		cpuNameTf = new JTextField();
 		cpuNameTf.setEditable(false);
-		GridBagConstraints gbc_cpuNameTf = new GridBagConstraints();
-		gbc_cpuNameTf.gridwidth = 3;
-		gbc_cpuNameTf.insets = new Insets(0, 0, 5, 5);
-		gbc_cpuNameTf.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cpuNameTf.gridx = 3;
-		gbc_cpuNameTf.gridy = 0;
-		cpuPanel.add(cpuNameTf, gbc_cpuNameTf);
+		GridBagConstraints gbccpuNameTf = new GridBagConstraints();
+		gbccpuNameTf.gridwidth = 3;
+		gbccpuNameTf.insets = new Insets(0, 0, 5, 5);
+		gbccpuNameTf.fill = GridBagConstraints.HORIZONTAL;
+		gbccpuNameTf.gridx = 3;
+		gbccpuNameTf.gridy = 0;
+		cpuPanel.add(cpuNameTf, gbccpuNameTf);
 		cpuNameTf.setColumns(10);
 		
 		JLabel cpuCores = new JLabel("CPU Core Count");
 		cpuCores.setHorizontalAlignment(SwingConstants.LEFT);
-		GridBagConstraints gbc_cpuCores = new GridBagConstraints();
-		gbc_cpuCores.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cpuCores.anchor = GridBagConstraints.EAST;
-		gbc_cpuCores.insets = new Insets(0, 0, 0, 5);
-		gbc_cpuCores.gridx = 0;
-		gbc_cpuCores.gridy = 1;
-		cpuPanel.add(cpuCores, gbc_cpuCores);
+		GridBagConstraints gbccpuCores = new GridBagConstraints();
+		gbccpuCores.fill = GridBagConstraints.HORIZONTAL;
+		gbccpuCores.anchor = GridBagConstraints.EAST;
+		gbccpuCores.insets = new Insets(0, 0, 0, 5);
+		gbccpuCores.gridx = 0;
+		gbccpuCores.gridy = 1;
+		cpuPanel.add(cpuCores, gbccpuCores);
 		
 		cpuCoreTf = new JTextField();
 		cpuCoreTf.setEditable(false);
-		GridBagConstraints gbc_cpuCoreTf = new GridBagConstraints();
-		gbc_cpuCoreTf.anchor = GridBagConstraints.EAST;
-		gbc_cpuCoreTf.insets = new Insets(0, 0, 0, 5);
-		gbc_cpuCoreTf.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cpuCoreTf.gridx = 1;
-		gbc_cpuCoreTf.gridy = 1;
-		cpuPanel.add(cpuCoreTf, gbc_cpuCoreTf);
+		GridBagConstraints gbccpuCoreTf = new GridBagConstraints();
+		gbccpuCoreTf.anchor = GridBagConstraints.EAST;
+		gbccpuCoreTf.insets = new Insets(0, 0, 0, 5);
+		gbccpuCoreTf.fill = GridBagConstraints.HORIZONTAL;
+		gbccpuCoreTf.gridx = 1;
+		gbccpuCoreTf.gridy = 1;
+		cpuPanel.add(cpuCoreTf, gbccpuCoreTf);
 		cpuCoreTf.setColumns(10);
 		
 		JLabel cpuThread = new JLabel("CPU Thread Count");
-		GridBagConstraints gbc_cpuThread = new GridBagConstraints();
-		gbc_cpuThread.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cpuThread.insets = new Insets(0, 0, 0, 5);
-		gbc_cpuThread.gridx = 2;
-		gbc_cpuThread.gridy = 1;
-		cpuPanel.add(cpuThread, gbc_cpuThread);
+		GridBagConstraints gbccpuThread = new GridBagConstraints();
+		gbccpuThread.fill = GridBagConstraints.HORIZONTAL;
+		gbccpuThread.insets = new Insets(0, 0, 0, 5);
+		gbccpuThread.gridx = 2;
+		gbccpuThread.gridy = 1;
+		cpuPanel.add(cpuThread, gbccpuThread);
 		
 		cpuThreadTf = new JTextField();
 		cpuThreadTf.setEditable(false);
-		GridBagConstraints gbc_cpuThreadTf = new GridBagConstraints();
-		gbc_cpuThreadTf.weightx = 10.0;
-		gbc_cpuThreadTf.insets = new Insets(0, 0, 0, 5);
-		gbc_cpuThreadTf.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cpuThreadTf.gridx = 3;
-		gbc_cpuThreadTf.gridy = 1;
-		cpuPanel.add(cpuThreadTf, gbc_cpuThreadTf);
+		GridBagConstraints gbccpuThreadTf = new GridBagConstraints();
+		gbccpuThreadTf.weightx = 10.0;
+		gbccpuThreadTf.insets = new Insets(0, 0, 0, 5);
+		gbccpuThreadTf.fill = GridBagConstraints.HORIZONTAL;
+		gbccpuThreadTf.gridx = 3;
+		gbccpuThreadTf.gridy = 1;
+		cpuPanel.add(cpuThreadTf, gbccpuThreadTf);
 		cpuThreadTf.setColumns(10);
 		
 		JLabel cpuSocket = new JLabel("Socket Designation");
-		GridBagConstraints gbc_cpuSocket = new GridBagConstraints();
-		gbc_cpuSocket.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cpuSocket.anchor = GridBagConstraints.WEST;
-		gbc_cpuSocket.insets = new Insets(0, 0, 0, 5);
-		gbc_cpuSocket.gridx = 4;
-		gbc_cpuSocket.gridy = 1;
-		cpuPanel.add(cpuSocket, gbc_cpuSocket);
+		GridBagConstraints gbccpuSocket = new GridBagConstraints();
+		gbccpuSocket.fill = GridBagConstraints.HORIZONTAL;
+		gbccpuSocket.anchor = GridBagConstraints.WEST;
+		gbccpuSocket.insets = new Insets(0, 0, 0, 5);
+		gbccpuSocket.gridx = 4;
+		gbccpuSocket.gridy = 1;
+		cpuPanel.add(cpuSocket, gbccpuSocket);
 		
 		cpuSocketTf = new JTextField();
 		cpuSocketTf.setEditable(false);
-		GridBagConstraints gbc_cpuSocketTf = new GridBagConstraints();
-		gbc_cpuSocketTf.weightx = 10.0;
-		gbc_cpuSocketTf.anchor = GridBagConstraints.WEST;
-		gbc_cpuSocketTf.fill = GridBagConstraints.HORIZONTAL;
-		gbc_cpuSocketTf.gridx = 5;
-		gbc_cpuSocketTf.gridy = 1;
-		cpuPanel.add(cpuSocketTf, gbc_cpuSocketTf);
+		GridBagConstraints gbccpuSocketTf = new GridBagConstraints();
+		gbccpuSocketTf.weightx = 10.0;
+		gbccpuSocketTf.anchor = GridBagConstraints.WEST;
+		gbccpuSocketTf.fill = GridBagConstraints.HORIZONTAL;
+		gbccpuSocketTf.gridx = 5;
+		gbccpuSocketTf.gridy = 1;
+		cpuPanel.add(cpuSocketTf, gbccpuSocketTf);
 		cpuSocketTf.setColumns(10);
-		
+	}
+	
+	private void setGpuPanel() {
 		JPanel gpuPanel = new JPanel();
 		gpuPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "GPU", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		frmHcDatabaseViewer.getContentPane().add(gpuPanel);
-		GridBagLayout gbl_gpuPanel = new GridBagLayout();
-		gbl_gpuPanel.columnWidths = new int[]{0, 0, 0, 0, 0};
-		gbl_gpuPanel.rowHeights = new int[]{0, 0, 0};
-		gbl_gpuPanel.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
-		gbl_gpuPanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		gpuPanel.setLayout(gbl_gpuPanel);
+		GridBagLayout gblgpuPanel = new GridBagLayout();
+		gblgpuPanel.columnWidths = new int[]{0, 0, 0, 0, 0};
+		gblgpuPanel.rowHeights = new int[]{0, 0, 0};
+		gblgpuPanel.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+		gblgpuPanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		gpuPanel.setLayout(gblgpuPanel);
 		
 		JLabel currentGPU = new JLabel("Current GPU");
-		GridBagConstraints gbc_currentGPU = new GridBagConstraints();
-		gbc_currentGPU.anchor = GridBagConstraints.EAST;
-		gbc_currentGPU.insets = new Insets(0, 0, 5, 5);
-		gbc_currentGPU.gridx = 0;
-		gbc_currentGPU.gridy = 0;
-		gpuPanel.add(currentGPU, gbc_currentGPU);
+		GridBagConstraints gbccurrentGPU = new GridBagConstraints();
+		gbccurrentGPU.anchor = GridBagConstraints.EAST;
+		gbccurrentGPU.insets = new Insets(0, 0, 5, 5);
+		gbccurrentGPU.gridx = 0;
+		gbccurrentGPU.gridy = 0;
+		gpuPanel.add(currentGPU, gbccurrentGPU);
 		
 		currentGpuChoice = new JComboBox<>();
-		GridBagConstraints gbc_currentGpuChoice = new GridBagConstraints();
-		gbc_currentGpuChoice.fill = GridBagConstraints.HORIZONTAL;
-		gbc_currentGpuChoice.insets = new Insets(0, 0, 5, 5);
-		gbc_currentGpuChoice.gridx = 1;
-		gbc_currentGpuChoice.gridy = 0;
-		gpuPanel.add(currentGpuChoice, gbc_currentGpuChoice);
+		GridBagConstraints gbccurrentGpuChoice = new GridBagConstraints();
+		gbccurrentGpuChoice.fill = GridBagConstraints.HORIZONTAL;
+		gbccurrentGpuChoice.insets = new Insets(0, 0, 5, 5);
+		gbccurrentGpuChoice.gridx = 1;
+		gbccurrentGpuChoice.gridy = 0;
+		gpuPanel.add(currentGpuChoice, gbccurrentGpuChoice);
 		
 		JLabel currentGpuName = new JLabel("Name");
-		GridBagConstraints gbc_currentGpuName = new GridBagConstraints();
-		gbc_currentGpuName.insets = new Insets(0, 0, 5, 5);
-		gbc_currentGpuName.gridx = 2;
-		gbc_currentGpuName.gridy = 0;
-		gpuPanel.add(currentGpuName, gbc_currentGpuName);
+		GridBagConstraints gbccurrentGpuName = new GridBagConstraints();
+		gbccurrentGpuName.insets = new Insets(0, 0, 5, 5);
+		gbccurrentGpuName.gridx = 2;
+		gbccurrentGpuName.gridy = 0;
+		gpuPanel.add(currentGpuName, gbccurrentGpuName);
 		
 		gpuNameTf = new JTextField();
 		gpuNameTf.setEditable(false);
-		GridBagConstraints gbc_gpuNameTf = new GridBagConstraints();
-		gbc_gpuNameTf.fill = GridBagConstraints.HORIZONTAL;
-		gbc_gpuNameTf.insets = new Insets(0, 0, 5, 0);
-		gbc_gpuNameTf.gridx = 3;
-		gbc_gpuNameTf.gridy = 0;
-		gpuPanel.add(gpuNameTf, gbc_gpuNameTf);
+		GridBagConstraints gbcgpuNameTf = new GridBagConstraints();
+		gbcgpuNameTf.fill = GridBagConstraints.HORIZONTAL;
+		gbcgpuNameTf.insets = new Insets(0, 0, 5, 0);
+		gbcgpuNameTf.gridx = 3;
+		gbcgpuNameTf.gridy = 0;
+		gpuPanel.add(gpuNameTf, gbcgpuNameTf);
 		gpuNameTf.setColumns(10);
 		
 		JLabel gpuVram = new JLabel("VRAM");
-		GridBagConstraints gbc_gpuVram = new GridBagConstraints();
-		gbc_gpuVram.insets = new Insets(0, 0, 0, 5);
-		gbc_gpuVram.gridx = 0;
-		gbc_gpuVram.gridy = 1;
-		gpuPanel.add(gpuVram, gbc_gpuVram);
+		GridBagConstraints gbcgpuVram = new GridBagConstraints();
+		gbcgpuVram.insets = new Insets(0, 0, 0, 5);
+		gbcgpuVram.gridx = 0;
+		gbcgpuVram.gridy = 1;
+		gpuPanel.add(gpuVram, gbcgpuVram);
 		
 		gpuVramTf = new JTextField();
 		gpuVramTf.setEditable(false);
-		GridBagConstraints gbc_gpuVramTf = new GridBagConstraints();
-		gbc_gpuVramTf.fill = GridBagConstraints.HORIZONTAL;
-		gbc_gpuVramTf.insets = new Insets(0, 0, 0, 5);
-		gbc_gpuVramTf.gridx = 1;
-		gbc_gpuVramTf.gridy = 1;
-		gpuPanel.add(gpuVramTf, gbc_gpuVramTf);
+		GridBagConstraints gbcgpuVramTf = new GridBagConstraints();
+		gbcgpuVramTf.fill = GridBagConstraints.HORIZONTAL;
+		gbcgpuVramTf.insets = new Insets(0, 0, 0, 5);
+		gbcgpuVramTf.gridx = 1;
+		gbcgpuVramTf.gridy = 1;
+		gpuPanel.add(gpuVramTf, gbcgpuVramTf);
 		gpuVramTf.setColumns(10);
 		
 		JLabel gpuDriver = new JLabel("Driver Version");
-		GridBagConstraints gbc_gpuDriver = new GridBagConstraints();
-		gbc_gpuDriver.anchor = GridBagConstraints.EAST;
-		gbc_gpuDriver.insets = new Insets(0, 0, 0, 5);
-		gbc_gpuDriver.gridx = 2;
-		gbc_gpuDriver.gridy = 1;
-		gpuPanel.add(gpuDriver, gbc_gpuDriver);
+		GridBagConstraints gbcgpuDriver = new GridBagConstraints();
+		gbcgpuDriver.anchor = GridBagConstraints.EAST;
+		gbcgpuDriver.insets = new Insets(0, 0, 0, 5);
+		gbcgpuDriver.gridx = 2;
+		gbcgpuDriver.gridy = 1;
+		gpuPanel.add(gpuDriver, gbcgpuDriver);
 		
 		gpuDriverTf = new JTextField();
 		gpuDriverTf.setEditable(false);
-		GridBagConstraints gbc_gpuDriverTf = new GridBagConstraints();
-		gbc_gpuDriverTf.fill = GridBagConstraints.HORIZONTAL;
-		gbc_gpuDriverTf.gridx = 3;
-		gbc_gpuDriverTf.gridy = 1;
-		gpuPanel.add(gpuDriverTf, gbc_gpuDriverTf);
+		GridBagConstraints gbcgpuDriverTf = new GridBagConstraints();
+		gbcgpuDriverTf.fill = GridBagConstraints.HORIZONTAL;
+		gbcgpuDriverTf.gridx = 3;
+		gbcgpuDriverTf.gridy = 1;
+		gpuPanel.add(gpuDriverTf, gbcgpuDriverTf);
 		gpuDriverTf.setColumns(10);
-		
+	}
+	
+	private void setMemoryPanel() {
 		JPanel memoryPanel = new JPanel();
 		memoryPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Memory", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		frmHcDatabaseViewer.getContentPane().add(memoryPanel);
-		GridBagLayout gbl_memoryPanel = new GridBagLayout();
-		gbl_memoryPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_memoryPanel.rowHeights = new int[]{0, 0};
-		gbl_memoryPanel.columnWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
-		gbl_memoryPanel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
-		memoryPanel.setLayout(gbl_memoryPanel);
+		GridBagLayout gblmemoryPanel = new GridBagLayout();
+		gblmemoryPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		gblmemoryPanel.rowHeights = new int[]{0, 0};
+		gblmemoryPanel.columnWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gblmemoryPanel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
+		memoryPanel.setLayout(gblmemoryPanel);
 		
 		JLabel slotCount = new JLabel("Slots Used");
-		GridBagConstraints gbc_slotCount = new GridBagConstraints();
-		gbc_slotCount.gridheight = 2;
-		gbc_slotCount.insets = new Insets(0, 0, 0, 5);
-		gbc_slotCount.anchor = GridBagConstraints.EAST;
-		gbc_slotCount.gridx = 0;
-		gbc_slotCount.gridy = 0;
-		memoryPanel.add(slotCount, gbc_slotCount);
+		GridBagConstraints gbcslotCount = new GridBagConstraints();
+		gbcslotCount.gridheight = 2;
+		gbcslotCount.insets = new Insets(0, 0, 0, 5);
+		gbcslotCount.anchor = GridBagConstraints.EAST;
+		gbcslotCount.gridx = 0;
+		gbcslotCount.gridy = 0;
+		memoryPanel.add(slotCount, gbcslotCount);
 		
 		totalSlotTf = new JTextField();
 		totalSlotTf.setEditable(false);
-		GridBagConstraints gbc_totalSlotTf = new GridBagConstraints();
-		gbc_totalSlotTf.gridheight = 2;
-		gbc_totalSlotTf.weightx = 1.0;
-		gbc_totalSlotTf.insets = new Insets(0, 0, 0, 5);
-		gbc_totalSlotTf.fill = GridBagConstraints.HORIZONTAL;
-		gbc_totalSlotTf.gridx = 1;
-		gbc_totalSlotTf.gridy = 0;
-		memoryPanel.add(totalSlotTf, gbc_totalSlotTf);
+		GridBagConstraints gbctotalSlotTf = new GridBagConstraints();
+		gbctotalSlotTf.gridheight = 2;
+		gbctotalSlotTf.weightx = 1.0;
+		gbctotalSlotTf.insets = new Insets(0, 0, 0, 5);
+		gbctotalSlotTf.fill = GridBagConstraints.HORIZONTAL;
+		gbctotalSlotTf.gridx = 1;
+		gbctotalSlotTf.gridy = 0;
+		memoryPanel.add(totalSlotTf, gbctotalSlotTf);
 		totalSlotTf.setColumns(10);
 		
 		JLabel totalMemory = new JLabel("Total Memory");
-		GridBagConstraints gbc_totalMemory = new GridBagConstraints();
-		gbc_totalMemory.gridheight = 2;
-		gbc_totalMemory.insets = new Insets(0, 0, 0, 5);
-		gbc_totalMemory.anchor = GridBagConstraints.EAST;
-		gbc_totalMemory.gridx = 9;
-		gbc_totalMemory.gridy = 0;
-		memoryPanel.add(totalMemory, gbc_totalMemory);
+		GridBagConstraints gbctotalMemory = new GridBagConstraints();
+		gbctotalMemory.gridheight = 2;
+		gbctotalMemory.insets = new Insets(0, 0, 0, 5);
+		gbctotalMemory.anchor = GridBagConstraints.EAST;
+		gbctotalMemory.gridx = 9;
+		gbctotalMemory.gridy = 0;
+		memoryPanel.add(totalMemory, gbctotalMemory);
 		
 		totalMemoryTf = new JTextField();
 		totalMemoryTf.setEditable(false);
-		GridBagConstraints gbc_totalMemoryTf = new GridBagConstraints();
-		gbc_totalMemoryTf.gridheight = 2;
-		gbc_totalMemoryTf.fill = GridBagConstraints.HORIZONTAL;
-		gbc_totalMemoryTf.gridx = 11;
-		gbc_totalMemoryTf.gridy = 0;
-		memoryPanel.add(totalMemoryTf, gbc_totalMemoryTf);
+		GridBagConstraints gbctotalMemoryTf = new GridBagConstraints();
+		gbctotalMemoryTf.gridheight = 2;
+		gbctotalMemoryTf.fill = GridBagConstraints.HORIZONTAL;
+		gbctotalMemoryTf.gridx = 11;
+		gbctotalMemoryTf.gridy = 0;
+		memoryPanel.add(totalMemoryTf, gbctotalMemoryTf);
 		totalMemoryTf.setColumns(10);
-		
+	}
+	
+	private void setMainboardPanel() {
 		JPanel mainboardPanel = new JPanel();
 		mainboardPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Mainboard", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		frmHcDatabaseViewer.getContentPane().add(mainboardPanel);
-		GridBagLayout gbl_mainboardPanel = new GridBagLayout();
-		gbl_mainboardPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
-		gbl_mainboardPanel.rowHeights = new int[]{0, 0, 0};
-		gbl_mainboardPanel.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
-		gbl_mainboardPanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		mainboardPanel.setLayout(gbl_mainboardPanel);
+		GridBagLayout gblmainboardPanel = new GridBagLayout();
+		gblmainboardPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
+		gblmainboardPanel.rowHeights = new int[]{0, 0, 0};
+		gblmainboardPanel.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+		gblmainboardPanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		mainboardPanel.setLayout(gblmainboardPanel);
 		
 		JLabel mainboardName = new JLabel("Name");
-		GridBagConstraints gbc_mainboardName = new GridBagConstraints();
-		gbc_mainboardName.insets = new Insets(0, 0, 5, 5);
-		gbc_mainboardName.gridx = 0;
-		gbc_mainboardName.gridy = 0;
-		mainboardPanel.add(mainboardName, gbc_mainboardName);
+		GridBagConstraints gbcmainboardName = new GridBagConstraints();
+		gbcmainboardName.insets = new Insets(0, 0, 5, 5);
+		gbcmainboardName.gridx = 0;
+		gbcmainboardName.gridy = 0;
+		mainboardPanel.add(mainboardName, gbcmainboardName);
 		
 		motherboardNameTf = new JTextField();
 		motherboardNameTf.setEditable(false);
-		GridBagConstraints gbc_motherboardNameTf = new GridBagConstraints();
-		gbc_motherboardNameTf.gridwidth = 3;
-		gbc_motherboardNameTf.insets = new Insets(0, 0, 5, 5);
-		gbc_motherboardNameTf.fill = GridBagConstraints.HORIZONTAL;
-		gbc_motherboardNameTf.gridx = 2;
-		gbc_motherboardNameTf.gridy = 0;
-		mainboardPanel.add(motherboardNameTf, gbc_motherboardNameTf);
+		GridBagConstraints gbcmotherboardNameTf = new GridBagConstraints();
+		gbcmotherboardNameTf.gridwidth = 3;
+		gbcmotherboardNameTf.insets = new Insets(0, 0, 5, 5);
+		gbcmotherboardNameTf.fill = GridBagConstraints.HORIZONTAL;
+		gbcmotherboardNameTf.gridx = 2;
+		gbcmotherboardNameTf.gridy = 0;
+		mainboardPanel.add(motherboardNameTf, gbcmotherboardNameTf);
 		motherboardNameTf.setColumns(10);
 		
 		JLabel mainboardManufacturer = new JLabel("Manufacturer");
-		GridBagConstraints gbc_mainboardManufacturer = new GridBagConstraints();
-		gbc_mainboardManufacturer.insets = new Insets(0, 0, 0, 5);
-		gbc_mainboardManufacturer.gridx = 0;
-		gbc_mainboardManufacturer.gridy = 1;
-		mainboardPanel.add(mainboardManufacturer, gbc_mainboardManufacturer);
+		GridBagConstraints gbcmainboardManufacturer = new GridBagConstraints();
+		gbcmainboardManufacturer.insets = new Insets(0, 0, 0, 5);
+		gbcmainboardManufacturer.gridx = 0;
+		gbcmainboardManufacturer.gridy = 1;
+		mainboardPanel.add(mainboardManufacturer, gbcmainboardManufacturer);
 		
 		motherboardManufacturerTf = new JTextField();
 		motherboardManufacturerTf.setEditable(false);
-		GridBagConstraints gbc_motherboardManufacturerTf = new GridBagConstraints();
-		gbc_motherboardManufacturerTf.insets = new Insets(0, 0, 0, 5);
-		gbc_motherboardManufacturerTf.fill = GridBagConstraints.HORIZONTAL;
-		gbc_motherboardManufacturerTf.gridx = 2;
-		gbc_motherboardManufacturerTf.gridy = 1;
-		mainboardPanel.add(motherboardManufacturerTf, gbc_motherboardManufacturerTf);
+		GridBagConstraints gbcmotherboardManufacturerTf = new GridBagConstraints();
+		gbcmotherboardManufacturerTf.insets = new Insets(0, 0, 0, 5);
+		gbcmotherboardManufacturerTf.fill = GridBagConstraints.HORIZONTAL;
+		gbcmotherboardManufacturerTf.gridx = 2;
+		gbcmotherboardManufacturerTf.gridy = 1;
+		mainboardPanel.add(motherboardManufacturerTf, gbcmotherboardManufacturerTf);
 		motherboardManufacturerTf.setColumns(10);
 		
 		JLabel mainboardBios = new JLabel("BIOS Version");
-		GridBagConstraints gbc_mainboardBios = new GridBagConstraints();
-		gbc_mainboardBios.insets = new Insets(0, 0, 0, 5);
-		gbc_mainboardBios.anchor = GridBagConstraints.EAST;
-		gbc_mainboardBios.gridx = 3;
-		gbc_mainboardBios.gridy = 1;
-		mainboardPanel.add(mainboardBios, gbc_mainboardBios);
+		GridBagConstraints gbcmainboardBios = new GridBagConstraints();
+		gbcmainboardBios.insets = new Insets(0, 0, 0, 5);
+		gbcmainboardBios.anchor = GridBagConstraints.EAST;
+		gbcmainboardBios.gridx = 3;
+		gbcmainboardBios.gridy = 1;
+		mainboardPanel.add(mainboardBios, gbcmainboardBios);
 		
-		textField_2 = new JTextField();
-		textField_2.setEditable(false);
-		GridBagConstraints gbc_textField_2 = new GridBagConstraints();
-		gbc_textField_2.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_2.gridx = 4;
-		gbc_textField_2.gridy = 1;
-		mainboardPanel.add(textField_2, gbc_textField_2);
-		textField_2.setColumns(10);
-		
+		biosVersionTextField = new JTextField();
+		biosVersionTextField.setEditable(false);
+		GridBagConstraints gbcbiosVersionTextField = new GridBagConstraints();
+		gbcbiosVersionTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbcbiosVersionTextField.gridx = 4;
+		gbcbiosVersionTextField.gridy = 1;
+		mainboardPanel.add(biosVersionTextField, gbcbiosVersionTextField);
+		biosVersionTextField.setColumns(10);
+	}
+	
+	private void setNetworkPanel() {
 		JPanel networkPanel = new JPanel();
 		networkPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Network", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		frmHcDatabaseViewer.getContentPane().add(networkPanel);
-		GridBagLayout gbl_networkPanel = new GridBagLayout();
-		gbl_networkPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_networkPanel.rowHeights = new int[]{0, 0, 0};
-		gbl_networkPanel.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
-		gbl_networkPanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		networkPanel.setLayout(gbl_networkPanel);
+		GridBagLayout gblnetworkPanel = new GridBagLayout();
+		gblnetworkPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
+		gblnetworkPanel.rowHeights = new int[]{0, 0, 0};
+		gblnetworkPanel.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+		gblnetworkPanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		networkPanel.setLayout(gblnetworkPanel);
 		
 		JLabel connectId = new JLabel("Connection ID");
-		GridBagConstraints gbc_connectId = new GridBagConstraints();
-		gbc_connectId.insets = new Insets(0, 0, 5, 5);
-		gbc_connectId.anchor = GridBagConstraints.EAST;
-		gbc_connectId.gridx = 0;
-		gbc_connectId.gridy = 0;
-		networkPanel.add(connectId, gbc_connectId);
+		GridBagConstraints gbcconnectId = new GridBagConstraints();
+		gbcconnectId.insets = new Insets(0, 0, 5, 5);
+		gbcconnectId.anchor = GridBagConstraints.EAST;
+		gbcconnectId.gridx = 0;
+		gbcconnectId.gridy = 0;
+		networkPanel.add(connectId, gbcconnectId);
 		
 		JComboBox<String> connectIdChoice = new JComboBox<>();
-		GridBagConstraints gbc_connectIdChoice = new GridBagConstraints();
-		gbc_connectIdChoice.insets = new Insets(0, 0, 5, 5);
-		gbc_connectIdChoice.fill = GridBagConstraints.HORIZONTAL;
-		gbc_connectIdChoice.gridx = 1;
-		gbc_connectIdChoice.gridy = 0;
-		networkPanel.add(connectIdChoice, gbc_connectIdChoice);
+		GridBagConstraints gbcconnectIdChoice = new GridBagConstraints();
+		gbcconnectIdChoice.insets = new Insets(0, 0, 5, 5);
+		gbcconnectIdChoice.fill = GridBagConstraints.HORIZONTAL;
+		gbcconnectIdChoice.gridx = 1;
+		gbcconnectIdChoice.gridy = 0;
+		networkPanel.add(connectIdChoice, gbcconnectIdChoice);
 		
 		JLabel netDescription = new JLabel("Description");
-		GridBagConstraints gbc_netDescription = new GridBagConstraints();
-		gbc_netDescription.insets = new Insets(0, 0, 5, 5);
-		gbc_netDescription.anchor = GridBagConstraints.EAST;
-		gbc_netDescription.gridx = 2;
-		gbc_netDescription.gridy = 0;
-		networkPanel.add(netDescription, gbc_netDescription);
+		GridBagConstraints gbcnetDescription = new GridBagConstraints();
+		gbcnetDescription.insets = new Insets(0, 0, 5, 5);
+		gbcnetDescription.anchor = GridBagConstraints.EAST;
+		gbcnetDescription.gridx = 2;
+		gbcnetDescription.gridy = 0;
+		networkPanel.add(netDescription, gbcnetDescription);
 		
 		netDescriptiontextField = new JTextField();
 		netDescriptiontextField.setEditable(false);
-		GridBagConstraints gbc_netDescriptiontextField = new GridBagConstraints();
-		gbc_netDescriptiontextField.gridwidth = 5;
-		gbc_netDescriptiontextField.insets = new Insets(0, 0, 5, 5);
-		gbc_netDescriptiontextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_netDescriptiontextField.gridx = 3;
-		gbc_netDescriptiontextField.gridy = 0;
-		networkPanel.add(netDescriptiontextField, gbc_netDescriptiontextField);
+		GridBagConstraints gbcnetDescriptiontextField = new GridBagConstraints();
+		gbcnetDescriptiontextField.gridwidth = 5;
+		gbcnetDescriptiontextField.insets = new Insets(0, 0, 5, 5);
+		gbcnetDescriptiontextField.fill = GridBagConstraints.HORIZONTAL;
+		gbcnetDescriptiontextField.gridx = 3;
+		gbcnetDescriptiontextField.gridy = 0;
+		networkPanel.add(netDescriptiontextField, gbcnetDescriptiontextField);
 		netDescriptiontextField.setColumns(10);
 		
 		JLabel networkMac = new JLabel("MAC Address");
-		GridBagConstraints gbc_networkMac = new GridBagConstraints();
-		gbc_networkMac.anchor = GridBagConstraints.EAST;
-		gbc_networkMac.insets = new Insets(0, 0, 0, 5);
-		gbc_networkMac.gridx = 0;
-		gbc_networkMac.gridy = 1;
-		networkPanel.add(networkMac, gbc_networkMac);
+		GridBagConstraints gbcnetworkMac = new GridBagConstraints();
+		gbcnetworkMac.anchor = GridBagConstraints.EAST;
+		gbcnetworkMac.insets = new Insets(0, 0, 0, 5);
+		gbcnetworkMac.gridx = 0;
+		gbcnetworkMac.gridy = 1;
+		networkPanel.add(networkMac, gbcnetworkMac);
 		
 		networkMacTextField = new JTextField();
 		networkMacTextField.setEditable(false);
-		GridBagConstraints gbc_networkMacTextField = new GridBagConstraints();
-		gbc_networkMacTextField.insets = new Insets(0, 0, 0, 5);
-		gbc_networkMacTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_networkMacTextField.gridx = 1;
-		gbc_networkMacTextField.gridy = 1;
-		networkPanel.add(networkMacTextField, gbc_networkMacTextField);
+		GridBagConstraints gbcnetworkMacTextField = new GridBagConstraints();
+		gbcnetworkMacTextField.insets = new Insets(0, 0, 0, 5);
+		gbcnetworkMacTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbcnetworkMacTextField.gridx = 1;
+		gbcnetworkMacTextField.gridy = 1;
+		networkPanel.add(networkMacTextField, gbcnetworkMacTextField);
 		networkMacTextField.setColumns(10);
 		
 		JLabel networkIp = new JLabel("IPv4,IPv6");
-		GridBagConstraints gbc_networkIp = new GridBagConstraints();
-		gbc_networkIp.insets = new Insets(0, 0, 0, 5);
-		gbc_networkIp.gridx = 2;
-		gbc_networkIp.gridy = 1;
-		networkPanel.add(networkIp, gbc_networkIp);
+		GridBagConstraints gbcnetworkIp = new GridBagConstraints();
+		gbcnetworkIp.insets = new Insets(0, 0, 0, 5);
+		gbcnetworkIp.gridx = 2;
+		gbcnetworkIp.gridy = 1;
+		networkPanel.add(networkIp, gbcnetworkIp);
 		
 		networkIpTextField = new JTextField();
 		networkIpTextField.setEditable(false);
-		GridBagConstraints gbc_networkIpTextField = new GridBagConstraints();
-		gbc_networkIpTextField.insets = new Insets(0, 0, 0, 5);
-		gbc_networkIpTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_networkIpTextField.gridx = 3;
-		gbc_networkIpTextField.gridy = 1;
-		networkPanel.add(networkIpTextField, gbc_networkIpTextField);
+		GridBagConstraints gbcnetworkIpTextField = new GridBagConstraints();
+		gbcnetworkIpTextField.insets = new Insets(0, 0, 0, 5);
+		gbcnetworkIpTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbcnetworkIpTextField.gridx = 3;
+		gbcnetworkIpTextField.gridy = 1;
+		networkPanel.add(networkIpTextField, gbcnetworkIpTextField);
 		networkIpTextField.setColumns(10);
 		
 		JLabel networkSubnet = new JLabel("Subnet");
-		GridBagConstraints gbc_networkSubnet = new GridBagConstraints();
-		gbc_networkSubnet.insets = new Insets(0, 0, 0, 5);
-		gbc_networkSubnet.anchor = GridBagConstraints.EAST;
-		gbc_networkSubnet.gridx = 4;
-		gbc_networkSubnet.gridy = 1;
-		networkPanel.add(networkSubnet, gbc_networkSubnet);
+		GridBagConstraints gbcnetworkSubnet = new GridBagConstraints();
+		gbcnetworkSubnet.insets = new Insets(0, 0, 0, 5);
+		gbcnetworkSubnet.anchor = GridBagConstraints.EAST;
+		gbcnetworkSubnet.gridx = 4;
+		gbcnetworkSubnet.gridy = 1;
+		networkPanel.add(networkSubnet, gbcnetworkSubnet);
 		
 		networkSubnetTextField = new JTextField();
 		networkSubnetTextField.setEditable(false);
-		GridBagConstraints gbc_networkSubnetTextField = new GridBagConstraints();
-		gbc_networkSubnetTextField.insets = new Insets(0, 0, 0, 5);
-		gbc_networkSubnetTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_networkSubnetTextField.gridx = 5;
-		gbc_networkSubnetTextField.gridy = 1;
-		networkPanel.add(networkSubnetTextField, gbc_networkSubnetTextField);
+		GridBagConstraints gbcnetworkSubnetTextField = new GridBagConstraints();
+		gbcnetworkSubnetTextField.insets = new Insets(0, 0, 0, 5);
+		gbcnetworkSubnetTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbcnetworkSubnetTextField.gridx = 5;
+		gbcnetworkSubnetTextField.gridy = 1;
+		networkPanel.add(networkSubnetTextField, gbcnetworkSubnetTextField);
 		networkSubnetTextField.setColumns(10);
 		
 		JLabel networkDns = new JLabel("DNS Server");
-		GridBagConstraints gbc_networkDns = new GridBagConstraints();
-		gbc_networkDns.insets = new Insets(0, 0, 0, 5);
-		gbc_networkDns.anchor = GridBagConstraints.EAST;
-		gbc_networkDns.gridx = 6;
-		gbc_networkDns.gridy = 1;
-		networkPanel.add(networkDns, gbc_networkDns);
+		GridBagConstraints gbcnetworkDns = new GridBagConstraints();
+		gbcnetworkDns.insets = new Insets(0, 0, 0, 5);
+		gbcnetworkDns.anchor = GridBagConstraints.EAST;
+		gbcnetworkDns.gridx = 6;
+		gbcnetworkDns.gridy = 1;
+		networkPanel.add(networkDns, gbcnetworkDns);
 		
 		networkDnsTextField = new JTextField();
 		networkDnsTextField.setEditable(false);
-		GridBagConstraints gbc_networkDnsTextField = new GridBagConstraints();
-		gbc_networkDnsTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_networkDnsTextField.gridx = 7;
-		gbc_networkDnsTextField.gridy = 1;
-		networkPanel.add(networkDnsTextField, gbc_networkDnsTextField);
+		GridBagConstraints gbcnetworkDnsTextField = new GridBagConstraints();
+		gbcnetworkDnsTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbcnetworkDnsTextField.gridx = 7;
+		gbcnetworkDnsTextField.gridy = 1;
+		networkPanel.add(networkDnsTextField, gbcnetworkDnsTextField);
 		networkDnsTextField.setColumns(10);
-		
+	}
+	
+	private void setStoragePanel() {
 		JPanel storagePanel = new JPanel();
 		storagePanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Storage", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		frmHcDatabaseViewer.getContentPane().add(storagePanel);
-		GridBagLayout gbl_storagePanel = new GridBagLayout();
-		gbl_storagePanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0};
-		gbl_storagePanel.rowHeights = new int[]{0, 0, 0};
-		gbl_storagePanel.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
-		gbl_storagePanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		storagePanel.setLayout(gbl_storagePanel);
+		GridBagLayout gblstoragePanel = new GridBagLayout();
+		gblstoragePanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0};
+		gblstoragePanel.rowHeights = new int[]{0, 0, 0};
+		gblstoragePanel.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+		gblstoragePanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		storagePanel.setLayout(gblstoragePanel);
 		
 		JLabel driveId = new JLabel("Drive ID");
-		GridBagConstraints gbc_driveId = new GridBagConstraints();
-		gbc_driveId.insets = new Insets(0, 0, 5, 5);
-		gbc_driveId.gridx = 0;
-		gbc_driveId.gridy = 0;
-		storagePanel.add(driveId, gbc_driveId);
+		GridBagConstraints gbcdriveId = new GridBagConstraints();
+		gbcdriveId.insets = new Insets(0, 0, 5, 5);
+		gbcdriveId.gridx = 0;
+		gbcdriveId.gridy = 0;
+		storagePanel.add(driveId, gbcdriveId);
 		
 		JComboBox<String> driveIdChoice = new JComboBox<>();
-		GridBagConstraints gbc_driveIdChoice = new GridBagConstraints();
-		gbc_driveIdChoice.insets = new Insets(0, 0, 5, 5);
-		gbc_driveIdChoice.fill = GridBagConstraints.HORIZONTAL;
-		gbc_driveIdChoice.gridx = 1;
-		gbc_driveIdChoice.gridy = 0;
-		storagePanel.add(driveIdChoice, gbc_driveIdChoice);
+		GridBagConstraints gbcdriveIdChoice = new GridBagConstraints();
+		gbcdriveIdChoice.insets = new Insets(0, 0, 5, 5);
+		gbcdriveIdChoice.fill = GridBagConstraints.HORIZONTAL;
+		gbcdriveIdChoice.gridx = 1;
+		gbcdriveIdChoice.gridy = 0;
+		storagePanel.add(driveIdChoice, gbcdriveIdChoice);
 		
 		JLabel driveName = new JLabel("Name");
-		GridBagConstraints gbc_driveName = new GridBagConstraints();
-		gbc_driveName.insets = new Insets(0, 0, 5, 5);
-		gbc_driveName.gridx = 2;
-		gbc_driveName.gridy = 0;
-		storagePanel.add(driveName, gbc_driveName);
+		GridBagConstraints gbcdriveName = new GridBagConstraints();
+		gbcdriveName.insets = new Insets(0, 0, 5, 5);
+		gbcdriveName.gridx = 2;
+		gbcdriveName.gridy = 0;
+		storagePanel.add(driveName, gbcdriveName);
 		
 		driveNameTextField = new JTextField();
 		driveNameTextField.setEditable(false);
-		GridBagConstraints gbc_driveNameTextField = new GridBagConstraints();
-		gbc_driveNameTextField.gridwidth = 3;
-		gbc_driveNameTextField.insets = new Insets(0, 0, 5, 5);
-		gbc_driveNameTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_driveNameTextField.gridx = 3;
-		gbc_driveNameTextField.gridy = 0;
-		storagePanel.add(driveNameTextField, gbc_driveNameTextField);
+		GridBagConstraints gbcdriveNameTextField = new GridBagConstraints();
+		gbcdriveNameTextField.gridwidth = 3;
+		gbcdriveNameTextField.insets = new Insets(0, 0, 5, 5);
+		gbcdriveNameTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbcdriveNameTextField.gridx = 3;
+		gbcdriveNameTextField.gridy = 0;
+		storagePanel.add(driveNameTextField, gbcdriveNameTextField);
 		driveNameTextField.setColumns(10);
 		
 		JLabel driveSerial = new JLabel("Serial");
-		GridBagConstraints gbc_driveSerial = new GridBagConstraints();
-		gbc_driveSerial.insets = new Insets(0, 0, 0, 5);
-		gbc_driveSerial.gridx = 0;
-		gbc_driveSerial.gridy = 1;
-		storagePanel.add(driveSerial, gbc_driveSerial);
+		GridBagConstraints gbcdriveSerial = new GridBagConstraints();
+		gbcdriveSerial.insets = new Insets(0, 0, 0, 5);
+		gbcdriveSerial.gridx = 0;
+		gbcdriveSerial.gridy = 1;
+		storagePanel.add(driveSerial, gbcdriveSerial);
 		
 		driveSerialTextField = new JTextField();
 		driveSerialTextField.setEditable(false);
-		GridBagConstraints gbc_driveSerialTextField = new GridBagConstraints();
-		gbc_driveSerialTextField.insets = new Insets(0, 0, 0, 5);
-		gbc_driveSerialTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_driveSerialTextField.gridx = 1;
-		gbc_driveSerialTextField.gridy = 1;
-		storagePanel.add(driveSerialTextField, gbc_driveSerialTextField);
+		GridBagConstraints gbcdriveSerialTextField = new GridBagConstraints();
+		gbcdriveSerialTextField.insets = new Insets(0, 0, 0, 5);
+		gbcdriveSerialTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbcdriveSerialTextField.gridx = 1;
+		gbcdriveSerialTextField.gridy = 1;
+		storagePanel.add(driveSerialTextField, gbcdriveSerialTextField);
 		driveSerialTextField.setColumns(10);
 		
 		JLabel driveSize = new JLabel("Size");
-		GridBagConstraints gbc_driveSize = new GridBagConstraints();
-		gbc_driveSize.insets = new Insets(0, 0, 0, 5);
-		gbc_driveSize.gridx = 2;
-		gbc_driveSize.gridy = 1;
-		storagePanel.add(driveSize, gbc_driveSize);
+		GridBagConstraints gbcdriveSize = new GridBagConstraints();
+		gbcdriveSize.insets = new Insets(0, 0, 0, 5);
+		gbcdriveSize.gridx = 2;
+		gbcdriveSize.gridy = 1;
+		storagePanel.add(driveSize, gbcdriveSize);
 		
 		driveSizeTextField = new JTextField();
 		driveSizeTextField.setEditable(false);
-		GridBagConstraints gbc_driveSizeTextField = new GridBagConstraints();
-		gbc_driveSizeTextField.insets = new Insets(0, 0, 0, 5);
-		gbc_driveSizeTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_driveSizeTextField.gridx = 3;
-		gbc_driveSizeTextField.gridy = 1;
-		storagePanel.add(driveSizeTextField, gbc_driveSizeTextField);
+		GridBagConstraints gbcdriveSizeTextField = new GridBagConstraints();
+		gbcdriveSizeTextField.insets = new Insets(0, 0, 0, 5);
+		gbcdriveSizeTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbcdriveSizeTextField.gridx = 3;
+		gbcdriveSizeTextField.gridy = 1;
+		storagePanel.add(driveSizeTextField, gbcdriveSizeTextField);
 		driveSizeTextField.setColumns(10);
 		
 		JLabel driveSmart = new JLabel("S.M.A.R.T");
-		GridBagConstraints gbc_driveSmart = new GridBagConstraints();
-		gbc_driveSmart.insets = new Insets(0, 0, 0, 5);
-		gbc_driveSmart.gridx = 4;
-		gbc_driveSmart.gridy = 1;
-		storagePanel.add(driveSmart, gbc_driveSmart);
+		GridBagConstraints gbcdriveSmart = new GridBagConstraints();
+		gbcdriveSmart.insets = new Insets(0, 0, 0, 5);
+		gbcdriveSmart.gridx = 4;
+		gbcdriveSmart.gridy = 1;
+		storagePanel.add(driveSmart, gbcdriveSmart);
 		
 		driveSmartTextField = new JTextField();
 		driveSmartTextField.setEditable(false);
-		GridBagConstraints gbc_driveSmartTextField = new GridBagConstraints();
-		gbc_driveSmartTextField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_driveSmartTextField.gridx = 5;
-		gbc_driveSmartTextField.gridy = 1;
-		storagePanel.add(driveSmartTextField, gbc_driveSmartTextField);
+		GridBagConstraints gbcdriveSmartTextField = new GridBagConstraints();
+		gbcdriveSmartTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbcdriveSmartTextField.gridx = 5;
+		gbcdriveSmartTextField.gridy = 1;
+		storagePanel.add(driveSmartTextField, gbcdriveSmartTextField);
 		driveSmartTextField.setColumns(10);
+	}
+	
+	private void initializeData() {
+		List<String> userNames = HardwareIdDatabase.getAllUsernames();
+		for(String uname: userNames)
+			userNameComboBox.addItem(uname);
+		
+		List<String> locations = HardwareIdDatabase.getAllLocations();
+		for(String loc: locations)
+			locationComboBox.addItem(loc);
 	}
 }
