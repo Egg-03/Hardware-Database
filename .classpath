@@ -24,9 +24,5 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.46.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/FerrumX-core-v1.2.4.jar"/>
-	<classpathentry kind="lib" path="com.miglayout.swing_11.3.0.jar"/>
-	<classpathentry kind="lib" path="com.miglayout.core_11.3.0.jar"/>
-	<classpathentry kind="lib" path="com.jgoodies.forms_1.9.0.v20240327-0800.jar"/>
-	<classpathentry kind="lib" path="com.jgoodies.common_1.8.1.v20240327-0800.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

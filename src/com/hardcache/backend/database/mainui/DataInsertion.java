@@ -185,7 +185,7 @@ public class DataInsertion {
 	}
 	
 	private static void insertNetwork() {
-		String query = "INSERT INTO Network (HardwareId, Description, MACAddress, IPAddress) VALUES (?,?,?,?);";
+		String query = "INSERT INTO Network (HardwareId, Description, MACAddress, IPAddress, IPSubnet, DefaultIPGateway, DHCPServer) VALUES (?,?,?,?,?,?,?);";
 		
 		try(PreparedStatement ps = connect.prepareStatement(query)){
 			List<String> adapterList = Win32_NetworkAdapter.getDeviceIDList();
@@ -197,6 +197,9 @@ public class DataInsertion {
 				ps.setString(2, adapterProperties.get("Description"));
 				ps.setString(3, adapterProperties.get("MACAddress"));
 				ps.setString(4, adapterAddress.get("IPAddress"));
+				ps.setString(5, adapterAddress.get("IPSubnet"));
+				ps.setString(6, adapterAddress.get("DefaultIPGateway"));
+				ps.setString(7, adapterAddress.get("DHCPServer"));
 				
 				ps.addBatch();
 				ps.executeBatch();
