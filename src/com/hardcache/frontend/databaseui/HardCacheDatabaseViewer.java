@@ -31,6 +31,7 @@ public class HardCacheDatabaseViewer {
 	
 	private JComboBox<String> userNameComboBox;
 	private JComboBox<String> locationComboBox;
+	private JComboBox<String> hwidComboBox;
 	
 	private JTextField cpuNameTf;
 	private JTextField cpuCoreTf;
@@ -115,9 +116,9 @@ public class HardCacheDatabaseViewer {
 		hardwarePanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "HardwareID", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		frmHcDatabaseViewer.getContentPane().add(hardwarePanel);
 		GridBagLayout gblhardwarePanel = new GridBagLayout();
-		gblhardwarePanel.columnWidths = new int[] {0, 0, 0, 0, 0};
+		gblhardwarePanel.columnWidths = new int[] {0, 0, 0, 0, 0, 0};
 		gblhardwarePanel.rowHeights = new int[]{0, 0, 0};
-		gblhardwarePanel.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE, 0.0};
+		gblhardwarePanel.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE, 0.0, 0.0};
 		gblhardwarePanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
 		hardwarePanel.setLayout(gblhardwarePanel);
 		
@@ -144,6 +145,18 @@ public class HardCacheDatabaseViewer {
 		hardwarePanel.add(hwidLabel, gbchwidLabel);
 		
 		userNameComboBox = new JComboBox<>();
+		userNameComboBox.addActionListener(e->{
+			String uname = userNameComboBox.getItemAt(userNameComboBox.getSelectedIndex());
+			String location = locationComboBox.getItemAt(locationComboBox.getSelectedIndex());
+			List<String> hwid = HardwareIdDatabase.getAllHardwareIdWhere(location, uname);
+			
+			hwidComboBox.removeAllItems();
+			for(String id:hwid) {
+				hwidComboBox.addItem(id);
+			}
+			hwidComboBox.setEnabled(true);
+		});
+		userNameComboBox.setEnabled(false);
 		GridBagConstraints gbcuserNameComboBox = new GridBagConstraints();
 		gbcuserNameComboBox.insets = new Insets(0, 0, 0, 5);
 		gbcuserNameComboBox.fill = GridBagConstraints.HORIZONTAL;
@@ -152,6 +165,15 @@ public class HardCacheDatabaseViewer {
 		hardwarePanel.add(userNameComboBox, gbcuserNameComboBox);
 		
 		locationComboBox = new JComboBox<>();
+		locationComboBox.addActionListener(e-> {
+			String location = locationComboBox.getItemAt(locationComboBox.getSelectedIndex());
+			userNameComboBox.removeAllItems();
+			List<String> newUserList = HardwareIdDatabase.getAllUsernameWhereLocation(location);
+			for(String newUser:newUserList) {
+				userNameComboBox.addItem(newUser);
+			}
+			userNameComboBox.setEnabled(true);	
+		});
 		GridBagConstraints gbclocationComboBox = new GridBagConstraints();
 		gbclocationComboBox.insets = new Insets(0, 0, 0, 5);
 		gbclocationComboBox.fill = GridBagConstraints.HORIZONTAL;
@@ -159,21 +181,30 @@ public class HardCacheDatabaseViewer {
 		gbclocationComboBox.gridy = 1;
 		hardwarePanel.add(locationComboBox, gbclocationComboBox);
 		
-		JComboBox<String> hwidChoice = new JComboBox<>();
-		GridBagConstraints gbchwidChoice = new GridBagConstraints();
-		gbchwidChoice.insets = new Insets(0, 0, 0, 5);
-		gbchwidChoice.gridwidth = 2;
-		gbchwidChoice.weightx = 4.0;
-		gbchwidChoice.fill = GridBagConstraints.HORIZONTAL;
-		gbchwidChoice.gridx = 2;
-		gbchwidChoice.gridy = 1;
-		hardwarePanel.add(hwidChoice, gbchwidChoice);
+		hwidComboBox = new JComboBox<>();
+		hwidComboBox.setEnabled(false);
+		hwidComboBox.setEditable(false);
+		GridBagConstraints gbchwidTextField = new GridBagConstraints();
+		gbchwidTextField.insets = new Insets(0, 0, 0, 5);
+		gbchwidTextField.gridwidth = 2;
+		gbchwidTextField.weightx = 4.0;
+		gbchwidTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbchwidTextField.gridx = 2;
+		gbchwidTextField.gridy = 1;
+		hardwarePanel.add(hwidComboBox, gbchwidTextField);
 		
 		JButton showButton = new JButton("Show");
 		GridBagConstraints gbcshowButton = new GridBagConstraints();
+		gbcshowButton.insets = new Insets(0, 0, 0, 5);
 		gbcshowButton.gridx = 4;
 		gbcshowButton.gridy = 1;
 		hardwarePanel.add(showButton, gbcshowButton);
+		
+		JButton searchResetButton = new JButton("Reset Search");
+		GridBagConstraints gbcsearchResetButton = new GridBagConstraints();
+		gbcsearchResetButton.gridx = 5;
+		gbcsearchResetButton.gridy = 1;
+		hardwarePanel.add(searchResetButton, gbcsearchResetButton);
 	}
 	
 	private void setCpuPanel() {
@@ -690,11 +721,7 @@ public class HardCacheDatabaseViewer {
 		driveSmartTextField.setColumns(10);
 	}
 	
-	private void initializeData() {
-		List<String> userNames = HardwareIdDatabase.getAllUsernames();
-		for(String uname: userNames)
-			userNameComboBox.addItem(uname);
-		
+	private void initializeData() {		
 		List<String> locations = HardwareIdDatabase.getAllLocations();
 		for(String loc: locations)
 			locationComboBox.addItem(loc);
