@@ -27,6 +27,7 @@ import com.ferrumx.system.logger.ErrorLog;
 import com.hardcache.backend.database.databaseui.CpuDatabase;
 import com.hardcache.backend.database.databaseui.GpuDatabase;
 import com.hardcache.backend.database.databaseui.HardwareIdDatabase;
+import com.hardcache.backend.database.databaseui.MemoryDatabase;
 
 public class HardCacheDatabaseViewer {
 
@@ -202,6 +203,7 @@ public class HardCacheDatabaseViewer {
 			String hwid = hwidComboBox.getItemAt(hwidComboBox.getSelectedIndex());
 			initializeCpu(hwid);
 			initializeGpu(hwid);
+			initializeMemory(hwid);
 		});
 		GridBagConstraints gbcshowButton = new GridBagConstraints();
 		gbcshowButton.gridwidth = 2;
@@ -760,5 +762,11 @@ public class HardCacheDatabaseViewer {
 		List<String> gpus = GpuDatabase.getAllGpus(hwid);
 		for(String gpu: gpus)
 			currentGpuChoice.addItem(gpu);
+	}
+	
+	private void initializeMemory(String hwid) {
+		Map<String, String> memoryProperties = MemoryDatabase.getMemoryProperties(hwid);
+		totalSlotTf.setText(memoryProperties.get("SlotsUsed"));
+		totalMemoryTf.setText(memoryProperties.get("TotalMemory"));
 	}
 }
