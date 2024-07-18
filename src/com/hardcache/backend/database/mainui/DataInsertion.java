@@ -32,7 +32,7 @@ public class DataInsertion {
 	private static final String HARDWAREID = getHWID();
 	
 	private DataInsertion() {
-		throw new IllegalStateException("Utility Class: Should be called only by AppWindow");
+		throw new IllegalStateException("Utility Class");
 	}
 	
 	private static String getHWID() {
@@ -90,17 +90,18 @@ public class DataInsertion {
 	
 	//Populate the CPU Table
 	private static void insertCpu() {
-		String query = "INSERT INTO CPU (HardwareId, CpuName, CpuCores, CpuThreads, CpuSocket) VALUES (?,?,?,?,?);";
+		String query = "INSERT INTO CPU (HardwareId, DeviceId, CpuName, CpuCores, CpuThreads, CpuSocket) VALUES (?,?,?,?,?,?);";
 		
 		try(PreparedStatement ps = connect.prepareStatement(query)){
 			List<String> cpuList = Win32_Processor.getProcessorList();
 			for(String cpu: cpuList) {
 				Map<String, String> cpuProperties = Win32_Processor.getCurrentProcessor(cpu);
 				ps.setString(1, HARDWAREID);
-				ps.setString(2, cpuProperties.get("Name"));
-				ps.setInt(3, Integer.valueOf(cpuProperties.get("NumberOfCores")));
-				ps.setInt(4, Integer.valueOf(cpuProperties.get("ThreadCount")));
-				ps.setString(5, cpuProperties.get("SocketDesignation"));
+				ps.setString(2, cpu);
+				ps.setString(3, cpuProperties.get("Name"));
+				ps.setInt(4, Integer.valueOf(cpuProperties.get("NumberOfCores")));
+				ps.setInt(5, Integer.valueOf(cpuProperties.get("ThreadCount")));
+				ps.setString(6, cpuProperties.get("SocketDesignation"));
 				
 				ps.addBatch();
 				ps.executeBatch();
@@ -141,17 +142,18 @@ public class DataInsertion {
 	}
 	
 	private static void insertGpu() {
-		String query = "INSERT INTO GPU (HardwareId, GpuName, VRAM, DriverVersion) VALUES (?,?,?,?);";
+		String query = "INSERT INTO GPU (HardwareId, DeviceId, GpuName, VRAM, DriverVersion) VALUES (?,?,?,?,?);";
 		
 		try(PreparedStatement ps = connect.prepareStatement(query)){
 			List<String> gpuList = Win32_VideoController.getGPUID();
 			for(String gpu: gpuList) {
 				Map<String, String> gpuProperties = Win32_VideoController.getGPU(gpu);
 				ps.setString(1, HARDWAREID);
-				ps.setString(2, gpuProperties.get("Name"));
+				ps.setString(2, gpu);
+				ps.setString(3, gpuProperties.get("Name"));
 				Long adapterRam = Long.parseLong(gpuProperties.get("AdapterRAM"))/(1024*1024);
-				ps.setString(3, String.valueOf(adapterRam)+" MB");
-				ps.setString(4, gpuProperties.get("DriverVersion"));
+				ps.setString(4, String.valueOf(adapterRam)+" MB");
+				ps.setString(5, gpuProperties.get("DriverVersion"));
 				
 				ps.addBatch();
 				ps.executeBatch();
@@ -185,7 +187,7 @@ public class DataInsertion {
 	}
 	
 	private static void insertNetwork() {
-		String query = "INSERT INTO Network (HardwareId, Description, MACAddress, IPAddress, IPSubnet, DefaultIPGateway, DHCPServer) VALUES (?,?,?,?,?,?,?);";
+		String query = "INSERT INTO Network (HardwareId, DeviceId, Description, MACAddress, IPAddress, IPSubnet, DefaultIPGateway, DHCPServer) VALUES (?,?,?,?,?,?,?,?);";
 		
 		try(PreparedStatement ps = connect.prepareStatement(query)){
 			List<String> adapterList = Win32_NetworkAdapter.getDeviceIDList();
@@ -194,12 +196,13 @@ public class DataInsertion {
 				String networkIndex = Win32_NetworkAdapterSetting.getIndex(networkAdapter);
 				Map<String, String> adapterAddress = Win32_NetworkAdapterConfiguration.getAdapterConfiguration(networkIndex);
 				ps.setString(1, HARDWAREID);
-				ps.setString(2, adapterProperties.get("Description"));
-				ps.setString(3, adapterProperties.get("MACAddress"));
-				ps.setString(4, adapterAddress.get("IPAddress"));
-				ps.setString(5, adapterAddress.get("IPSubnet"));
-				ps.setString(6, adapterAddress.get("DefaultIPGateway"));
-				ps.setString(7, adapterAddress.get("DHCPServer"));
+				ps.setString(2, networkAdapter);
+				ps.setString(3, adapterProperties.get("Description"));
+				ps.setString(4, adapterProperties.get("MACAddress"));
+				ps.setString(5, adapterAddress.get("IPAddress"));
+				ps.setString(6, adapterAddress.get("IPSubnet"));
+				ps.setString(7, adapterAddress.get("DefaultIPGateway"));
+				ps.setString(8, adapterAddress.get("DHCPServer"));
 				
 				ps.addBatch();
 				ps.executeBatch();
@@ -212,7 +215,7 @@ public class DataInsertion {
 	}
 	
 	private static void insertStorage() {
-		String query = "INSERT INTO Storage (HardwareId, Name, Serial, Size, SMART) VALUES (?,?,?,?,?);";
+		String query = "INSERT INTO Storage (HardwareId, DeviceId, Name, Serial, Size, SMART) VALUES (?,?,?,?,?,?);";
 		
 		try(PreparedStatement ps = connect.prepareStatement(query)){
 			List<String> storageDiskList = Win32_DiskDrive.getDriveID();
@@ -220,13 +223,14 @@ public class DataInsertion {
 				Map<String, String> diskProperties = Win32_DiskDrive.getDrive(disk);
 				
 				ps.setString(1, HARDWAREID);
-				ps.setString(2, diskProperties.get("Caption"));
-				ps.setString(3, diskProperties.get("SerialNumber"));
+				ps.setString(2, disk);
+				ps.setString(3, diskProperties.get("Caption"));
+				ps.setString(4, diskProperties.get("SerialNumber"));
 				
 				Long diskSize = Long.parseLong(diskProperties.get("Size"))/(1024*1024*1024);
-				ps.setString(4, String.valueOf(diskSize)+" GB");
+				ps.setString(5, String.valueOf(diskSize)+" GB");
 				
-				ps.setString(5, diskProperties.get("Status"));
+				ps.setString(6, diskProperties.get("Status"));
 				
 				ps.addBatch();
 				ps.executeBatch();

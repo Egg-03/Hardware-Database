@@ -7,6 +7,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -23,6 +24,8 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
 import com.ferrumx.system.logger.ErrorLog;
+import com.hardcache.backend.database.databaseui.CpuDatabase;
+import com.hardcache.backend.database.databaseui.GpuDatabase;
 import com.hardcache.backend.database.databaseui.HardwareIdDatabase;
 
 public class HardCacheDatabaseViewer {
@@ -33,6 +36,7 @@ public class HardCacheDatabaseViewer {
 	private JComboBox<String> locationComboBox;
 	private JComboBox<String> hwidComboBox;
 	
+	private JComboBox<String> cpuChoiceBox;
 	private JTextField cpuNameTf;
 	private JTextField cpuCoreTf;
 	private JTextField cpuThreadTf;
@@ -78,7 +82,7 @@ public class HardCacheDatabaseViewer {
 	 */
 	public HardCacheDatabaseViewer() {
 		initializeUI();
-		initializeData();
+		initializeLocation();
 	}
 	
 	private void setTheme() {
@@ -194,17 +198,17 @@ public class HardCacheDatabaseViewer {
 		hardwarePanel.add(hwidComboBox, gbchwidTextField);
 		
 		JButton showButton = new JButton("Show");
+		showButton.addActionListener(e-> {
+			String hwid = hwidComboBox.getItemAt(hwidComboBox.getSelectedIndex());
+			initializeCpu(hwid);
+			initializeGpu(hwid);
+		});
 		GridBagConstraints gbcshowButton = new GridBagConstraints();
+		gbcshowButton.gridwidth = 2;
 		gbcshowButton.insets = new Insets(0, 0, 0, 5);
 		gbcshowButton.gridx = 4;
 		gbcshowButton.gridy = 1;
 		hardwarePanel.add(showButton, gbcshowButton);
-		
-		JButton searchResetButton = new JButton("Reset Search");
-		GridBagConstraints gbcsearchResetButton = new GridBagConstraints();
-		gbcsearchResetButton.gridx = 5;
-		gbcsearchResetButton.gridy = 1;
-		hardwarePanel.add(searchResetButton, gbcsearchResetButton);
 	}
 	
 	private void setCpuPanel() {
@@ -226,7 +230,17 @@ public class HardCacheDatabaseViewer {
 		gbccpuChoice.gridy = 0;
 		cpuPanel.add(cpuChoice, gbccpuChoice);
 		
-		JComboBox<String> cpuChoiceBox = new JComboBox<>();
+		cpuChoiceBox = new JComboBox<>();
+		cpuChoiceBox.addActionListener(e->{
+			String deviceId = cpuChoiceBox.getItemAt(cpuChoiceBox.getSelectedIndex());
+			String hardwareId = hwidComboBox.getItemAt(hwidComboBox.getSelectedIndex());
+			Map<String, String> cpuProperties = CpuDatabase.getCpuProperties(deviceId, hardwareId);
+			
+			cpuNameTf.setText(cpuProperties.get("CpuName"));
+			cpuCoreTf.setText(cpuProperties.get("CpuCores"));
+			cpuThreadTf.setText(cpuProperties.get("CpuThreads"));
+			cpuSocketTf.setText(cpuProperties.get("CpuSocket"));
+		});
 		GridBagConstraints gbccpuChoiceBox = new GridBagConstraints();
 		gbccpuChoiceBox.insets = new Insets(0, 0, 5, 5);
 		gbccpuChoiceBox.fill = GridBagConstraints.HORIZONTAL;
@@ -334,6 +348,15 @@ public class HardCacheDatabaseViewer {
 		gpuPanel.add(currentGPU, gbccurrentGPU);
 		
 		currentGpuChoice = new JComboBox<>();
+		currentGpuChoice.addActionListener(e->{
+			String deviceId = currentGpuChoice.getItemAt(currentGpuChoice.getSelectedIndex());
+			String hardwareId = hwidComboBox.getItemAt(hwidComboBox.getSelectedIndex());
+			Map<String, String> gpuProperties = GpuDatabase.getGpuProperties(deviceId, hardwareId);
+			
+			gpuNameTf.setText(gpuProperties.get("GpuName"));
+			gpuVramTf.setText(gpuProperties.get("VRAM"));
+			gpuDriverTf.setText(gpuProperties.get("DriverVersion"));
+		});
 		GridBagConstraints gbccurrentGpuChoice = new GridBagConstraints();
 		gbccurrentGpuChoice.fill = GridBagConstraints.HORIZONTAL;
 		gbccurrentGpuChoice.insets = new Insets(0, 0, 5, 5);
@@ -721,9 +744,21 @@ public class HardCacheDatabaseViewer {
 		driveSmartTextField.setColumns(10);
 	}
 	
-	private void initializeData() {		
+	private void initializeLocation() {		
 		List<String> locations = HardwareIdDatabase.getAllLocations();
 		for(String loc: locations)
 			locationComboBox.addItem(loc);
+	}
+	
+	private void initializeCpu(String hwid) {
+		List<String> cpus = CpuDatabase.getAllCpus(hwid);
+		for(String cpu: cpus)
+			cpuChoiceBox.addItem(cpu);
+	}
+	
+	private void initializeGpu(String hwid) {
+		List<String> gpus = GpuDatabase.getAllGpus(hwid);
+		for(String gpu: gpus)
+			currentGpuChoice.addItem(gpu);
 	}
 }
