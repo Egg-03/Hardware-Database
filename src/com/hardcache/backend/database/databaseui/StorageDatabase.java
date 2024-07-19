@@ -13,26 +13,25 @@ import java.util.Map;
 import com.hardcache.backend.database.connection.DatabaseConnectivity;
 import com.hardcache.frontend.miniuis.ExceptionUI;
 
-public class GpuDatabase {
-	
-	private GpuDatabase() {
+public class StorageDatabase {
+	private StorageDatabase() {
 		throw new IllegalStateException("Utility Class");
 	}
 	
-	public static List<String> getAllGpuIds(String hwid){
+	public static List<String> getDiskIds(String hwid){
 		Connection connect = DatabaseConnectivity.initialize();
-		String statement = "SELECT GPU.DeviceId FROM GPU WHERE GPU.HardwareId = '"+hwid+"'";
-		List<String> gpus = new ArrayList<>();
+		String statement = "SELECT Storage.DeviceId FROM Storage WHERE Storage.HardwareId = '"+hwid+"'";
+		List<String> diskIds = new ArrayList<>();
 		try(Statement st = connect.createStatement()){
 			ResultSet rs = st.executeQuery(statement);
 			
 			while(rs.next()) {
-				String gpu = rs.getString("DeviceId");
-				gpus.add(gpu);
+				String cpu = rs.getString("DeviceId");
+				diskIds.add(cpu);
 			}
-			return gpus;
+			return diskIds;
 		} catch (SQLException e) {
-			new ExceptionUI("HC Database Viewer GPUID Fetch Error", e.getMessage()).setVisible(true);
+			new ExceptionUI("HC Database Viewer Disk ID Fetch Error", e.getMessage()).setVisible(true);
 			DatabaseConnectivity.close(connect);
 			return Collections.emptyList();
 		}
@@ -41,19 +40,20 @@ public class GpuDatabase {
 		}
 	}
 	
-	public static Map<String, String> getGpuProperties(String deviceId, String hwid){
+	public static Map<String, String> getDiskProperties(String deviceId, String hwid){
 		Connection connect = DatabaseConnectivity.initialize();
-		String statement = "SELECT GpuName, VRAM, DriverVersion FROM GPU WHERE Gpu.HardwareId = '"+hwid+"' AND Gpu.DeviceId = '"+deviceId+"'";
-		Map<String, String> gpuProperties = new LinkedHashMap<>();
+		String statement = "SELECT Name, Serial, Size, SMART FROM Storage WHERE Storage.HardwareId = '"+hwid+"' AND Storage.DeviceId = '"+deviceId+"'";
+		Map<String, String> diskProperties = new LinkedHashMap<>();
 		try(Statement st = connect.createStatement()){
 			ResultSet rs = st.executeQuery(statement);
 			
-			gpuProperties.put("GpuName",  rs.getString("GpuName"));
-			gpuProperties.put("VRAM", rs.getString("VRAM"));
-			gpuProperties.put("DriverVersion", rs.getString("DriverVersion"));
-			return gpuProperties;
+			diskProperties.put("Name",  rs.getString("Name"));
+			diskProperties.put("Serial", rs.getString("Serial"));
+			diskProperties.put("Size", rs.getString("Size"));
+			diskProperties.put("SMART", rs.getString("SMART"));
+			return diskProperties;
 		} catch (SQLException e) {
-			new ExceptionUI("HC Database Viewer GPU Property Fetch Error", e.getMessage()).setVisible(true);
+			new ExceptionUI("HC Database Viewer Disk Property Fetch Error", e.getMessage()).setVisible(true);
 			DatabaseConnectivity.close(connect);
 			return Collections.emptyMap();
 		}

@@ -19,7 +19,7 @@ public class CpuDatabase {
 		throw new IllegalStateException("Utility Class");
 	}
 	
-	public static List<String> getAllCpus(String hwid){
+	public static List<String> getAllCpuIds(String hwid){
 		Connection connect = DatabaseConnectivity.initialize();
 		String statement = "SELECT CPU.DeviceId FROM CPU WHERE CPU.HardwareId = '"+hwid+"'";
 		List<String> cpus = new ArrayList<>();

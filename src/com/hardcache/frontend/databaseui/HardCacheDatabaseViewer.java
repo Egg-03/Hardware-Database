@@ -27,13 +27,15 @@ import com.ferrumx.system.logger.ErrorLog;
 import com.hardcache.backend.database.databaseui.CpuDatabase;
 import com.hardcache.backend.database.databaseui.GpuDatabase;
 import com.hardcache.backend.database.databaseui.HardwareIdDatabase;
+import com.hardcache.backend.database.databaseui.MainboardDatabase;
 import com.hardcache.backend.database.databaseui.MemoryDatabase;
+import com.hardcache.backend.database.databaseui.NetworkDatabase;
+import com.hardcache.backend.database.databaseui.StorageDatabase;
 
 public class HardCacheDatabaseViewer {
 
 	private JFrame frmHcDatabaseViewer;
 	
-	private JComboBox<String> userNameComboBox;
 	private JComboBox<String> locationComboBox;
 	private JComboBox<String> hwidComboBox;
 	
@@ -55,18 +57,20 @@ public class HardCacheDatabaseViewer {
 	private JTextField motherboardManufacturerTf;
 	private JTextField biosVersionTextField;
 	
+	private JComboBox<String> connectIdChoice;
 	private JTextField netDescriptiontextField;
 	private JTextField networkMacTextField;
 	private JTextField networkIpTextField;
 	private JTextField networkSubnetTextField;
 	private JTextField networkDnsTextField;
+	private JTextField netDefaultGatewayTextField;
 	
+	private JComboBox<String> driveIdChoice;
 	private JTextField driveNameTextField;
 	private JTextField driveSerialTextField;
 	private JTextField driveSizeTextField;
 	private JTextField driveSmartTextField;
-	
-	
+
 	/**
 	 * Launch the application.
 	 */
@@ -102,7 +106,7 @@ public class HardCacheDatabaseViewer {
 		frmHcDatabaseViewer = new JFrame();
 		setTheme();
 		frmHcDatabaseViewer.setIconImage(Toolkit.getDefaultToolkit().getImage(HardCacheDatabaseViewer.class.getResource("/res/icon_main.png")));
-		frmHcDatabaseViewer.setTitle("HC Database Viewer");
+		frmHcDatabaseViewer.setTitle("HC Database Viewer Beta v19072024");
 		frmHcDatabaseViewer.setBounds(100, 100, 723, 430);
 		frmHcDatabaseViewer.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frmHcDatabaseViewer.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
@@ -117,6 +121,7 @@ public class HardCacheDatabaseViewer {
 	}
 	
 	private void setHardwarePanel() {
+		
 		JPanel hardwarePanel = new JPanel();
 		hardwarePanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "HardwareID", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		frmHcDatabaseViewer.getContentPane().add(hardwarePanel);
@@ -149,7 +154,7 @@ public class HardCacheDatabaseViewer {
 		gbchwidLabel.gridy = 0;
 		hardwarePanel.add(hwidLabel, gbchwidLabel);
 		
-		userNameComboBox = new JComboBox<>();
+		JComboBox<String> userNameComboBox = new JComboBox<>();
 		userNameComboBox.addActionListener(e->{
 			String uname = userNameComboBox.getItemAt(userNameComboBox.getSelectedIndex());
 			String location = locationComboBox.getItemAt(locationComboBox.getSelectedIndex());
@@ -204,6 +209,9 @@ public class HardCacheDatabaseViewer {
 			initializeCpu(hwid);
 			initializeGpu(hwid);
 			initializeMemory(hwid);
+			initializeMainboard(hwid);
+			initializeNetwork(hwid);
+			initializeStorage(hwid);
 		});
 		GridBagConstraints gbcshowButton = new GridBagConstraints();
 		gbcshowButton.gridwidth = 2;
@@ -553,7 +561,19 @@ public class HardCacheDatabaseViewer {
 		gbcconnectId.gridy = 0;
 		networkPanel.add(connectId, gbcconnectId);
 		
-		JComboBox<String> connectIdChoice = new JComboBox<>();
+		connectIdChoice = new JComboBox<>();
+		connectIdChoice.addActionListener(e-> {
+			String deviceId = connectIdChoice.getItemAt(connectIdChoice.getSelectedIndex());
+			String hardwareId = hwidComboBox.getItemAt(hwidComboBox.getSelectedIndex());
+			
+			Map<String, String> networkAdapterProperties = NetworkDatabase.getNetworkProperties(deviceId, hardwareId);
+			netDescriptiontextField.setText(networkAdapterProperties.get("Description"));
+			netDefaultGatewayTextField.setText(networkAdapterProperties.get("DefaultIPGateway"));
+			networkMacTextField.setText(networkAdapterProperties.get("MACAddress"));
+			networkIpTextField.setText(networkAdapterProperties.get("IPAddress"));
+			networkSubnetTextField.setText(networkAdapterProperties.get("IPSubnet"));
+			networkDnsTextField.setText(networkAdapterProperties.get("DNSServerSearchOrder"));
+		});
 		GridBagConstraints gbcconnectIdChoice = new GridBagConstraints();
 		gbcconnectIdChoice.insets = new Insets(0, 0, 5, 5);
 		gbcconnectIdChoice.fill = GridBagConstraints.HORIZONTAL;
@@ -572,13 +592,31 @@ public class HardCacheDatabaseViewer {
 		netDescriptiontextField = new JTextField();
 		netDescriptiontextField.setEditable(false);
 		GridBagConstraints gbcnetDescriptiontextField = new GridBagConstraints();
-		gbcnetDescriptiontextField.gridwidth = 5;
+		gbcnetDescriptiontextField.gridwidth = 3;
 		gbcnetDescriptiontextField.insets = new Insets(0, 0, 5, 5);
 		gbcnetDescriptiontextField.fill = GridBagConstraints.HORIZONTAL;
 		gbcnetDescriptiontextField.gridx = 3;
 		gbcnetDescriptiontextField.gridy = 0;
 		networkPanel.add(netDescriptiontextField, gbcnetDescriptiontextField);
 		netDescriptiontextField.setColumns(10);
+		
+		JLabel netDefaultGateway = new JLabel("Default Gateway");
+		GridBagConstraints gbcnetDefaultGateway = new GridBagConstraints();
+		gbcnetDefaultGateway.anchor = GridBagConstraints.EAST;
+		gbcnetDefaultGateway.insets = new Insets(0, 0, 5, 5);
+		gbcnetDefaultGateway.gridx = 6;
+		gbcnetDefaultGateway.gridy = 0;
+		networkPanel.add(netDefaultGateway, gbcnetDefaultGateway);
+		
+		netDefaultGatewayTextField = new JTextField();
+		netDefaultGatewayTextField.setEditable(false);
+		GridBagConstraints gbcnetDefaultGatewayTextField = new GridBagConstraints();
+		gbcnetDefaultGatewayTextField.insets = new Insets(0, 0, 5, 0);
+		gbcnetDefaultGatewayTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbcnetDefaultGatewayTextField.gridx = 7;
+		gbcnetDefaultGatewayTextField.gridy = 0;
+		networkPanel.add(netDefaultGatewayTextField, gbcnetDefaultGatewayTextField);
+		netDefaultGatewayTextField.setColumns(10);
 		
 		JLabel networkMac = new JLabel("MAC Address");
 		GridBagConstraints gbcnetworkMac = new GridBagConstraints();
@@ -669,7 +707,18 @@ public class HardCacheDatabaseViewer {
 		gbcdriveId.gridy = 0;
 		storagePanel.add(driveId, gbcdriveId);
 		
-		JComboBox<String> driveIdChoice = new JComboBox<>();
+		driveIdChoice = new JComboBox<>();
+		driveIdChoice.addActionListener(e-> {
+			String deviceId = driveIdChoice.getItemAt(driveIdChoice.getSelectedIndex());
+			String hardwareId = hwidComboBox.getItemAt(hwidComboBox.getSelectedIndex());
+			
+			Map<String, String> diskProperties = StorageDatabase.getDiskProperties(deviceId, hardwareId);
+			driveNameTextField.setText(diskProperties.get("Name"));
+			driveSerialTextField.setText(diskProperties.get("Serial"));
+			driveSizeTextField.setText(diskProperties.get("Size"));
+			driveSmartTextField.setText(diskProperties.get("SMART"));
+			
+		});
 		GridBagConstraints gbcdriveIdChoice = new GridBagConstraints();
 		gbcdriveIdChoice.insets = new Insets(0, 0, 5, 5);
 		gbcdriveIdChoice.fill = GridBagConstraints.HORIZONTAL;
@@ -753,13 +802,13 @@ public class HardCacheDatabaseViewer {
 	}
 	
 	private void initializeCpu(String hwid) {
-		List<String> cpus = CpuDatabase.getAllCpus(hwid);
+		List<String> cpus = CpuDatabase.getAllCpuIds(hwid);
 		for(String cpu: cpus)
 			cpuChoiceBox.addItem(cpu);
 	}
 	
 	private void initializeGpu(String hwid) {
-		List<String> gpus = GpuDatabase.getAllGpus(hwid);
+		List<String> gpus = GpuDatabase.getAllGpuIds(hwid);
 		for(String gpu: gpus)
 			currentGpuChoice.addItem(gpu);
 	}
@@ -768,5 +817,24 @@ public class HardCacheDatabaseViewer {
 		Map<String, String> memoryProperties = MemoryDatabase.getMemoryProperties(hwid);
 		totalSlotTf.setText(memoryProperties.get("SlotsUsed"));
 		totalMemoryTf.setText(memoryProperties.get("TotalMemory"));
+	}
+	
+	private void initializeMainboard(String hwid) {
+		Map<String, String> mainboardProperties = MainboardDatabase.getMainboardProperties(hwid);
+		motherboardNameTf.setText(mainboardProperties.get("Name"));
+		motherboardManufacturerTf.setText(mainboardProperties.get("Manufacturer"));
+		biosVersionTextField.setText(mainboardProperties.get("BIOSVersion"));
+	}
+	
+	private void initializeNetwork(String hwid) {
+		List<String> networkAdapterIds = NetworkDatabase.getAllNetworkAdapterIds(hwid);
+		for(String id:networkAdapterIds)
+			connectIdChoice.addItem(id);
+	}
+	
+	private void initializeStorage(String hwid) {
+		List<String> diskIds = StorageDatabase.getDiskIds(hwid);
+		for(String id: diskIds)
+			driveIdChoice.addItem(id);	
 	}
 }
