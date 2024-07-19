@@ -6,6 +6,6 @@ CREATE TABLE "Network" (
 	"IPAddress"	TEXT,
 	"IPSubnet"	TEXT,
 	"DefaultIPGateway"	TEXT,
-	"DHCPServer"	TEXT,
+	"DNSServerSearchOrder"	TEXT,
 	CONSTRAINT "fk_network_hwid" FOREIGN KEY("HardwareId") REFERENCES "HardwareId"("UniqueId")
 )
