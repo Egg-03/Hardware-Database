@@ -1,4 +1,4 @@
-package com.hardwaresnapshot.backend.database.databaseui;
+package com.hardwaresnapshot.backend.database.dataretrieve;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

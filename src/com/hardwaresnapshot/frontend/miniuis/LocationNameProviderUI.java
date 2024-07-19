@@ -17,7 +17,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
 import com.ferrumx.system.logger.ErrorLog;
-import com.hardwaresnapshot.backend.database.mainui.DataInsertion;
+import com.hardwaresnapshot.backend.database.datainsertanddelete.DataInsertion;
 
 //Location and Name Selector UI
 //This should appear when you're dumping new data or updating it

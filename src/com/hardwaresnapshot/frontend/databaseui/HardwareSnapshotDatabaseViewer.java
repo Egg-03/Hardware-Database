@@ -24,13 +24,13 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
 import com.ferrumx.system.logger.ErrorLog;
-import com.hardwaresnapshot.backend.database.databaseui.CpuDatabase;
-import com.hardwaresnapshot.backend.database.databaseui.GpuDatabase;
-import com.hardwaresnapshot.backend.database.databaseui.HardwareIdDatabase;
-import com.hardwaresnapshot.backend.database.databaseui.MainboardDatabase;
-import com.hardwaresnapshot.backend.database.databaseui.MemoryDatabase;
-import com.hardwaresnapshot.backend.database.databaseui.NetworkDatabase;
-import com.hardwaresnapshot.backend.database.databaseui.StorageDatabase;
+import com.hardwaresnapshot.backend.database.dataretrieve.CpuDatabase;
+import com.hardwaresnapshot.backend.database.dataretrieve.GpuDatabase;
+import com.hardwaresnapshot.backend.database.dataretrieve.HardwareIdDatabase;
+import com.hardwaresnapshot.backend.database.dataretrieve.MainboardDatabase;
+import com.hardwaresnapshot.backend.database.dataretrieve.MemoryDatabase;
+import com.hardwaresnapshot.backend.database.dataretrieve.NetworkDatabase;
+import com.hardwaresnapshot.backend.database.dataretrieve.StorageDatabase;
 
 public class HardwareSnapshotDatabaseViewer {
 

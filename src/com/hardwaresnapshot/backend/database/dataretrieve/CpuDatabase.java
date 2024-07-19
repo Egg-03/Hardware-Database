@@ -1,4 +1,4 @@
-package com.hardwaresnapshot.backend.database.databaseui;
+package com.hardwaresnapshot.backend.database.dataretrieve;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -13,25 +13,26 @@ import java.util.Map;
 import com.hardwaresnapshot.backend.database.connection.DatabaseConnectivity;
 import com.hardwaresnapshot.frontend.miniuis.ExceptionUI;
 
-public class StorageDatabase {
-	private StorageDatabase() {
+public class CpuDatabase {
+	
+	private CpuDatabase() {
 		throw new IllegalStateException("Utility Class");
 	}
 	
-	public static List<String> getDiskIds(String hwid){
+	public static List<String> getAllCpuIds(String hwid){
 		Connection connect = DatabaseConnectivity.initialize();
-		String statement = "SELECT Storage.DeviceId FROM Storage WHERE Storage.HardwareId = '"+hwid+"'";
-		List<String> diskIds = new ArrayList<>();
+		String statement = "SELECT CPU.DeviceId FROM CPU WHERE CPU.HardwareId = '"+hwid+"'";
+		List<String> cpus = new ArrayList<>();
 		try(Statement st = connect.createStatement()){
 			ResultSet rs = st.executeQuery(statement);
 			
 			while(rs.next()) {
 				String cpu = rs.getString("DeviceId");
-				diskIds.add(cpu);
+				cpus.add(cpu);
 			}
-			return diskIds;
+			return cpus;
 		} catch (SQLException e) {
-			new ExceptionUI("HC Database Viewer Disk ID Fetch Error", e.getMessage()).setVisible(true);
+			new ExceptionUI("HC Database Viewer CPUID Fetch Error", e.getMessage()).setVisible(true);
 			DatabaseConnectivity.close(connect);
 			return Collections.emptyList();
 		}
@@ -40,20 +41,20 @@ public class StorageDatabase {
 		}
 	}
 	
-	public static Map<String, String> getDiskProperties(String deviceId, String hwid){
+	public static Map<String, String> getCpuProperties(String deviceId, String hwid){
 		Connection connect = DatabaseConnectivity.initialize();
-		String statement = "SELECT Name, Serial, Size, SMART FROM Storage WHERE Storage.HardwareId = '"+hwid+"' AND Storage.DeviceId = '"+deviceId+"'";
-		Map<String, String> diskProperties = new LinkedHashMap<>();
+		String statement = "SELECT CpuName, CpuCores, CpuThreads, CpuSocket FROM CPU WHERE CPU.HardwareId = '"+hwid+"' AND CPU.DeviceId = '"+deviceId+"'";
+		Map<String, String> cpuProperties = new LinkedHashMap<>();
 		try(Statement st = connect.createStatement()){
 			ResultSet rs = st.executeQuery(statement);
 			
-			diskProperties.put("Name",  rs.getString("Name"));
-			diskProperties.put("Serial", rs.getString("Serial"));
-			diskProperties.put("Size", rs.getString("Size"));
-			diskProperties.put("SMART", rs.getString("SMART"));
-			return diskProperties;
+			cpuProperties.put("CpuName",  rs.getString("CpuName"));
+			cpuProperties.put("CpuCores", rs.getString("CpuCores"));
+			cpuProperties.put("CpuThreads", rs.getString("CpuThreads"));
+			cpuProperties.put("CpuSocket", rs.getString("CpuSocket"));
+			return cpuProperties;
 		} catch (SQLException e) {
-			new ExceptionUI("HC Database Viewer Disk Property Fetch Error", e.getMessage()).setVisible(true);
+			new ExceptionUI("HC Database Viewer CPU Property Fetch Error", e.getMessage()).setVisible(true);
 			DatabaseConnectivity.close(connect);
 			return Collections.emptyMap();
 		}
