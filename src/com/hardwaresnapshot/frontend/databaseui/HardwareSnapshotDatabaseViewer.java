@@ -205,6 +205,7 @@ public class HardwareSnapshotDatabaseViewer {
 		
 		JButton showButton = new JButton("Show");
 		showButton.addActionListener(e-> {
+			clearChoices(); //refresh all the choice boxes to avoid storing duplicates
 			String hwid = hwidComboBox.getItemAt(hwidComboBox.getSelectedIndex());
 			initializeCpu(hwid);
 			initializeGpu(hwid);
@@ -836,5 +837,12 @@ public class HardwareSnapshotDatabaseViewer {
 		List<String> diskIds = StorageDatabase.getDiskIds(hwid);
 		for(String id: diskIds)
 			driveIdChoice.addItem(id);	
+	}
+	
+	private void clearChoices() {
+		cpuChoiceBox.removeAllItems();
+		currentGpuChoice.removeAllItems();
+		connectIdChoice.removeAllItems();
+		driveIdChoice.removeAllItems();
 	}
 }
