@@ -1,4 +1,4 @@
-package com.egg.miniuis;
+package com.hardwaresnapshot.frontend.miniuis;
 
 import java.awt.Color;
 import java.awt.Toolkit;

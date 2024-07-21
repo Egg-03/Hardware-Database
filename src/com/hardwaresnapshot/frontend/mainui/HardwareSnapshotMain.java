@@ -1,4 +1,4 @@
-package com.egg.hardcache.ui;
+package com.hardwaresnapshot.frontend.mainui;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -25,16 +25,16 @@ import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
-import com.egg.database.DataDeletion;
-import com.egg.miniuis.ConfirmationUI;
-import com.egg.miniuis.ExceptionUI;
-import com.egg.miniuis.LocationNameProvider;
-import com.egg.miniuis.StatusUI;
 import com.ferrumx.system.logger.ErrorLog;
+import com.hardwaresnapshot.backend.database.datainsertanddelete.DataDeletion;
+import com.hardwaresnapshot.frontend.miniuis.ConfirmationUI;
+import com.hardwaresnapshot.frontend.miniuis.ExceptionUI;
+import com.hardwaresnapshot.frontend.miniuis.LocationNameProviderUI;
+import com.hardwaresnapshot.frontend.miniuis.StatusUI;
 
-public class HardCacheMain {
+public class HardwareSnapshotMain {
 
-	private JFrame hardcache;
+	private JFrame hardSnap;
 
 	private JComboBox<String> osNameChoice;
 	private JComboBox<String> cpuNumberChoice;
@@ -79,9 +79,9 @@ public class HardCacheMain {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		HardCacheMain window = new HardCacheMain();
-		window.hardcache.setLocationRelativeTo(null);
-		window.hardcache.setVisible(true);			
+		HardwareSnapshotMain window = new HardwareSnapshotMain();
+		window.hardSnap.setLocationRelativeTo(null);
+		window.hardSnap.setVisible(true);			
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class HardCacheMain {
 	 * @throws IOException 
 	 * @throws IndexOutOfBoundsException 
 	 */
-	public HardCacheMain() {
+	public HardwareSnapshotMain() {
 		initializeComponents();
 		setTheme();
 		initializeSystemInfo(new StatusUI("Booting Up", "Please wait till FerrumX gathers information about your system"));
@@ -100,7 +100,7 @@ public class HardCacheMain {
 	private void setTheme() {
 		try {
 			UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
-			SwingUtilities.updateComponentTreeUI(hardcache);
+			SwingUtilities.updateComponentTreeUI(hardSnap);
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			new ErrorLog().log(" ExceptionUI Theme Load Error: "+e.getMessage());
 		}
@@ -110,13 +110,13 @@ public class HardCacheMain {
 	 * Initialize the contents of the frame.
 	 */
 	private void initializeComponents() {
-		hardcache = new JFrame();
-		hardcache.setResizable(false);
-		hardcache.setIconImage(Toolkit.getDefaultToolkit().getImage(HardCacheMain.class.getResource("/res/icon_main.png")));
-		hardcache.setTitle("HardCache v1.00");
-		hardcache.setBounds(100, 100, 450, 721);
-		hardcache.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		hardcache.getContentPane().setLayout(null);
+		hardSnap = new JFrame();
+		hardSnap.setResizable(false);
+		hardSnap.setIconImage(Toolkit.getDefaultToolkit().getImage(HardwareSnapshotMain.class.getResource("/res/icon_main.png")));
+		hardSnap.setTitle("Hardware Snapshot v1.00");
+		hardSnap.setBounds(100, 100, 450, 721);
+		hardSnap.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		hardSnap.getContentPane().setLayout(null);
 		
 		hardwareIdPanel();
 		osPanel();
@@ -132,7 +132,7 @@ public class HardCacheMain {
 		JPanel hardwareIdPanel = new JPanel();
 		hardwareIdPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Unique ID", TitledBorder.LEFT, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		hardwareIdPanel.setBounds(10, 11, 414, 80);
-		hardcache.getContentPane().add(hardwareIdPanel);
+		hardSnap.getContentPane().add(hardwareIdPanel);
 		hardwareIdPanel.setLayout(null);
 		
 		JLabel hardwareLabel = new JLabel("Hardware ID");
@@ -162,7 +162,7 @@ public class HardCacheMain {
 		JButton dataDumpButton = new JButton("Dump");
 		dataDumpButton.setToolTipText("Dumps the visible data into a local database");
 		dataDumpButton.setBounds(17, 48, 83, 24);
-		dataDumpButton.addActionListener(e-> new LocationNameProvider().setVisible(true));
+		dataDumpButton.addActionListener(e-> new LocationNameProviderUI().setVisible(true));
 		hardwareIdPanel.add(dataDumpButton);
 		
 		JButton dataDeleteButton = new JButton("Delete");
@@ -185,7 +185,7 @@ public class HardCacheMain {
 		JPanel osPanel = new JPanel();
 		osPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Operating System", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		osPanel.setBounds(10, 93, 412, 90);
-		hardcache.getContentPane().add(osPanel);
+		hardSnap.getContentPane().add(osPanel);
 		osPanel.setLayout(null);
 		
 		JLabel osName = new JLabel("Name");
@@ -248,7 +248,7 @@ public class HardCacheMain {
 		cpuPanel.setLayout(null);
 		cpuPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "CPU", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		cpuPanel.setBounds(10, 185, 414, 80);
-		hardcache.getContentPane().add(cpuPanel);
+		hardSnap.getContentPane().add(cpuPanel);
 		
 		JLabel cpuName = new JLabel("Name");
 		cpuName.setToolTipText("CPU Name: As provided by the manufacturer");
@@ -340,7 +340,7 @@ public class HardCacheMain {
 		memoryPanel.setLayout(null);
 		memoryPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Memory", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		memoryPanel.setBounds(10, 265, 414, 44);
-		hardcache.getContentPane().add(memoryPanel);
+		hardSnap.getContentPane().add(memoryPanel);
 		
 		JLabel memorySlots = new JLabel("Slots Used");
 		memorySlots.setToolTipText("Memory Slots Used");
@@ -378,7 +378,7 @@ public class HardCacheMain {
 		gpuPanel.setLayout(null);
 		gpuPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Video Controller", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		gpuPanel.setBounds(10, 310, 412, 90);
-		hardcache.getContentPane().add(gpuPanel);
+		hardSnap.getContentPane().add(gpuPanel);
 		
 		JLabel gpuNumber = new JLabel("GPU#");
 		gpuNumber.setToolTipText("GPU Number: Shows the number of enabled GPUs.\r\nNote: If a GPU is disabled, it won't appear here.\r\nOne such case is that if your CPU has an iGPU \r\nbut you're using a dGPU, only your dGPU will show up\r\n");
@@ -442,7 +442,7 @@ public class HardCacheMain {
 		mainboardPanel.setLayout(null);
 		mainboardPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Mainboard", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		mainboardPanel.setBounds(10, 402, 412, 90);
-		hardcache.getContentPane().add(mainboardPanel);
+		hardSnap.getContentPane().add(mainboardPanel);
 		
 		JLabel mainboardName = new JLabel("Mainboard Name");
 		mainboardName.setToolTipText("Mainboard Name: The name of your system's motherboard");
@@ -495,7 +495,7 @@ public class HardCacheMain {
 		network.setLayout(null);
 		network.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Network", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		network.setBounds(10, 492, 412, 90);
-		hardcache.getContentPane().add(network);
+		hardSnap.getContentPane().add(network);
 		
 		JLabel netConnectionId = new JLabel("Connection ID");
 		netConnectionId.setToolTipText("Connection ID: Only Links the connections which are active.\r\nRestart the application if u have installed a new active connection to see the changes.");
@@ -560,7 +560,7 @@ public class HardCacheMain {
 		storage.setLayout(null);
 		storage.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Storage", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(192, 192, 192)));
 		storage.setBounds(10, 583, 412, 90);
-		hardcache.getContentPane().add(storage);
+		hardSnap.getContentPane().add(storage);
 		
 		JLabel storageIndex = new JLabel("Index");
 		storageIndex.setToolTipText("Caption: Shows the available drive counts based on their unsorted indexes\r\n");

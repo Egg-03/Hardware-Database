@@ -1,4 +1,4 @@
-package com.egg.miniuis;
+package com.hardwaresnapshot.frontend.miniuis;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;

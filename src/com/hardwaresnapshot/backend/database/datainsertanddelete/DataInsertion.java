@@ -1,4 +1,4 @@
-package com.egg.database;
+package com.hardwaresnapshot.backend.database.datainsertanddelete;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -10,8 +10,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.egg.miniuis.ExceptionUI;
-import com.egg.miniuis.InformationUI;
+import com.ferrumx.formatter.cim.CIM_ML;
 import com.ferrumx.system.currentuser.User;
 import com.ferrumx.system.hardware.HardwareID;
 import com.ferrumx.system.hardware.Win32_BIOS;
@@ -24,6 +23,9 @@ import com.ferrumx.system.hardware.Win32_VideoController;
 import com.ferrumx.system.networking.Win32_NetworkAdapterConfiguration;
 import com.ferrumx.system.networking.Win32_NetworkAdapterSetting;
 import com.ferrumx.system.operating_system.Win32_OperatingSystem;
+import com.hardwaresnapshot.backend.database.connection.DatabaseConnectivity;
+import com.hardwaresnapshot.frontend.miniuis.ExceptionUI;
+import com.hardwaresnapshot.frontend.miniuis.InformationUI;
 
 public class DataInsertion {
 	
@@ -31,7 +33,7 @@ public class DataInsertion {
 	private static final String HARDWAREID = getHWID();
 	
 	private DataInsertion() {
-		throw new IllegalStateException("Utility Class: Should be called only by AppWindow");
+		throw new IllegalStateException("Utility Class");
 	}
 	
 	private static String getHWID() {
@@ -89,17 +91,18 @@ public class DataInsertion {
 	
 	//Populate the CPU Table
 	private static void insertCpu() {
-		String query = "INSERT INTO CPU (HardwareId, CpuName, CpuCores, CpuThreads, CpuSocket) VALUES (?,?,?,?,?);";
+		String query = "INSERT INTO CPU (HardwareId, DeviceId, CpuName, CpuCores, CpuThreads, CpuSocket) VALUES (?,?,?,?,?,?);";
 		
 		try(PreparedStatement ps = connect.prepareStatement(query)){
 			List<String> cpuList = Win32_Processor.getProcessorList();
 			for(String cpu: cpuList) {
 				Map<String, String> cpuProperties = Win32_Processor.getCurrentProcessor(cpu);
 				ps.setString(1, HARDWAREID);
-				ps.setString(2, cpuProperties.get("Name"));
-				ps.setInt(3, Integer.valueOf(cpuProperties.get("NumberOfCores")));
-				ps.setInt(4, Integer.valueOf(cpuProperties.get("ThreadCount")));
-				ps.setString(5, cpuProperties.get("SocketDesignation"));
+				ps.setString(2, cpu);
+				ps.setString(3, cpuProperties.get("Name"));
+				ps.setInt(4, Integer.valueOf(cpuProperties.get("NumberOfCores")));
+				ps.setInt(5, Integer.valueOf(cpuProperties.get("ThreadCount")));
+				ps.setString(6, cpuProperties.get("SocketDesignation"));
 				
 				ps.addBatch();
 				ps.executeBatch();
@@ -140,17 +143,18 @@ public class DataInsertion {
 	}
 	
 	private static void insertGpu() {
-		String query = "INSERT INTO GPU (HardwareId, GpuName, VRAM, DriverVersion) VALUES (?,?,?,?);";
+		String query = "INSERT INTO GPU (HardwareId, DeviceId, GpuName, VRAM, DriverVersion) VALUES (?,?,?,?,?);";
 		
 		try(PreparedStatement ps = connect.prepareStatement(query)){
 			List<String> gpuList = Win32_VideoController.getGPUID();
 			for(String gpu: gpuList) {
 				Map<String, String> gpuProperties = Win32_VideoController.getGPU(gpu);
 				ps.setString(1, HARDWAREID);
-				ps.setString(2, gpuProperties.get("Name"));
+				ps.setString(2, gpu);
+				ps.setString(3, gpuProperties.get("Name"));
 				Long adapterRam = Long.parseLong(gpuProperties.get("AdapterRAM"))/(1024*1024);
-				ps.setString(3, String.valueOf(adapterRam)+" MB");
-				ps.setString(4, gpuProperties.get("DriverVersion"));
+				ps.setString(4, String.valueOf(adapterRam)+" MB");
+				ps.setString(5, gpuProperties.get("DriverVersion"));
 				
 				ps.addBatch();
 				ps.executeBatch();
@@ -184,7 +188,7 @@ public class DataInsertion {
 	}
 	
 	private static void insertNetwork() {
-		String query = "INSERT INTO Network (HardwareId, Description, MACAddress, IPAddress) VALUES (?,?,?,?);";
+		String query = "INSERT INTO Network (HardwareId, DeviceId, Description, MACAddress, IPAddress, IPSubnet, DefaultIPGateway, DNSServerSearchOrder) VALUES (?,?,?,?,?,?,?,?);";
 		
 		try(PreparedStatement ps = connect.prepareStatement(query)){
 			List<String> adapterList = Win32_NetworkAdapter.getDeviceIDList();
@@ -193,9 +197,13 @@ public class DataInsertion {
 				String networkIndex = Win32_NetworkAdapterSetting.getIndex(networkAdapter);
 				Map<String, String> adapterAddress = Win32_NetworkAdapterConfiguration.getAdapterConfiguration(networkIndex);
 				ps.setString(1, HARDWAREID);
-				ps.setString(2, adapterProperties.get("Description"));
-				ps.setString(3, adapterProperties.get("MACAddress"));
-				ps.setString(4, adapterAddress.get("IPAddress"));
+				ps.setString(2, networkAdapter);
+				ps.setString(3, adapterProperties.get("Description"));
+				ps.setString(4, adapterProperties.get("MACAddress"));
+				ps.setString(5, adapterAddress.get("IPAddress"));
+				ps.setString(6, adapterAddress.get("IPSubnet"));
+				ps.setString(7, adapterAddress.get("DefaultIPGateway"));
+				ps.setString(8, adapterAddress.get("DNSServerSearchOrder"));
 				
 				ps.addBatch();
 				ps.executeBatch();
@@ -208,21 +216,26 @@ public class DataInsertion {
 	}
 	
 	private static void insertStorage() {
-		String query = "INSERT INTO Storage (HardwareId, Name, Serial, Size, SMART) VALUES (?,?,?,?,?);";
+		String query = "INSERT INTO Storage (HardwareId, DeviceId, Name, Serial, Size, SMART) VALUES (?,?,?,?,?,?);";
 		
 		try(PreparedStatement ps = connect.prepareStatement(query)){
-			List<String> storageDiskList = Win32_DiskDrive.getDriveID();
-			for(String disk: storageDiskList) {
+			//Invoking a customized version of CIM_ML.getIDWhere() to log only the SCSI and IDE interface driveIDs
+			//Essentially, this will allow the program to skip dumping USB and other removable storage media info
+			List<String> interfaces = CIM_ML.getIDWhere("Win32_DiskDrive", "InterfaceType", "IDE", "DeviceID");
+			interfaces.addAll(CIM_ML.getIDWhere("Win32_DiskDrive", "InterfaceType", "SCSI", "DeviceID"));
+			
+			for(String disk: interfaces) {
 				Map<String, String> diskProperties = Win32_DiskDrive.getDrive(disk);
 				
 				ps.setString(1, HARDWAREID);
-				ps.setString(2, diskProperties.get("Caption"));
-				ps.setString(3, diskProperties.get("SerialNumber"));
+				ps.setString(2, disk);
+				ps.setString(3, diskProperties.get("Caption"));
+				ps.setString(4, diskProperties.get("SerialNumber"));
 				
 				Long diskSize = Long.parseLong(diskProperties.get("Size"))/(1024*1024*1024);
-				ps.setString(4, String.valueOf(diskSize)+" GB");
+				ps.setString(5, String.valueOf(diskSize)+" GB");
 				
-				ps.setString(5, diskProperties.get("Status"));
+				ps.setString(6, diskProperties.get("Status"));
 				
 				ps.addBatch();
 				ps.executeBatch();

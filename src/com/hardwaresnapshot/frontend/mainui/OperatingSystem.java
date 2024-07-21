@@ -1,4 +1,4 @@
-package com.egg.hardcache.ui;
+package com.hardwaresnapshot.frontend.mainui;
 
 import java.io.IOException;
 import java.util.List;
@@ -7,9 +7,9 @@ import java.util.Map;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
-import com.egg.miniuis.ExceptionUI;
 import com.ferrumx.system.currentuser.User;
 import com.ferrumx.system.operating_system.Win32_OperatingSystem;
+import com.hardwaresnapshot.frontend.miniuis.ExceptionUI;
 
 final class OperatingSystem {
 	
