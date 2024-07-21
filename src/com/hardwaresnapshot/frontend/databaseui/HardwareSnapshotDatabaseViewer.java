@@ -106,7 +106,7 @@ public class HardwareSnapshotDatabaseViewer {
 		frmHsnapDatabaseViewer = new JFrame();
 		setTheme();
 		frmHsnapDatabaseViewer.setIconImage(Toolkit.getDefaultToolkit().getImage(HardwareSnapshotDatabaseViewer.class.getResource("/res/icon_main.png")));
-		frmHsnapDatabaseViewer.setTitle("Hardware Snapshot Database Viewer Beta Build v21072024");
+		frmHsnapDatabaseViewer.setTitle("Hardware Snapshot Database Viewer (Build v212072024)");
 		frmHsnapDatabaseViewer.setBounds(100, 100, 723, 430);
 		frmHsnapDatabaseViewer.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frmHsnapDatabaseViewer.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
