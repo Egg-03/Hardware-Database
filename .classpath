@@ -23,6 +23,10 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.46.0.0.jar"/>
-	<classpathentry kind="lib" path="lib/FerrumX-core-v1.2.4.jar"/>
+	<classpathentry kind="lib" path="lib/FerrumX-core-v1.2.4.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/Hardware%20Snapshot/lib/FerrumX-doc-v1.2.4.jar!/doc"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

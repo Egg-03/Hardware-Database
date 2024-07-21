@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.ferrumx.formatter.cim.CIM_ML;
 import com.ferrumx.system.currentuser.User;
 import com.ferrumx.system.hardware.HardwareID;
 import com.ferrumx.system.hardware.Win32_BIOS;
@@ -218,8 +219,12 @@ public class DataInsertion {
 		String query = "INSERT INTO Storage (HardwareId, DeviceId, Name, Serial, Size, SMART) VALUES (?,?,?,?,?,?);";
 		
 		try(PreparedStatement ps = connect.prepareStatement(query)){
-			List<String> storageDiskList = Win32_DiskDrive.getDriveID();
-			for(String disk: storageDiskList) {
+			//Invoking a customized version of CIM_ML.getIDWhere() to log only the SCSI and IDE interface driveIDs
+			//Essentially, this will allow the program to skip dumping USB and other removable storage media info
+			List<String> interfaces = CIM_ML.getIDWhere("Win32_DiskDrive", "InterfaceType", "IDE", "DeviceID");
+			interfaces.addAll(CIM_ML.getIDWhere("Win32_DiskDrive", "InterfaceType", "SCSI", "DeviceID"));
+			
+			for(String disk: interfaces) {
 				Map<String, String> diskProperties = Win32_DiskDrive.getDrive(disk);
 				
 				ps.setString(1, HARDWAREID);
