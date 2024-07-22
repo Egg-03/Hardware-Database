@@ -106,7 +106,7 @@ public class HardwareSnapshotDatabaseViewer {
 		frmHsnapDatabaseViewer = new JFrame();
 		setTheme();
 		frmHsnapDatabaseViewer.setIconImage(Toolkit.getDefaultToolkit().getImage(HardwareSnapshotDatabaseViewer.class.getResource("/res/icon_main.png")));
-		frmHsnapDatabaseViewer.setTitle("Hardware Snapshot Database Viewer (Build v212072024)");
+		frmHsnapDatabaseViewer.setTitle("Hardware Snapshot Database Viewer (Build v222072024)");
 		frmHsnapDatabaseViewer.setBounds(100, 100, 723, 430);
 		frmHsnapDatabaseViewer.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frmHsnapDatabaseViewer.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
@@ -248,9 +248,16 @@ public class HardwareSnapshotDatabaseViewer {
 			Map<String, String> cpuProperties = CpuDatabase.getCpuProperties(deviceId, hardwareId);
 			
 			cpuNameTf.setText(cpuProperties.get("CpuName"));
+			cpuNameTf.setCaretPosition(0);
+			
 			cpuCoreTf.setText(cpuProperties.get("CpuCores"));
+			cpuCoreTf.setCaretPosition(0);
+			
 			cpuThreadTf.setText(cpuProperties.get("CpuThreads"));
+			cpuThreadTf.setCaretPosition(0);
+			
 			cpuSocketTf.setText(cpuProperties.get("CpuSocket"));
+			cpuSocketTf.setCaretPosition(0);
 		});
 		GridBagConstraints gbccpuChoiceBox = new GridBagConstraints();
 		gbccpuChoiceBox.insets = new Insets(0, 0, 5, 5);
@@ -365,8 +372,13 @@ public class HardwareSnapshotDatabaseViewer {
 			Map<String, String> gpuProperties = GpuDatabase.getGpuProperties(deviceId, hardwareId);
 			
 			gpuNameTf.setText(gpuProperties.get("GpuName"));
+			gpuNameTf.setCaretPosition(0);
+			
 			gpuVramTf.setText(gpuProperties.get("VRAM"));
+			gpuVramTf.setCaretPosition(0);
+			
 			gpuDriverTf.setText(gpuProperties.get("DriverVersion"));
+			gpuDriverTf.setCaretPosition(0);
 		});
 		GridBagConstraints gbccurrentGpuChoice = new GridBagConstraints();
 		gbccurrentGpuChoice.fill = GridBagConstraints.HORIZONTAL;
@@ -574,6 +586,13 @@ public class HardwareSnapshotDatabaseViewer {
 			networkIpTextField.setText(networkAdapterProperties.get("IPAddress"));
 			networkSubnetTextField.setText(networkAdapterProperties.get("IPSubnet"));
 			networkDnsTextField.setText(networkAdapterProperties.get("DNSServerSearchOrder"));
+			
+			netDescriptiontextField.setCaretPosition(0);
+			netDefaultGatewayTextField.setCaretPosition(0);
+			networkMacTextField.setCaretPosition(0);
+			networkIpTextField.setCaretPosition(0);
+			networkSubnetTextField.setCaretPosition(0);
+			networkDnsTextField.setCaretPosition(0);
 		});
 		GridBagConstraints gbcconnectIdChoice = new GridBagConstraints();
 		gbcconnectIdChoice.insets = new Insets(0, 0, 5, 5);
@@ -719,6 +738,11 @@ public class HardwareSnapshotDatabaseViewer {
 			driveSizeTextField.setText(diskProperties.get("Size"));
 			driveSmartTextField.setText(diskProperties.get("SMART"));
 			
+			driveNameTextField.setCaretPosition(0);
+			driveSerialTextField.setCaretPosition(0);
+			driveSizeTextField.setCaretPosition(0);
+			driveSmartTextField.setCaretPosition(0);
+			
 		});
 		GridBagConstraints gbcdriveIdChoice = new GridBagConstraints();
 		gbcdriveIdChoice.insets = new Insets(0, 0, 5, 5);
@@ -818,6 +842,9 @@ public class HardwareSnapshotDatabaseViewer {
 		Map<String, String> memoryProperties = MemoryDatabase.getMemoryProperties(hwid);
 		totalSlotTf.setText(memoryProperties.get("SlotsUsed"));
 		totalMemoryTf.setText(memoryProperties.get("TotalMemory"));
+		
+		totalSlotTf.setCaretPosition(0);
+		totalMemoryTf.setCaretPosition(0);
 	}
 	
 	private void initializeMainboard(String hwid) {
@@ -825,6 +852,10 @@ public class HardwareSnapshotDatabaseViewer {
 		motherboardNameTf.setText(mainboardProperties.get("Name"));
 		motherboardManufacturerTf.setText(mainboardProperties.get("Manufacturer"));
 		biosVersionTextField.setText(mainboardProperties.get("BIOSVersion"));
+		
+		motherboardNameTf.setCaretPosition(0);
+		motherboardManufacturerTf.setCaretPosition(0);
+		biosVersionTextField.setCaretPosition(0);
 	}
 	
 	private void initializeNetwork(String hwid) {
