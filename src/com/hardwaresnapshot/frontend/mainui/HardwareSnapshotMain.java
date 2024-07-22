@@ -173,7 +173,7 @@ public class HardwareSnapshotMain {
 			warning.getQuestionLabel().setText("Destructive operation ahead. Continue ?");
 			warning.getBtnYes().addActionListener(e1->{
 				warning.dispose();
-				DataDeletion.delete();
+				DataDeletion.delete(hardwareIdTextField.getText());
 			});
 			warning.getBtnNo().addActionListener(e1->warning.dispose());
 			warning.setVisible(true);

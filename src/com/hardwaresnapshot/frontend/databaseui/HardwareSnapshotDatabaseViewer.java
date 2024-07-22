@@ -24,6 +24,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
 import com.ferrumx.system.logger.ErrorLog;
+import com.hardwaresnapshot.backend.database.datainsertanddelete.DataDeletion;
 import com.hardwaresnapshot.backend.database.dataretrieve.CpuDatabase;
 import com.hardwaresnapshot.backend.database.dataretrieve.GpuDatabase;
 import com.hardwaresnapshot.backend.database.dataretrieve.HardwareIdDatabase;
@@ -31,6 +32,8 @@ import com.hardwaresnapshot.backend.database.dataretrieve.MainboardDatabase;
 import com.hardwaresnapshot.backend.database.dataretrieve.MemoryDatabase;
 import com.hardwaresnapshot.backend.database.dataretrieve.NetworkDatabase;
 import com.hardwaresnapshot.backend.database.dataretrieve.StorageDatabase;
+import com.hardwaresnapshot.frontend.miniuis.ConfirmationUI;
+import com.hardwaresnapshot.frontend.miniuis.InformationUI;
 
 public class HardwareSnapshotDatabaseViewer {
 
@@ -38,6 +41,8 @@ public class HardwareSnapshotDatabaseViewer {
 	
 	private JComboBox<String> locationComboBox;
 	private JComboBox<String> hwidComboBox;
+	private JButton deleteDataButton;
+	private JButton showButton;
 	
 	private JComboBox<String> cpuChoiceBox;
 	private JTextField cpuNameTf;
@@ -126,9 +131,9 @@ public class HardwareSnapshotDatabaseViewer {
 		hardwarePanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "HardwareID", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		frmHsnapDatabaseViewer.getContentPane().add(hardwarePanel);
 		GridBagLayout gblhardwarePanel = new GridBagLayout();
-		gblhardwarePanel.columnWidths = new int[] {0, 0, 0, 0, 0, 0};
+		gblhardwarePanel.columnWidths = new int[] {0, 0, 0, 0, 0, 0, 0};
 		gblhardwarePanel.rowHeights = new int[]{0, 0, 0};
-		gblhardwarePanel.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE, 0.0, 0.0};
+		gblhardwarePanel.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE, 0.0, 0.0, 0.0};
 		gblhardwarePanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
 		hardwarePanel.setLayout(gblhardwarePanel);
 		
@@ -165,6 +170,9 @@ public class HardwareSnapshotDatabaseViewer {
 				hwidComboBox.addItem(id);
 			}
 			hwidComboBox.setEnabled(true);
+			deleteDataButton.setEnabled(true);
+			showButton.setEnabled(true);
+			
 		});
 		userNameComboBox.setEnabled(false);
 		GridBagConstraints gbcuserNameComboBox = new GridBagConstraints();
@@ -203,7 +211,8 @@ public class HardwareSnapshotDatabaseViewer {
 		gbchwidTextField.gridy = 1;
 		hardwarePanel.add(hwidComboBox, gbchwidTextField);
 		
-		JButton showButton = new JButton("Show");
+		showButton = new JButton("Show Data");
+		showButton.setEnabled(false);
 		showButton.addActionListener(e-> {
 			clearChoices(); //refresh all the choice boxes to avoid storing duplicates
 			String hwid = hwidComboBox.getItemAt(hwidComboBox.getSelectedIndex());
@@ -220,6 +229,28 @@ public class HardwareSnapshotDatabaseViewer {
 		gbcshowButton.gridx = 4;
 		gbcshowButton.gridy = 1;
 		hardwarePanel.add(showButton, gbcshowButton);
+		
+		deleteDataButton = new JButton("Delete Data");
+		deleteDataButton.addActionListener(e-> {
+			String currenthwid = hwidComboBox.getItemAt(hwidComboBox.getSelectedIndex());
+			if(currenthwid.isBlank() || currenthwid.isEmpty()) {
+				new InformationUI("Empty HWID Selected").setVisible(true);
+			} else {
+				ConfirmationUI warning = new ConfirmationUI();
+				warning.getQuestionLabel().setText("Destructive operation ahead. Continue ?");
+				warning.getBtnYes().addActionListener(e1->{
+					warning.dispose();
+					DataDeletion.delete(currenthwid);
+				});
+				warning.getBtnNo().addActionListener(e1->warning.dispose());
+				warning.setVisible(true);
+			}
+		});
+		deleteDataButton.setEnabled(false);
+		GridBagConstraints gbcdeleteDataButton = new GridBagConstraints();
+		gbcdeleteDataButton.gridx = 6;
+		gbcdeleteDataButton.gridy = 1;
+		hardwarePanel.add(deleteDataButton, gbcdeleteDataButton);
 	}
 	
 	private void setCpuPanel() {
