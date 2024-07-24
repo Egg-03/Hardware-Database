@@ -46,6 +46,7 @@ public class HardwareSnapshotDatabaseViewer {
 	
 	private JComboBox<String> cpuChoiceBox;
 	private JTextField cpuNameTf;
+	private JTextField cpuManufacturerTf;
 	private JTextField cpuCoreTf;
 	private JTextField cpuThreadTf;
 	private JTextField cpuSocketTf;
@@ -258,9 +259,9 @@ public class HardwareSnapshotDatabaseViewer {
 		cpuPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "CPU", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		frmHsnapDatabaseViewer.getContentPane().add(cpuPanel);
 		GridBagLayout gblcpuPanel = new GridBagLayout();
-		gblcpuPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0};
+		gblcpuPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
 		gblcpuPanel.rowHeights = new int[]{0, 0, 0};
-		gblcpuPanel.columnWeights = new double[]{1.0, 1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+		gblcpuPanel.columnWeights = new double[]{1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gblcpuPanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
 		cpuPanel.setLayout(gblcpuPanel);
 		
@@ -289,6 +290,9 @@ public class HardwareSnapshotDatabaseViewer {
 			
 			cpuSocketTf.setText(cpuProperties.get("CpuSocket"));
 			cpuSocketTf.setCaretPosition(0);
+			
+			cpuManufacturerTf.setText(cpuProperties.get("Manufacturer"));
+			cpuManufacturerTf.setCaretPosition(0);
 		});
 		GridBagConstraints gbccpuChoiceBox = new GridBagConstraints();
 		gbccpuChoiceBox.insets = new Insets(0, 0, 5, 5);
@@ -308,13 +312,31 @@ public class HardwareSnapshotDatabaseViewer {
 		cpuNameTf = new JTextField();
 		cpuNameTf.setEditable(false);
 		GridBagConstraints gbccpuNameTf = new GridBagConstraints();
-		gbccpuNameTf.gridwidth = 3;
+		gbccpuNameTf.gridwidth = 2;
 		gbccpuNameTf.insets = new Insets(0, 0, 5, 5);
 		gbccpuNameTf.fill = GridBagConstraints.HORIZONTAL;
 		gbccpuNameTf.gridx = 3;
 		gbccpuNameTf.gridy = 0;
 		cpuPanel.add(cpuNameTf, gbccpuNameTf);
 		cpuNameTf.setColumns(10);
+		
+		JLabel cpuManufacturer = new JLabel("Manufacturer");
+		GridBagConstraints gbccpuManufacturer = new GridBagConstraints();
+		gbccpuManufacturer.anchor = GridBagConstraints.EAST;
+		gbccpuManufacturer.insets = new Insets(0, 0, 5, 5);
+		gbccpuManufacturer.gridx = 5;
+		gbccpuManufacturer.gridy = 0;
+		cpuPanel.add(cpuManufacturer, gbccpuManufacturer);
+		
+		cpuManufacturerTf = new JTextField();
+		cpuManufacturerTf.setEditable(false);
+		GridBagConstraints gbccpuManufacturerTextField = new GridBagConstraints();
+		gbccpuManufacturerTextField.insets = new Insets(0, 0, 5, 0);
+		gbccpuManufacturerTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbccpuManufacturerTextField.gridx = 6;
+		gbccpuManufacturerTextField.gridy = 0;
+		cpuPanel.add(cpuManufacturerTf, gbccpuManufacturerTextField);
+		cpuManufacturerTf.setColumns(10);
 		
 		JLabel cpuCores = new JLabel("CPU Core Count");
 		cpuCores.setHorizontalAlignment(SwingConstants.LEFT);
@@ -358,6 +380,7 @@ public class HardwareSnapshotDatabaseViewer {
 		
 		JLabel cpuSocket = new JLabel("Socket Designation");
 		GridBagConstraints gbccpuSocket = new GridBagConstraints();
+		gbccpuSocket.gridwidth = 2;
 		gbccpuSocket.fill = GridBagConstraints.HORIZONTAL;
 		gbccpuSocket.anchor = GridBagConstraints.WEST;
 		gbccpuSocket.insets = new Insets(0, 0, 0, 5);
@@ -371,7 +394,7 @@ public class HardwareSnapshotDatabaseViewer {
 		gbccpuSocketTf.weightx = 10.0;
 		gbccpuSocketTf.anchor = GridBagConstraints.WEST;
 		gbccpuSocketTf.fill = GridBagConstraints.HORIZONTAL;
-		gbccpuSocketTf.gridx = 5;
+		gbccpuSocketTf.gridx = 6;
 		gbccpuSocketTf.gridy = 1;
 		cpuPanel.add(cpuSocketTf, gbccpuSocketTf);
 		cpuSocketTf.setColumns(10);

@@ -91,7 +91,7 @@ public class DataInsertion {
 	
 	//Populate the CPU Table
 	private static void insertCpu() {
-		String query = "INSERT INTO CPU (HardwareId, DeviceId, CpuName, CpuCores, CpuThreads, CpuSocket) VALUES (?,?,?,?,?,?);";
+		String query = "INSERT INTO CPU (HardwareId, DeviceId, CpuName, Manufacturer, CpuCores, CpuThreads, CpuSocket) VALUES (?,?,?,?,?,?,?);";
 		
 		try(PreparedStatement ps = connect.prepareStatement(query)){
 			List<String> cpuList = Win32_Processor.getProcessorList();
@@ -100,9 +100,10 @@ public class DataInsertion {
 				ps.setString(1, HARDWAREID);
 				ps.setString(2, cpu);
 				ps.setString(3, cpuProperties.get("Name"));
-				ps.setInt(4, Integer.valueOf(cpuProperties.get("NumberOfCores")));
-				ps.setInt(5, Integer.valueOf(cpuProperties.get("ThreadCount")));
-				ps.setString(6, cpuProperties.get("SocketDesignation"));
+				ps.setString(4, cpuProperties.get("Manufacturer"));
+				ps.setInt(5, Integer.valueOf(cpuProperties.get("NumberOfCores")));
+				ps.setInt(6, Integer.valueOf(cpuProperties.get("ThreadCount")));
+				ps.setString(7, cpuProperties.get("SocketDesignation"));
 				
 				ps.addBatch();
 				ps.executeBatch();
