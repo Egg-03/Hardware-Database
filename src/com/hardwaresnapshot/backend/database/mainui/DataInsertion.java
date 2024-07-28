@@ -1,4 +1,4 @@
-package com.hardwaresnapshot.backend.database.datainsertanddelete;
+package com.hardwaresnapshot.backend.database.mainui;
 
 import java.io.IOException;
 import java.sql.Connection;

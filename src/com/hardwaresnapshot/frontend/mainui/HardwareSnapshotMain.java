@@ -26,7 +26,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
 import com.ferrumx.system.logger.ErrorLog;
-import com.hardwaresnapshot.backend.database.datainsertanddelete.DataDeletion;
+import com.hardwaresnapshot.backend.database.mainui.DataDeletion;
 import com.hardwaresnapshot.frontend.miniuis.ConfirmationUI;
 import com.hardwaresnapshot.frontend.miniuis.ExceptionUI;
 import com.hardwaresnapshot.frontend.miniuis.LocationNameProviderUI;
