@@ -16,14 +16,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
-import com.ferrumx.system.logger.ErrorLog;
 import com.hardwaresnapshot.backend.database.databaseui.CpuDatabase;
 import com.hardwaresnapshot.backend.database.databaseui.GpuDatabase;
 import com.hardwaresnapshot.backend.database.databaseui.HardwareIdDatabase;
@@ -33,6 +31,7 @@ import com.hardwaresnapshot.backend.database.databaseui.NetworkDatabase;
 import com.hardwaresnapshot.backend.database.databaseui.StorageDatabase;
 import com.hardwaresnapshot.backend.database.mainui.DataDeletion;
 import com.hardwaresnapshot.frontend.miniuis.ConfirmationUI;
+import com.hardwaresnapshot.frontend.miniuis.ExceptionUI;
 import com.hardwaresnapshot.frontend.miniuis.InformationUI;
 
 public class HardwareSnapshotDatabaseViewer {
@@ -81,6 +80,12 @@ public class HardwareSnapshotDatabaseViewer {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme");
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+			new ExceptionUI("Theme Load Error", e.getMessage());
+		}
+		
 		EventQueue.invokeLater(()->{
 			HardwareSnapshotDatabaseViewer window = new HardwareSnapshotDatabaseViewer();
 			window.frmHsnapDatabaseViewer.pack();
@@ -95,24 +100,14 @@ public class HardwareSnapshotDatabaseViewer {
 		initializeUI();
 		initializeLocation();
 	}
-	
-	private void setTheme() {
-		try {
-			UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
-			SwingUtilities.updateComponentTreeUI(frmHsnapDatabaseViewer);
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-			new ErrorLog().log(" ExceptionUI Theme Load Error: "+e.getMessage());
-		}
-	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initializeUI() {
 		frmHsnapDatabaseViewer = new JFrame();
-		setTheme();
-		frmHsnapDatabaseViewer.setIconImage(Toolkit.getDefaultToolkit().getImage(HardwareSnapshotDatabaseViewer.class.getResource("/res/icon_main.png")));
-		frmHsnapDatabaseViewer.setTitle("Hardware Snapshot Database Viewer (Build v222072024)");
+		frmHsnapDatabaseViewer.setIconImage(Toolkit.getDefaultToolkit().getImage(HardwareSnapshotDatabaseViewer.class.getResource("/resources/icon_main.png")));
+		frmHsnapDatabaseViewer.setTitle("Hardware Snapshot Database Viewer (Build 20.08.2024)");
 		frmHsnapDatabaseViewer.setBounds(100, 100, 723, 430);
 		frmHsnapDatabaseViewer.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frmHsnapDatabaseViewer.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
@@ -177,6 +172,7 @@ public class HardwareSnapshotDatabaseViewer {
 		});
 		userNameComboBox.setEnabled(false);
 		GridBagConstraints gbcuserNameComboBox = new GridBagConstraints();
+		gbcuserNameComboBox.weightx = 2.0;
 		gbcuserNameComboBox.insets = new Insets(0, 0, 0, 5);
 		gbcuserNameComboBox.fill = GridBagConstraints.HORIZONTAL;
 		gbcuserNameComboBox.gridx = 0;
@@ -194,6 +190,7 @@ public class HardwareSnapshotDatabaseViewer {
 			userNameComboBox.setEnabled(true);	
 		});
 		GridBagConstraints gbclocationComboBox = new GridBagConstraints();
+		gbclocationComboBox.weightx = 2.0;
 		gbclocationComboBox.insets = new Insets(0, 0, 0, 5);
 		gbclocationComboBox.fill = GridBagConstraints.HORIZONTAL;
 		gbclocationComboBox.gridx = 1;
