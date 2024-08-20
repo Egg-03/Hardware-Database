@@ -1,4 +1,4 @@
-package com.hardwaresnapshot.backend.database.datainsertanddelete;
+package com.hardwaresnapshot.backend.database.mainui;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 
 import com.ferrumx.formatter.cim.CIM_ML;
 import com.ferrumx.system.currentuser.User;
@@ -91,7 +92,7 @@ public class DataInsertion {
 	
 	//Populate the CPU Table
 	private static void insertCpu() {
-		String query = "INSERT INTO CPU (HardwareId, DeviceId, CpuName, CpuCores, CpuThreads, CpuSocket) VALUES (?,?,?,?,?,?);";
+		String query = "INSERT INTO CPU (HardwareId, DeviceId, CpuName, Manufacturer, CpuCores, CpuThreads, CpuSocket) VALUES (?,?,?,?,?,?,?);";
 		
 		try(PreparedStatement ps = connect.prepareStatement(query)){
 			List<String> cpuList = Win32_Processor.getProcessorList();
@@ -100,9 +101,10 @@ public class DataInsertion {
 				ps.setString(1, HARDWAREID);
 				ps.setString(2, cpu);
 				ps.setString(3, cpuProperties.get("Name"));
-				ps.setInt(4, Integer.valueOf(cpuProperties.get("NumberOfCores")));
-				ps.setInt(5, Integer.valueOf(cpuProperties.get("ThreadCount")));
-				ps.setString(6, cpuProperties.get("SocketDesignation"));
+				ps.setString(4, cpuProperties.get("Manufacturer"));
+				ps.setInt(5, Integer.valueOf(cpuProperties.get("NumberOfCores")));
+				ps.setInt(6, Integer.valueOf(cpuProperties.get("ThreadCount")));
+				ps.setString(7, cpuProperties.get("SocketDesignation"));
 				
 				ps.addBatch();
 				ps.executeBatch();
@@ -252,7 +254,7 @@ public class DataInsertion {
 	public static final void insert(String username, String location) {
 		connect = DatabaseConnectivity.initialize();
 		if(insertHardwareId(username, location)) {
-			try(ExecutorService dumperThreads = Executors.newFixedThreadPool(7)){
+			try(ExecutorService dumperThreads = Executors.newCachedThreadPool()){
 				Runnable mainboard = ()->insertMainboard();
 				Runnable cpu = ()->insertCpu();
 				Runnable memory = ()->insertMemory();
@@ -268,7 +270,11 @@ public class DataInsertion {
 				dumperThreads.submit(storage);
 				dumperThreads.submit(network);
 				dumperThreads.submit(os);
+				
+			} catch (RejectedExecutionException | NullPointerException e) {
+				new ExceptionUI("Data Insertion Error", e.getMessage()).setVisible(true);
 			}
+			new InformationUI("Dump for "+User.getUsername()+" succeeded").setVisible(true);
 		}
 		DatabaseConnectivity.close(connect);
 	}

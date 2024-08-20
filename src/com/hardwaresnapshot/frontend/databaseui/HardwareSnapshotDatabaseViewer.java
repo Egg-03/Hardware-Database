@@ -16,23 +16,22 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
-import com.ferrumx.system.logger.ErrorLog;
-import com.hardwaresnapshot.backend.database.datainsertanddelete.DataDeletion;
-import com.hardwaresnapshot.backend.database.dataretrieve.CpuDatabase;
-import com.hardwaresnapshot.backend.database.dataretrieve.GpuDatabase;
-import com.hardwaresnapshot.backend.database.dataretrieve.HardwareIdDatabase;
-import com.hardwaresnapshot.backend.database.dataretrieve.MainboardDatabase;
-import com.hardwaresnapshot.backend.database.dataretrieve.MemoryDatabase;
-import com.hardwaresnapshot.backend.database.dataretrieve.NetworkDatabase;
-import com.hardwaresnapshot.backend.database.dataretrieve.StorageDatabase;
+import com.hardwaresnapshot.backend.database.databaseui.CpuDatabase;
+import com.hardwaresnapshot.backend.database.databaseui.GpuDatabase;
+import com.hardwaresnapshot.backend.database.databaseui.HardwareIdDatabase;
+import com.hardwaresnapshot.backend.database.databaseui.MainboardDatabase;
+import com.hardwaresnapshot.backend.database.databaseui.MemoryDatabase;
+import com.hardwaresnapshot.backend.database.databaseui.NetworkDatabase;
+import com.hardwaresnapshot.backend.database.databaseui.StorageDatabase;
+import com.hardwaresnapshot.backend.database.mainui.DataDeletion;
 import com.hardwaresnapshot.frontend.miniuis.ConfirmationUI;
+import com.hardwaresnapshot.frontend.miniuis.ExceptionUI;
 import com.hardwaresnapshot.frontend.miniuis.InformationUI;
 
 public class HardwareSnapshotDatabaseViewer {
@@ -46,6 +45,7 @@ public class HardwareSnapshotDatabaseViewer {
 	
 	private JComboBox<String> cpuChoiceBox;
 	private JTextField cpuNameTf;
+	private JTextField cpuManufacturerTf;
 	private JTextField cpuCoreTf;
 	private JTextField cpuThreadTf;
 	private JTextField cpuSocketTf;
@@ -80,6 +80,12 @@ public class HardwareSnapshotDatabaseViewer {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme");
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+			new ExceptionUI("Theme Load Error", e.getMessage());
+		}
+		
 		EventQueue.invokeLater(()->{
 			HardwareSnapshotDatabaseViewer window = new HardwareSnapshotDatabaseViewer();
 			window.frmHsnapDatabaseViewer.pack();
@@ -94,24 +100,14 @@ public class HardwareSnapshotDatabaseViewer {
 		initializeUI();
 		initializeLocation();
 	}
-	
-	private void setTheme() {
-		try {
-			UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
-			SwingUtilities.updateComponentTreeUI(frmHsnapDatabaseViewer);
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-			new ErrorLog().log(" ExceptionUI Theme Load Error: "+e.getMessage());
-		}
-	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initializeUI() {
 		frmHsnapDatabaseViewer = new JFrame();
-		setTheme();
-		frmHsnapDatabaseViewer.setIconImage(Toolkit.getDefaultToolkit().getImage(HardwareSnapshotDatabaseViewer.class.getResource("/res/icon_main.png")));
-		frmHsnapDatabaseViewer.setTitle("Hardware Snapshot Database Viewer (Build v222072024)");
+		frmHsnapDatabaseViewer.setIconImage(Toolkit.getDefaultToolkit().getImage(HardwareSnapshotDatabaseViewer.class.getResource("/resources/icon_main.png")));
+		frmHsnapDatabaseViewer.setTitle("Hardware Snapshot Database Viewer (Build 20.08.2024)");
 		frmHsnapDatabaseViewer.setBounds(100, 100, 723, 430);
 		frmHsnapDatabaseViewer.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frmHsnapDatabaseViewer.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
@@ -176,6 +172,7 @@ public class HardwareSnapshotDatabaseViewer {
 		});
 		userNameComboBox.setEnabled(false);
 		GridBagConstraints gbcuserNameComboBox = new GridBagConstraints();
+		gbcuserNameComboBox.weightx = 2.0;
 		gbcuserNameComboBox.insets = new Insets(0, 0, 0, 5);
 		gbcuserNameComboBox.fill = GridBagConstraints.HORIZONTAL;
 		gbcuserNameComboBox.gridx = 0;
@@ -193,6 +190,7 @@ public class HardwareSnapshotDatabaseViewer {
 			userNameComboBox.setEnabled(true);	
 		});
 		GridBagConstraints gbclocationComboBox = new GridBagConstraints();
+		gbclocationComboBox.weightx = 2.0;
 		gbclocationComboBox.insets = new Insets(0, 0, 0, 5);
 		gbclocationComboBox.fill = GridBagConstraints.HORIZONTAL;
 		gbclocationComboBox.gridx = 1;
@@ -258,9 +256,9 @@ public class HardwareSnapshotDatabaseViewer {
 		cpuPanel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "CPU", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		frmHsnapDatabaseViewer.getContentPane().add(cpuPanel);
 		GridBagLayout gblcpuPanel = new GridBagLayout();
-		gblcpuPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0};
+		gblcpuPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
 		gblcpuPanel.rowHeights = new int[]{0, 0, 0};
-		gblcpuPanel.columnWeights = new double[]{1.0, 1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+		gblcpuPanel.columnWeights = new double[]{1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gblcpuPanel.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
 		cpuPanel.setLayout(gblcpuPanel);
 		
@@ -289,6 +287,9 @@ public class HardwareSnapshotDatabaseViewer {
 			
 			cpuSocketTf.setText(cpuProperties.get("CpuSocket"));
 			cpuSocketTf.setCaretPosition(0);
+			
+			cpuManufacturerTf.setText(cpuProperties.get("Manufacturer"));
+			cpuManufacturerTf.setCaretPosition(0);
 		});
 		GridBagConstraints gbccpuChoiceBox = new GridBagConstraints();
 		gbccpuChoiceBox.insets = new Insets(0, 0, 5, 5);
@@ -308,13 +309,31 @@ public class HardwareSnapshotDatabaseViewer {
 		cpuNameTf = new JTextField();
 		cpuNameTf.setEditable(false);
 		GridBagConstraints gbccpuNameTf = new GridBagConstraints();
-		gbccpuNameTf.gridwidth = 3;
+		gbccpuNameTf.gridwidth = 2;
 		gbccpuNameTf.insets = new Insets(0, 0, 5, 5);
 		gbccpuNameTf.fill = GridBagConstraints.HORIZONTAL;
 		gbccpuNameTf.gridx = 3;
 		gbccpuNameTf.gridy = 0;
 		cpuPanel.add(cpuNameTf, gbccpuNameTf);
 		cpuNameTf.setColumns(10);
+		
+		JLabel cpuManufacturer = new JLabel("Manufacturer");
+		GridBagConstraints gbccpuManufacturer = new GridBagConstraints();
+		gbccpuManufacturer.anchor = GridBagConstraints.EAST;
+		gbccpuManufacturer.insets = new Insets(0, 0, 5, 5);
+		gbccpuManufacturer.gridx = 5;
+		gbccpuManufacturer.gridy = 0;
+		cpuPanel.add(cpuManufacturer, gbccpuManufacturer);
+		
+		cpuManufacturerTf = new JTextField();
+		cpuManufacturerTf.setEditable(false);
+		GridBagConstraints gbccpuManufacturerTextField = new GridBagConstraints();
+		gbccpuManufacturerTextField.insets = new Insets(0, 0, 5, 0);
+		gbccpuManufacturerTextField.fill = GridBagConstraints.HORIZONTAL;
+		gbccpuManufacturerTextField.gridx = 6;
+		gbccpuManufacturerTextField.gridy = 0;
+		cpuPanel.add(cpuManufacturerTf, gbccpuManufacturerTextField);
+		cpuManufacturerTf.setColumns(10);
 		
 		JLabel cpuCores = new JLabel("CPU Core Count");
 		cpuCores.setHorizontalAlignment(SwingConstants.LEFT);
@@ -358,6 +377,7 @@ public class HardwareSnapshotDatabaseViewer {
 		
 		JLabel cpuSocket = new JLabel("Socket Designation");
 		GridBagConstraints gbccpuSocket = new GridBagConstraints();
+		gbccpuSocket.gridwidth = 2;
 		gbccpuSocket.fill = GridBagConstraints.HORIZONTAL;
 		gbccpuSocket.anchor = GridBagConstraints.WEST;
 		gbccpuSocket.insets = new Insets(0, 0, 0, 5);
@@ -371,7 +391,7 @@ public class HardwareSnapshotDatabaseViewer {
 		gbccpuSocketTf.weightx = 10.0;
 		gbccpuSocketTf.anchor = GridBagConstraints.WEST;
 		gbccpuSocketTf.fill = GridBagConstraints.HORIZONTAL;
-		gbccpuSocketTf.gridx = 5;
+		gbccpuSocketTf.gridx = 6;
 		gbccpuSocketTf.gridy = 1;
 		cpuPanel.add(cpuSocketTf, gbccpuSocketTf);
 		cpuSocketTf.setColumns(10);

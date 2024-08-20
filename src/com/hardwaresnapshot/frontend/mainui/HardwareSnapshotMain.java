@@ -18,15 +18,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
-import com.ferrumx.system.logger.ErrorLog;
-import com.hardwaresnapshot.backend.database.datainsertanddelete.DataDeletion;
+import com.hardwaresnapshot.backend.database.mainui.DataDeletion;
 import com.hardwaresnapshot.frontend.miniuis.ConfirmationUI;
 import com.hardwaresnapshot.frontend.miniuis.ExceptionUI;
 import com.hardwaresnapshot.frontend.miniuis.LocationNameProviderUI;
@@ -79,6 +77,11 @@ public class HardwareSnapshotMain {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme");
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+			new ExceptionUI("Theme Error", e.getMessage()).setVisible(true);
+		}
 		HardwareSnapshotMain window = new HardwareSnapshotMain();
 		window.hardSnap.setLocationRelativeTo(null);
 		window.hardSnap.setVisible(true);			
@@ -93,17 +96,7 @@ public class HardwareSnapshotMain {
 	 */
 	public HardwareSnapshotMain() {
 		initializeComponents();
-		setTheme();
 		initializeSystemInfo(new StatusUI("Booting Up", "Please wait till FerrumX gathers information about your system"));
-	}
-	
-	private void setTheme() {
-		try {
-			UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
-			SwingUtilities.updateComponentTreeUI(hardSnap);
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-			new ErrorLog().log(" ExceptionUI Theme Load Error: "+e.getMessage());
-		}
 	}
 
 	/**
@@ -112,7 +105,7 @@ public class HardwareSnapshotMain {
 	private void initializeComponents() {
 		hardSnap = new JFrame();
 		hardSnap.setResizable(false);
-		hardSnap.setIconImage(Toolkit.getDefaultToolkit().getImage(HardwareSnapshotMain.class.getResource("/res/icon_main.png")));
+		hardSnap.setIconImage(Toolkit.getDefaultToolkit().getImage(HardwareSnapshotMain.class.getResource("/resources/icon_main.png")));
 		hardSnap.setTitle("Hardware Snapshot v1.00");
 		hardSnap.setBounds(100, 100, 450, 721);
 		hardSnap.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -143,7 +136,7 @@ public class HardwareSnapshotMain {
 		
 		hardwareIdTextField = new JTextField();
 		hardwareIdTextField.setBackground(Color.DARK_GRAY);
-		hardwareIdTextField.setForeground(Color.MAGENTA);
+		hardwareIdTextField.setForeground(new Color(0, 191, 255));
 		hardwareIdTextField.setFont(new Font("Segoe UI Variable", Font.BOLD | Font.ITALIC, 10));
 		hardwareIdTextField.setEditable(false);
 		hardwareIdTextField.setBounds(102, 18, 300, 27);
@@ -151,6 +144,7 @@ public class HardwareSnapshotMain {
 		hardwareIdTextField.setColumns(10);
 		
 		JTextField ferrumEngineVersion = new JTextField();
+		ferrumEngineVersion.setForeground(new Color(0, 255, 255));
 		ferrumEngineVersion.setFont(new Font("Segoe UI", Font.ITALIC, 11));
 		ferrumEngineVersion.setHorizontalAlignment(SwingConstants.CENTER);
 		ferrumEngineVersion.setEditable(false);

@@ -9,15 +9,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.TitledBorder;
 
-import com.ferrumx.system.logger.ErrorLog;
-import com.hardwaresnapshot.backend.database.datainsertanddelete.DataInsertion;
+import com.ferrumx.system.currentuser.User;
+import com.hardwaresnapshot.backend.database.mainui.DataInsertion;
 
 //Location and Name Selector UI
 //This should appear when you're dumping new data or updating it
@@ -26,21 +23,11 @@ public class LocationNameProviderUI extends JFrame {
 	
 	public LocationNameProviderUI() {
 		super("LN Selector Window");
-		setTheme();
 		initialize();
 	}
 	
-	private void setTheme() {
-		try {
-			UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
-			SwingUtilities.updateComponentTreeUI(this);
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-			new ErrorLog().log(" LN Selector Window Theme Load Error: "+e.getMessage());
-		}
-	}
-	
 	private void initialize() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(LocationNameProviderUI.class.getResource("/res/icon_main.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(LocationNameProviderUI.class.getResource("/resources/icon_main.png")));
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setSize(490,190);
@@ -63,6 +50,7 @@ public class LocationNameProviderUI extends JFrame {
 		panel.add(compLocation);
 		
 		JTextField compUserTextField = new JTextField();
+		compUserTextField.setText(User.getUsername());
 		compUserTextField.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		compUserTextField.setBounds(134, 22, 310, 25);
 		panel.add(compUserTextField);

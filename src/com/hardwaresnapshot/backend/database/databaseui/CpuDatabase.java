@@ -1,4 +1,4 @@
-package com.hardwaresnapshot.backend.database.dataretrieve;
+package com.hardwaresnapshot.backend.database.databaseui;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -43,12 +43,13 @@ public class CpuDatabase {
 	
 	public static Map<String, String> getCpuProperties(String deviceId, String hwid){
 		Connection connect = DatabaseConnectivity.initialize();
-		String statement = "SELECT CpuName, CpuCores, CpuThreads, CpuSocket FROM CPU WHERE CPU.HardwareId = '"+hwid+"' AND CPU.DeviceId = '"+deviceId+"'";
+		String statement = "SELECT CpuName, Manufacturer, CpuCores, CpuThreads, CpuSocket FROM CPU WHERE CPU.HardwareId = '"+hwid+"' AND CPU.DeviceId = '"+deviceId+"'";
 		Map<String, String> cpuProperties = new LinkedHashMap<>();
 		try(Statement st = connect.createStatement()){
 			ResultSet rs = st.executeQuery(statement);
 			
 			cpuProperties.put("CpuName",  rs.getString("CpuName"));
+			cpuProperties.put("Manufacturer",  rs.getString("Manufacturer"));
 			cpuProperties.put("CpuCores", rs.getString("CpuCores"));
 			cpuProperties.put("CpuThreads", rs.getString("CpuThreads"));
 			cpuProperties.put("CpuSocket", rs.getString("CpuSocket"));
